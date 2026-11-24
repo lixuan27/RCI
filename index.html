@@ -30,9 +30,16 @@
   details.abs{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;margin:30px 0}
   details.abs summary{cursor:pointer;font:600 14px var(--sans);color:var(--accent);letter-spacing:.04em}
   details.abs p{margin-top:12px}
+  #bgfx{position:absolute;top:0;left:0;width:100%;height:min(100vh,980px);min-height:640px;z-index:0;pointer-events:none;
+    -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 62%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 62%,transparent 100%)}
+  main.wrap{position:relative;z-index:1}
+  .head{position:relative}
+  .head::before{content:"";position:absolute;inset:-10px -40px 0;z-index:-1;pointer-events:none;
+    background:radial-gradient(ellipse 60% 55% at 50% 42%,rgba(245,247,249,.82),rgba(245,247,249,0) 72%)}
 </style>
 </head>
 <body>
+<canvas id="bgfx" aria-hidden="true"></canvas>
 <div class="topbar"><div class="wrap">
   <a class="brand" href="./">RCI<span>.</span></a>
   <div class="nav-links"><a class="on" href="./">Project</a><a href="blog/">Blog</a><a href="playground/">Playground</a><a href="https://github.com/lixuan27/RCI-official">Code</a></div>
@@ -158,5 +165,6 @@
 </div>
 </main>
 <footer><div class="wrap">© 2026 the authors · <a href="blog/">blog</a> · <a href="playground/">playground</a> · <a href="https://github.com/lixuan27/RCI-official">code</a></div></footer>
+<script src="assets/bgfx.js"></script>
 </body>
 </html>

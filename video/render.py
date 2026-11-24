@@ -161,13 +161,13 @@ def overview(t):
         f.text(W / 2, 210, "?", hand(62, heavy=True), RED, a * seg(t, 0.8, 1.4), "mm")
         for i in range(5): smiley(f, 400 + i * 120, 330, a * seg(t, 1 + i * 0.15, 1.6 + i * 0.15), 0.85, key=i)
         f.text(W / 2, 400, "five copies of one model", hand(22), GREY, a, "mm")
-        f.text(W / 2, 520, "Recursive Collective Intelligence, told with a few circles", hand(30, True), BLUE, a * seg(t, 2.2, 3.0), "mm")
+        f.text(W / 2, 520, "Recursive Collective Intelligence", hand(30, True), BLUE, a * seg(t, 2.2, 3.0), "mm")
     elif t < 21.5:                                 # 2 what counts
         u = t - 7.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 13.3, 14))
         heading(f, u, 0, 14, "What counts as collective intelligence")
-        f.text(320, 120, "Work alone, then vote", hand(24, True), INK, a, "mm")
+        f.text(320, 120, "Independent agents", hand(24, True), INK, a, "mm")
         f.sline(640, 110, 640, 420, LIGHT, a, 2, dash=8)
-        f.text(960, 120, "Talk to each other", hand(24, True), INK, a * seg(u, 2, 2.8), "mm")
+        f.text(960, 120, "Interacting agents", hand(24, True), INK, a * seg(u, 2, 2.8), "mm")
         xs = [200, 280, 360, 440]
         for i, x in enumerate(xs): smiley(f, x, 190, a, 0.62, "neutral", key=20 + i)
         v = seg(u, 0.8, 2)
@@ -175,37 +175,37 @@ def overview(t):
         f.srect(285, 330, 355, 368, INK, (255, 255, 255), a * v, 2, 25); f.text(320, 349, "vote", hand(19, True), INK, a * v, "mm")
         b = seg(u, 2, 3)
         pts = [(860, 170), (1060, 170), (860, 320), (1060, 320)]
-        f.srect(915, 215, 1005, 275, INK, (255, 255, 255), a * b, 2, 26); f.text(960, 200, "shared board", hand(15), GREY, a * b, "mm")
+        f.srect(915, 215, 1005, 275, INK, (255, 255, 255), a * b, 2, 26); f.text(960, 200, "blackboard", hand(15), GREY, a * b, "mm")
         for k in range(3): f.srect(928 + k * 24, 236, 946 + k * 24, 253, INK, YEL, a * b, 1.4, 27 + k)
         for i, p in enumerate(pts):
             smiley(f, *p, a * b, 0.62, key=30 + i); f.sline(p[0], p[1], 960, 245, BLUE, a * b, 1.6, key=31 + i, dash=6)
         c = seg(u, 5, 6.5)
         f.srect(240, 470, 240 + 40, 490, INK, (198, 214, 236), a * c, 2, 40); f.text(300, 480, "one agent: 1x tokens", hand(20), INK, a * c, "lm")
-        f.srect(760, 470, 760 + 300, 490, INK, PURPF, a * c, 2, 41); f.text(910, 512, "talking: 8.8x tokens", hand(20), INK, a * c, "mm")
-        takeaway(f, u, 7.5, 14, [("Talking costs more tokens, and a plain vote over that many agents already helps.", INK),
-                                 ("So grade a group against independent agents that spend the same tokens.", BLUE)], y=580)
+        f.srect(760, 470, 760 + 300, 490, INK, PURPF, a * c, 2, 41); f.text(910, 512, "interacting group: 8.8x tokens", hand(20), INK, a * c, "mm")
+        takeaway(f, u, 7.5, 14, [("Interaction spends more tokens.", INK),
+                                 ("We compare groups with independent agents at equal budget.", BLUE)], y=580)
     elif t < 37.5:                                 # 3 ladder
         u = t - 21.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 15.3, 16))
         heading(f, u, 0, 16, "The equal-budget ladder")
-        f.text(W / 2, 128, "a group run that spends k tokens costs n_B = k / c_1 independent agents", hand(26, True), BLUE, a * seg(u, 0.5, 1.3), "mm")
+        f.text(W / 2, 128, "token budget: n_B = k / c_1 independent agents", hand(26, True), BLUE, a * seg(u, 0.5, 1.3), "mm")
         lit = (u > 3) + (u > 5.5) + (u > 8)
         stairs(f, 310, 430, a, lit, w=220, key=60)
         f.sline(290, 430 - 190 - 16, 990, 430 - 190 - 16, RED, a * seg(u, 9.5, 10.3), 2.5, dash=9)
         f.text(1005, 430 - 190 - 16, "pass@n", hand(22, True), RED, a * seg(u, 9.5, 10.3), "lm")
-        f.text(W / 2, 500, "votes, judges and verifiers only select among answers that agents gave", hand(21), GREY, a * seg(u, 10, 11), "mm")
-        takeaway(f, u, 11, 16, [("Level 3 means correct answers that no selection among independent answers reaches.", GREEN)], y=580)
+        f.text(W / 2, 500, "Votes and judges select among existing answers.", hand(21), GREY, a * seg(u, 10, 11), "mm")
+        takeaway(f, u, 11, 16, [("Level 3 requires answers that the group creates together.", GREEN)], y=580)
     elif t < 51.5:                                 # 4 shared information
         u = t - 37.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 13.3, 14))
-        heading(f, u, 0, 14, "Shared information: more talk, no gain")
-        panel(f, 70, 110, 470, 470, "everyone sees the whole task", a, 70)
+        heading(f, u, 0, 14, "Shared information")
+        panel(f, 70, 110, 470, 470, "every agent sees the full task", a, 70)
         for i, (x, y) in enumerate([(170, 220), (370, 220), (170, 380), (370, 380)]):
             smiley(f, x, y, a, 0.6, "neutral", key=71 + i)
             f.srect(x - 16, y + 32, x + 16, y + 54, INK, YEL, a, 1.4, 75 + i); f.text(x, y + 43, "ABCD", hand(10, True), INK, a, "mm")
         for i in range(4):
             ph = (u * 0.5 + i * 0.25) % 1
             bubble(f, lerp(170, 370, ph), lerp(220, 380, (ph + i * 0.3) % 1), a * seg(u, 1, 2), key=80 + i)
-        f.text(270, 455, "a message repeats what its reader knows", hand(16), GREY, a * seg(u, 2, 3), "mm")
-        panel(f, 520, 110, 1210, 470, "accuracy minus the equal-budget vote, six benchmarks, Qwen3.5-9B", a, 90)
+        f.text(270, 455, "messages repeat known information", hand(16), GREY, a * seg(u, 2, 3), "mm")
+        panel(f, 520, 110, 1210, 470, "gain over the equal-budget vote (Qwen3.5-9B)", a, 90)
         X = lambda v: lerp(600, 1180, (v + 0.55) / 0.75)
         f.sline(X(0), 140, X(0), 450, INK, a, 2, dash=7); f.text(X(0), 462, "vote", hand(17, True), INK, a, "mm")
         rows = [("debate", PRIOR["debate"], PURP), ("DeLM", PRIOR["DeLM"], SLATE_C), ("AOrchestra", PRIOR["AOrchestra"], GREY), ("27B reviewer", REVIEWER27, GREEN)]
@@ -214,13 +214,13 @@ def overview(t):
             f.text(610, y, nm, hand(19, True), col, a * r, "lm")
             for j, v in enumerate(vals):
                 f.scircle(lerp(X(0), X(v), r), y + 22, 6, col, (255, 255, 255), a * r, 2, key=100 + k * 20 + j)
-        takeaway(f, u, 8.5, 14, [("Debate, DeLM and AOrchestra never beat the equal-budget vote.", RED),
-                                 ("Only a stronger reviewer that selects among the answers does.", GREEN)], y=560)
+        takeaway(f, u, 8.5, 14, [("Prior multi-agent methods stay at the equal-budget vote.", RED),
+                                 ("A stronger 27B reviewer beats the vote.", GREEN)], y=560)
     elif t < 67.5:                                 # 5 split facts
         u = t - 51.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 15.3, 16))
-        heading(f, u, 0, 16, "Split facts: move facts, not arguments")
-        f.text(70, 112, "HiddenBench: each of four Qwen3.8-27B agents holds part of the decisive facts", hand(20), GREY, a, "la")
-        for side, (x0, title, col) in enumerate([(70, "Debate: answers and reasons", PURP), (660, "Fact forwarding: the facts, verbatim", GREEN)]):
+        heading(f, u, 0, 16, "Split facts")
+        f.text(70, 112, "HiddenBench: each Qwen3.8-27B agent holds part of the facts", hand(20), GREY, a, "la")
+        for side, (x0, title, col) in enumerate([(70, "Debate", PURP), (660, "Fact forwarding", GREEN)]):
             pa = a * seg(u, 0.6 + side * 3.5, 1.4 + side * 3.5)
             panel(f, x0, 140, x0 + 550, 470, title, pa, 140 + side)
             pts = [(x0 + 150, 230), (x0 + 400, 230), (x0 + 150, 380), (x0 + 400, 380)]
@@ -238,14 +238,13 @@ def overview(t):
                     else:
                         ph = clamp((u - 5 - i * 0.35) / 2.2)
                         if 0 < ph < 1: sticky(f, lerp(pts[i][0], pts[j][0], ph), lerp(pts[i][1], pts[j][1], ph), "ABCD"[i], pa, 0.6, key=i)
-        f.text(345, 500, "0.688 accuracy vs 0.703 pass@n: level 2", hand(22, True), PURP, a * seg(u, 3, 3.8), "mm")
-        f.text(935, 500, "0.959 accuracy vs 0.649 pass@n: level 3", hand(22, True), GREEN, a * seg(u, 9, 9.8), "mm")
-        takeaway(f, u, 10.5, 16, [("Passing facts on lifts the group 31 points above pass@n at equal budget,", INK),
-                                  ("and above one agent given every fact at the same budget.", INK)], y=580)
+        f.text(345, 500, "level 2: 0.688 vs pass@n 0.703", hand(22, True), PURP, a * seg(u, 3, 3.8), "mm")
+        f.text(935, 500, "level 3: 0.959 vs pass@n 0.649", hand(22, True), GREEN, a * seg(u, 9, 9.8), "mm")
+        takeaway(f, u, 10.5, 16, [("Fact forwarding exceeds pass@n by 31 points.", INK)], y=580)
     elif t < 81.5:                                 # 6 organization
         u = t - 67.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 13.3, 14))
-        heading(f, u, 0, 14, "Organization emerges, and it costs tokens")
-        panel(f, 70, 110, 620, 470, "each agent may read one message, and may give that budget away", a, 200)
+        heading(f, u, 0, 14, "Emergent organization")
+        panel(f, 70, 110, 620, 470, "each agent can give its reading budget away", a, 200)
         hub = (345, 300); oth = [(170, 190), (170, 410), (520, 190)]
         smiley(f, *hub, a, 0.95, "happy" if u > 6.5 else "neutral", key=210)
         for i, p in enumerate(oth): smiley(f, *p, a, 0.62, key=211 + i)
@@ -254,9 +253,9 @@ def overview(t):
             if 0 < ph < 1: coin(f, lerp(p[0], hub[0], ph), lerp(p[1], hub[1], ph), "+1", a, key=220 + i)
             ph2 = clamp((u - 4.5 - i * 0.4) / 1.8)
             if 0 < ph2 < 1: sticky(f, lerp(p[0], hub[0], ph2), lerp(p[1], hub[1], ph2), "BCD"[i], a, 0.7, key=230 + i)
-        f.text(hub[0], hub[1] + 60, "a hub forms and reads every fact", hand(19, True), RED, a * seg(u, 6.5, 7.3), "mm")
+        f.text(hub[0], hub[1] + 60, "a hub reads every fact", hand(19, True), RED, a * seg(u, 6.5, 7.3), "mm")
         f.text(920, 170, "+18 points", hand(50, heavy=True), GREEN, a * seg(u, 7, 7.8), "mm")
-        f.text(920, 212, "over a group without transfers", hand(20), GREY, a * seg(u, 7, 7.8), "mm")
+        f.text(920, 212, "accuracy gain from budget transfers", hand(20), GREY, a * seg(u, 7, 7.8), "mm")
         c = seg(u, 8.5, 10)
         f.srect(740, 255, 740 + 360 * 0.67 * c, 283, INK, (246, 206, 200), a * c, 2, 240)
         f.srect(740 + 360 * 0.67 * c, 255, 740 + 360 * c, 283, INK, GREENF, a * c, 2, 241)
@@ -264,21 +263,21 @@ def overview(t):
         n = seg(u, 10, 11)
         f.srect(700, 345, 752, 415, INK, (255, 255, 255), a * n, 2, 242)
         for k in range(4): f.sline(710, 360 + k * 13, 742, 360 + k * 13, LIGHT, a * n, 2, key=243 + k, passes=1)
-        f.text(770, 362, "a prompt the model writes from the rules", hand(19, True), INK, a * n, "la")
-        f.text(770, 390, "describes the same hub: level 3 at under", hand(19, True), INK, a * n, "la")
-        f.text(770, 418, "half the budget (descriptive)", hand(19, True), INK, a * n, "la")
-        takeaway(f, u, 11, 14, [("Identical agents organize themselves, but coordination eats about two thirds of the tokens.", INK)], y=560)
+        f.text(770, 362, "A self-written prompt describes", hand(19, True), INK, a * n, "la")
+        f.text(770, 390, "the same hub and reaches level 3", hand(19, True), INK, a * n, "la")
+        f.text(770, 418, "at less than half the budget", hand(19, True), INK, a * n, "la")
+        takeaway(f, u, 11, 14, [("Coordination takes about two thirds of the tokens.", INK)], y=560)
     elif t < 97.5:                                 # 7 improving without labels
         u = t - 81.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 15.3, 16))
-        heading(f, u, 0, 16, "Improving without labels")
+        heading(f, u, 0, 16, "Label-free training")
         def mini_group(x, y, aa, key):
             for k, (dx, dy) in enumerate([(-16, 8), (0, -10), (16, 8)]): smiley(f, x + dx, y + dy, aa, 0.36, key=key + k)
         mini_group(140, 175, a, 300); f.text(140, 222, "generation g", hand(16), GREY, a, "mm")
         f.arrow(185, 175, 290, 175, INK, a, 2, key=303); f.text(237, 155, "plays fresh tasks", hand(14), GREY, a, "mm")
         f.srect(300, 140, 360, 210, INK, (255, 255, 255), a, 2, 304); f.check(330, 175, GREEN, a, 0.8)
-        f.text(330, 228, "automatic check, no labels", hand(14), GREY, a, "mm")
+        f.text(330, 228, "automatic check", hand(14), GREY, a, "mm")
         f.arrow(370, 175, 480, 175, INK, a * seg(u, 1, 2), 2, key=305); f.text(425, 155, "train candidates", hand(14), GREY, a * seg(u, 1, 2), "mm")
-        f.srect(490, 140, 600, 210, INK, YEL, a * seg(u, 2, 3), 2, 306); f.text(545, 175, "beats g on", hand(14, True), INK, a * seg(u, 2, 3), "mm"); f.text(545, 193, "fresh tasks?", hand(14, True), INK, a * seg(u, 2, 3), "mm")
+        f.srect(490, 140, 600, 210, INK, YEL, a * seg(u, 2, 3), 2, 306); f.text(545, 175, "confirm on", hand(14, True), INK, a * seg(u, 2, 3), "mm"); f.text(545, 193, "fresh tasks?", hand(14, True), INK, a * seg(u, 2, 3), "mm")
         f.arrow(610, 175, 720, 175, GREEN, a * seg(u, 3, 4), 2, key=307); f.text(665, 155, "release", hand(14, True), GREEN, a * seg(u, 3, 4), "mm")
         mini_group(770, 175, a * seg(u, 3, 4), 308); f.text(770, 222, "generation g+1", hand(16), GREY, a * seg(u, 3, 4), "mm")
         g = seg(u, 4, 5); f.sline(140, 128, 770, 128, BLUE, a * g, 2, key=311, dash=6); f.text(455, 112, "generation after generation", hand(16, True), BLUE, a * g, "mm")
@@ -292,16 +291,14 @@ def overview(t):
                 f.srect(x + 42, y0 + 115 - 100 * v * q, x + 70, y0 + 115, INK, fillc, a * q, 1.8, 340 + k * 10 + j)
                 f.text(x + 56, y0 + 132, f"{v:.3f}", hand(16, True), INK, a * q, "mm")
                 f.text(x, y0 + 100, f"G{j + 1}", hand(15), GREY, a * q, "mm")
-        f.text(820, 360, "HiddenBench, chain T3, same caps", hand(18), GREY, a * seg(u, 6, 7), "la")
-        f.text(820, 395, "four agents trained on their own", hand(18), GREY, a * seg(u, 6, 7), "la")
-        f.text(820, 420, "solo outputs stay far below", hand(18), GREY, a * seg(u, 6, 7), "la")
-        takeaway(f, u, 11, 16, [("Trained on its own verified outputs, the group learns what its agents cannot learn alone.", GREEN)], y=640)
+        f.text(820, 360, "HiddenBench with equal training caps", hand(18), GREY, a * seg(u, 6, 7), "la")
+        takeaway(f, u, 11, 16, [("Collective training stays far above single-agent self-training.", GREEN)], y=640)
     elif t < 107.5:                                # 8 public benchmarks
         u = t - 97.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 9.3, 10))
         heading(f, u, 0, 10, "Recursion on public benchmarks")
-        charts = [("PlanBench", [0.613, 0.857, 0.937, 0.940, 0.950], 0, 1, BLUE, "0.613 to 0.950, four generations"),
-                  ("HiddenBench (T3k)", [0.509, 0.713, 0.791, 0.811, 0.845, 0.886], 0.4, 1, PURP, "0.509 to 0.886, five generations"),
-                  ("Hanabi, score out of 25", [0, 0.678, 2.953, 4.110, 4.420, 4.523, 4.482], 0, 5, RED, "0 to 4.5, six generations")]
+        charts = [("PlanBench", [0.613, 0.857, 0.937, 0.940, 0.950], 0, 1, BLUE, "0.613 to 0.950 in 4 generations"),
+                  ("HiddenBench", [0.509, 0.713, 0.791, 0.811, 0.845, 0.886], 0.4, 1, PURP, "0.509 to 0.886 in 5 generations"),
+                  ("Hanabi (score / 25)", [0, 0.678, 2.953, 4.110, 4.420, 4.523, 4.482], 0, 5, RED, "0 to 4.5 in 6 generations")]
         for k, (nm, v, lo, hi, col, lab) in enumerate(charts):
             x0, y0, cw, ch = 100 + k * 390, 170, 300, 250
             f.text(x0, y0 - 24, nm, hand(22, True), INK, a, "la")
@@ -318,10 +315,10 @@ def overview(t):
     else:                                          # 9 summary
         u = t - 107.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 8.4, 9))
         heading(f, u, 0, 9, "Summary")
-        items = [("Measure fairly: grade a group against independent agents at the same token budget", "scale"),
-                 ("Move information: interaction pays when it moves facts that no agent holds alone", "fact"),
-                 ("Organize cheaply: hubs emerge on their own, but coordination costs tokens", "coin"),
-                 ("Improve without labels: gated generations climb for four to six generations", "loop")]
+        items = [("Grade groups against independent agents at equal budget.", "scale"),
+                 ("Fact forwarding lifts groups above pass@n.", "fact"),
+                 ("Identical agents form hubs at a coordination cost.", "coin"),
+                 ("Groups improve over four to six label-free generations.", "loop")]
         for k, (s, icon) in enumerate(items):
             y = 150 + k * 78; r = a * seg(u, 0.5 + k * 0.8, 1.2 + k * 0.8)
             x = 150
@@ -338,19 +335,19 @@ def overview(t):
     return f.out()
 
 # ------------------------------------------------------------------ ladder (~30 s)
-PROTOS = [("Blackboard", -0.331, PURP), ("Debate, 2 rounds", -0.015, PURP), ("Blackboard + hint", 0.043, PURP), ("Debate, 2 rounds + hint", 0.079, PURP),
-          ("Debate, 3 rounds + hint", 0.109, PURP), ("Facts-only blackboard", 0.137, GREEN), ("Shared context", 0.190, GREEN), ("Gated blackboard", 0.234, GREEN),
+PROTOS = [("Blackboard", -0.331, PURP), ("Debate (2 rounds)", -0.015, PURP), ("Blackboard + hint", 0.043, PURP), ("Debate (2 rounds) + hint", 0.079, PURP),
+          ("Debate (3 rounds) + hint", 0.109, PURP), ("Facts-only blackboard", 0.137, GREEN), ("Shared context", 0.190, GREEN), ("Gated blackboard", 0.234, GREEN),
           ("Fact forwarding", 0.310, GREEN), ("Shared context + forwarding", 0.328, GREEN)]
 def ladder_video(t):
     f = F(); a = seg(t, 0.2, 1.0) * (1 - seg(t, 29.2, 30))
     heading(f, t, 0, 30, "Where protocols land on the ladder")
-    f.text(70, 108, "HiddenBench, four Qwen3.8-27B agents, split facts: accuracy minus pass@n_B of independent agents", hand(21, light=True), GREY, a, "la")
+    f.text(70, 108, "HiddenBench with four Qwen3.8-27B agents: margin over pass@n_B", hand(21, light=True), GREY, a, "la")
     x0, x1, y0, rh = 540, 1180, 165, 44
     X = lambda m: lerp(x0, x1, (m + 0.36) / 0.72)
     f.srect(X(0), y0 - 14, x1, y0 + rh * 10, GREEN, GREENF, a * 0.6, 1.5, key=1)
     f.sline(X(0), y0 - 24, X(0), y0 + rh * 10 + 8, RED, a, 2.5, dash=8)
     f.text(X(0), y0 + rh * 10 + 30, "pass@n_B", hand(20, True), RED, a, "mm")
-    f.text(x1 - 10, y0 + 4, "level 3 lives here", hand(20, True), GREEN, a, "rm")
+    f.text(x1 - 10, y0 + 4, "level 3", hand(20, True), GREEN, a, "rm")
     for i, (nm, m, col) in enumerate(PROTOS):
         y = y0 + i * rh + 12; ap = seg(t, 2 + i * 2.2, 3 + i * 2.2)
         f.text(x0 - 22, y, nm, hand(21, True), col, a * ap, "rm")
@@ -358,7 +355,7 @@ def ladder_video(t):
         f.sline(X(0), y, xm, y, col, a * ap, 7, key=10 + i, passes=1)
         f.scircle(xm, y, 9, col, (255, 255, 255), a * ap, 2.5, key=20 + i)
         f.text(xm + 18 if m >= 0 else X(0) + 18, y, f"{m:+.3f}", hand(18, True), INK, a * seg(t, 3.4 + i * 2.2, 4 + i * 2.2), "lm")
-    say(f, t, 24, 30, "Trading arguments stays at level 2; passing facts on climbs above pass@n.", y=680, size=24, col=INK)
+    say(f, t, 24, 30, "Fact protocols rise above pass@n.", y=680, size=24, col=INK)
     return f.out()
 
 # ------------------------------------------------------------------ chain (~36 s)
@@ -366,8 +363,8 @@ ROUNDS = [(1, 0.4913, 0.6946, 0.203, "G1"), (2, 0.7344, 0.7788, 0.044, "G2"), (3
           (5, 0.7900, 0.8550, 0.065, "G4"), (6, 0.8250, 0.8263, 0.001, None), (7, 0.8237, 0.8700, 0.046, "G5"), (8, 0.9038, 0.9183, 0.015, None)]
 def chain_video(t):
     f = F(); a = seg(t, 0.2, 1.0) * (1 - seg(t, 35.2, 36))
-    heading(f, t, 0, 36, "One release at a time")
-    f.text(70, 108, "HiddenBench chain T3k: each round, a candidate meets the current generation on fresh confirmation seeds", hand(21, light=True), GREY, a, "la")
+    heading(f, t, 0, 36, "Gated generation chain")
+    f.text(70, 108, "HiddenBench: each candidate meets the current generation on fresh confirmation tasks", hand(21, light=True), GREY, a, "la")
     per = 3.6; r = int(clamp((t - 2) / per, 0, 7.999)); u = (t - 2) - r * per
     gen = sum(1 for k in range(8) if ROUNDS[k][4] and (k < r or (k == r and u > 2.4)))
     if t > 2:
@@ -381,10 +378,10 @@ def chain_video(t):
         f.text(190, base - sc(par) * g1 - 20, f"{par:.3f}", hand(19, True), INK, a * g1, "mm"); f.text(310, base - sc(cand) * g2 - 20, f"{cand:.3f}", hand(19, True), INK, a * g2, "mm")
         dv = seg(u, 1.6, 2.2)
         f.text(250, 548, f"paired gain d = {d:+.3f}", hand(24, True), INK, a * dv, "mm")
-        f.text(250, 580, "needs more than 0.026", hand(20, light=True), GREY, a * dv, "mm")
+        f.text(250, 580, "threshold 0.026", hand(20, light=True), GREY, a * dv, "mm")
         v = seg(u, 2.3, 2.8)
         if rel: f.check(120, 640, GREEN, a * v); f.text(150, 640, f"released as {rel}", hand(26, True), GREEN, a * v, "lm")
-        else: f.cross(120, 640, RED, a * v, 0.8); f.text(150, 640, "flat round: keep the current one", hand(24, True), RED, a * v, "lm")
+        else: f.cross(120, 640, RED, a * v, 0.8); f.text(150, 640, "flat round", hand(24, True), RED, a * v, "lm")
     gx0, gy = 560, 300
     vals = [0.509, 0.713, 0.791, 0.811, 0.845, 0.886]
     for k in range(6):
@@ -394,8 +391,8 @@ def chain_video(t):
         if on: f.text(x, gy + 74, f"{vals[k]:.3f}", hand(18, light=True), GREY, a, "mm")
         if k < 5: f.arrow(x + 30, gy, x + 86, gy, BLUE if k < gen else LIGHT, a, 2.2, 10, key=610 + k)
     f.text(gx0 + 295, gy + 112, "group accuracy on the selection set", hand(19, light=True), GREY, a, "mm")
-    f.text(gx0 + 295, 520, "Five releases in eight rounds; three flat rounds keep the incumbent.", hand(23, True), INK, a * seg(t, 31, 32), "mm")
-    f.text(gx0 + 295, 556, "Fresh seeds every round stop selection on the noise of a reused set.", hand(21, light=True), GREY, a * seg(t, 31.5, 32.5), "mm")
+    f.text(gx0 + 295, 520, "Five releases in eight rounds.", hand(23, True), INK, a * seg(t, 31, 32), "mm")
+    f.text(gx0 + 295, 556, "Fresh confirmation tasks guard every release.", hand(21, light=True), GREY, a * seg(t, 31.5, 32.5), "mm")
     return f.out()
 
 SCENES = {"overview": (overview, 116.5), "ladder": (ladder_video, 30), "chain": (chain_video, 36)}

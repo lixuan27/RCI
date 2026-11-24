@@ -5,347 +5,389 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>RCI Playground</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../assets/style.css">
 <style>
   body{background:var(--paper)}
-  .pg-head{padding:28px 0 6px}
-  .pg-head h1{font-family:var(--serif);font-weight:600;color:var(--ink);font-size:clamp(26px,3.4vw,38px);margin:0 0 6px;text-wrap:balance}
-  .pg-head p{color:var(--ink2);max-width:820px;margin:0}
-  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 14px}
-  .tab{font:600 14px var(--sans);padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer}
-  .tab.on{background:var(--navy);color:#fff;border-color:var(--navy)}
-  .grid{display:grid;grid-template-columns:330px minmax(0,1fr);gap:18px;align-items:start}
-  @media (max-width:900px){.grid{grid-template-columns:1fr}}
-  .panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
-  .ctl{margin-bottom:16px}
-  .ctl>label,.ctl .lab{display:block;font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:7px}
-  .opts{display:flex;flex-wrap:wrap;gap:6px}
-  .opt{font:500 13.5px var(--sans);padding:6px 11px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;text-align:left}
-  .opt:hover{border-color:#cbd5e1}
-  .opt.on{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);background:#f1f5fa}
-  .opt[disabled]{opacity:.38;cursor:not-allowed;text-decoration:line-through}
-  .opt .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
-  .opts.col{flex-direction:column}.opts.col .opt{width:100%}
-  .note{font-size:12.5px;color:var(--mute);line-height:1.5}
-  .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
-  @media (max-width:640px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  .m{background:var(--soft);border-radius:12px;padding:10px 12px;min-width:0}
-  .m .k{font:600 11.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
-  .m .v{font:700 26px var(--serif);color:var(--navy);line-height:1.2}
-  .m .v small{font:500 13px var(--sans);color:var(--mute)}
-  .m .s{font-size:12px;color:var(--ink2)}
-  .row2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;margin-top:14px}
-  @media (max-width:760px){.row2{grid-template-columns:1fr}}
-  .box{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;min-width:0}
-  .box h5{margin:0 0 6px;font:600 13px var(--sans);color:var(--ink2);letter-spacing:.02em}
-  .verdict{margin-top:14px;padding:12px 14px;border-radius:12px;background:#f8fafc;border:1px solid var(--line);font-size:14.5px}
-  .verdict b{color:var(--navy)}
-  .src{font-size:12px;color:var(--mute);margin-top:8px}
-  .lvl-badge{display:inline-flex;align-items:center;gap:6px;font:700 13px var(--sans);padding:3px 10px;border-radius:999px;color:#fff}
-  table.mini{width:100%;border-collapse:collapse;font-size:13px}
-  table.mini td,table.mini th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:right}
-  table.mini th:first-child,table.mini td:first-child{text-align:left}
-  table.mini tr.sel td{background:#f1f5fa;font-weight:600}
-  input[type=range]{width:100%}
-  .hide{display:none!important}
+  .pg-wrap{max-width:1240px;margin:0 auto;padding:0 max(22px,env(safe-area-inset-right,0px)) 50px max(22px,env(safe-area-inset-left,0px))}
+  .pg-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding:30px 0 18px}
+  .pg-head h1{font-family:var(--serif);font-weight:600;font-size:clamp(26px,3vw,34px);margin:6px 0 4px;color:var(--ink);text-wrap:balance}
+  .pg-head p{margin:0;color:var(--mute);font-size:14.5px}
+  .seg,.chip,.rc .hd,.pg-head p{-webkit-user-select:none;user-select:none}
+  .seg{display:inline-flex;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px;gap:2px}
+  .seg button{font:600 13.5px var(--sans);border:0;background:transparent;color:var(--ink2);padding:8px 14px;border-radius:9px;cursor:pointer;transition:background .15s,color .15s}
+  .seg button:hover{background:var(--paper)}
+  .seg button.on{background:var(--navy);color:#fff}
+  .board{display:grid;grid-template-columns:240px minmax(0,1fr) 290px;gap:16px;align-items:start}
+  @media (max-width:1060px){.board{grid-template-columns:220px minmax(0,1fr)}.results{grid-column:1/-1;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}}
+  @media (max-width:720px){.board{grid-template-columns:1fr}}
+  .pane{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;min-width:0}
+  .grp{margin-bottom:16px}.grp:last-child{margin-bottom:0}
+  .grp h6{margin:0 0 8px;font:600 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{display:inline-flex;align-items:center;gap:6px;font:500 13px var(--sans);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 11px;cursor:grab;user-select:none;transition:background .15s,border-color .15s,color .15s}
+  .chip:hover{border-color:#b9c4cf;background:#fff}
+  .chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .chip[disabled]{opacity:.35;cursor:not-allowed}
+  .chip .d{width:7px;height:7px;border-radius:50%;flex:none}
+  .chip.on .d{box-shadow:0 0 0 2px #fff}
+  .chip.dragging{opacity:.4}
+  .hint{font-size:12px;color:var(--mute);margin-top:14px;line-height:1.5;border-top:1px solid var(--paper2);padding-top:10px}
+  .gen{display:flex;align-items:center;gap:10px}
+  .gen input{flex:1;accent-color:var(--navy)}
+  .gen b{font:700 14px var(--sans);color:var(--ink);min-width:24px;text-align:right}
+  .stage{position:relative;padding:0;overflow:hidden}
+  .stage-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .tag{font:500 12px var(--sans);padding:4px 10px;border-radius:999px;background:var(--paper2);color:var(--ink2)}
+  .tag b{font-weight:700;color:var(--ink)}
+  .stage svg{display:block;width:100%;height:auto;touch-action:none;user-select:none;background:
+     radial-gradient(circle,#e3e8ed 1px,transparent 1.2px) 0 0/22px 22px,#fff}
+  .stage.drop{box-shadow:inset 0 0 0 2px var(--accent)}
+  .stage.drop::after{content:"Drop to apply";position:absolute;top:58px;right:14px;font:600 12px var(--sans);color:#fff;background:var(--accent);padding:4px 10px;border-radius:999px}
+  .caption{padding:11px 14px 13px;font-size:14px;color:var(--ink2);border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+  .caption .tip{font-size:12px;color:var(--mute)}
+  .reset{font:600 12px var(--sans);color:var(--ink2);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 10px;cursor:pointer}
+  .reset:hover{background:#fff}
+  .results{display:flex;flex-direction:column;gap:12px;min-width:0}
+  .rc{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 16px 15px;position:relative;min-width:0;transition:border-color .15s,box-shadow .15s}
+  .rc.dragover{border-color:var(--accent);box-shadow:0 0 0 3px rgba(75,107,132,.14)}
+  .rc.lift{opacity:.45}
+  .rc .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+  .rc .hd span:first-child{font:600 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+  .handle{cursor:grab;color:#b4bec8;font-size:14px;line-height:1;user-select:none;padding:3px 5px;border-radius:6px;letter-spacing:-2px}
+  .handle:hover{background:var(--paper);color:var(--ink2)}
+  .lvl{display:flex;align-items:center;gap:14px}
+  .lvl .ring{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font:700 25px var(--serif);color:#fff;flex:none}
+  .lvl .t{font:600 15px var(--sans);color:var(--ink)}
+  .lvl .s{font-size:12.5px;color:var(--mute);margin-top:1px}
+  .steps{display:flex;gap:4px;height:30px;margin-top:8px;align-items:flex-end}
+  .steps div{flex:1;border-radius:4px}
+  .nums{display:grid;grid-template-columns:1fr 1fr;gap:12px 12px}
+  .num .k{font:600 10.5px var(--sans);color:var(--mute);letter-spacing:.08em;text-transform:uppercase;display:flex;gap:5px;align-items:center}
+  .num .v{font:600 23px var(--serif);color:var(--ink);line-height:1.25;font-variant-numeric:tabular-nums}
+  .num .v small{font:500 12px var(--sans);color:var(--mute)}
+  .q{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;border:1px solid #c3ccd5;font:600 9px var(--sans);color:var(--mute);cursor:help;letter-spacing:0}
+  .src{font-size:12px;color:var(--mute);line-height:1.5}
+  .bar{height:10px;border-radius:6px;background:var(--paper2);overflow:hidden;display:flex}
+  .tbl{width:100%;border-collapse:collapse;font-size:12.5px;color:var(--ink2)}
+  .tbl td{padding:4px 0;border-bottom:1px solid var(--paper2)}
+  .tbl td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  .tbl tr.sel td{font-weight:700;color:var(--ink)}
+  .foot{font-size:12.5px;color:var(--mute);margin-top:18px;line-height:1.6}
 </style>
 </head>
 <body>
-<div class="topbar"><div class="wrap">
+<div class="topbar"><div class="wrap" style="max-width:1240px">
   <a class="brand" href="../">RCI<span>.</span></a>
   <div class="nav-links"><a href="../">Project</a><a href="../blog/">Blog</a><a class="on" href="./">Playground</a><a href="https://github.com/lixuan27/RCI-official">Code</a></div>
 </div></div>
 
-<div class="wrap">
+<div class="pg-wrap">
   <div class="pg-head">
-    <div class="kicker">Interactive</div>
-    <h1>Design a group of agents and see where it lands on the equal-budget ladder</h1>
-    <p>Every option below is a component we measured in the paper. Pick what the agents see, what they exchange and how they organize. The page shows the group's accuracy, its token budget in independent agents (n<sub>B</sub>), pass@n<sub>B</sub> of independent agents at that budget, the margin, the ladder level, and how information moves. Options we did not measure are greyed out.</p>
+    <div><div class="kicker">Interactive</div><h1>Build a group of agents</h1><p>Drag a component onto the group, or click it. Drag the agents to rearrange them.</p></div>
+    <div class="seg" id="tabs">
+      <button data-t="build" class="on">Build a group</button><button data-t="org">Self-organization</button><button data-t="prior">Prior methods</button><button data-t="rec">Recursion</button>
+    </div>
   </div>
-
-  <div class="tabs" id="tabs">
-    <button class="tab on" data-t="build">Build a group</button>
-    <button class="tab" data-t="org">Self-organization</button>
-    <button class="tab" data-t="prior">Prior methods</button>
-    <button class="tab" data-t="rec">Recursion</button>
+  <div class="board">
+    <aside class="pane" id="palette"></aside>
+    <section class="pane stage" id="stage">
+      <div class="stage-top" id="tags"></div>
+      <svg id="cv" viewBox="0 0 520 340" aria-label="group of agents"></svg>
+      <div class="caption"><span id="cap"></span><span class="tip" id="tip"></span></div>
+    </section>
+    <aside class="results" id="results"></aside>
   </div>
-
-  <div class="grid">
-    <aside class="panel" id="controls"></aside>
-    <main class="panel" id="view"></main>
-  </div>
-  <p class="note" style="margin:14px 2px 40px">Levels: 1 = outperforms a single agent, 2 = outperforms the majority vote of n<sub>B</sub> independent agents, 3 = exceeds their pass@n<sub>B</sub> (one-sided paired tests at 0.025, clustered by question). pass@n<sub>B</sub> is shown as accuracy minus margin. "Not reported" marks quantities the paper does not give for that cell.</p>
+  <div class="foot">Every option is a configuration measured in the paper; greyed-out options were not measured. Ladder levels: 1 beats one agent, 2 beats the majority vote of n<sub>B</sub> independent agents, 3 beats their pass@n<sub>B</sub>.</div>
 </div>
 
 <script src="../assets/data.js"></script>
 <script>
 const D = window.RCI;
-const FAM = {Fact:"#4f7d69", Argue:"#7a5c93", Self:"#a6374a", Notes:"#6e8597", Design:"#b8955a", Solo:"#8a919a"};
-const FAMNAME = {Fact:"Evidence", Argue:"Debate", Self:"Emergent", Notes:"Self-prompted", Design:"Designed", Solo:"Independent"};
-const LVLC = ["#9aa3ab","#b8c2cc","#7f9bb0","#4f7d69"];
-const S = {tab:"build", setting:"split", proto:"ff", rounds:2, hint:true, scale:"Qwen3.8-27B", budget:"free", organizer:"so", famModel:"Qwen3.8-27B",
-           pmethod:"Multi-agent debate", pbench:"GPQA-Diamond", pn:8, rchain:"planbench", rgen:4};
+const FAM = {Fact:"#4f7d71", Argue:"#6f6590", Self:"#9a4a57", Notes:"#6c8496", Design:"#a08c63", Solo:"#8a95a0"};
+const AGC = ["#7fa08d","#7ea3c4","#9d90ad","#6e8597"];
+const S = {tab:"build", setting:"split", proto:"ff", debate:"deb2h", board:"bb", scale:"Qwen3.8-27B", budget:"free", organizer:"so",
+           famModel:"Qwen3.8-27B", pmethod:"Multi-agent debate", pbench:"GPQA-Diamond", pn:8, rchain:"planbench", rgen:4};
+const HOME = {a:[[130,95],[390,95],[130,255],[390,255]], c:[260,175]};
+let POS = JSON.parse(JSON.stringify(HOME));
+const MAXG = {planbench:4,t3k:5,t3:3,hanabi:6};
 const $ = s=>document.querySelector(s);
-const f3 = x=> x==null ? "—" : (x>=0?"":"−")+Math.abs(x).toFixed(3);
 const fs = x=> x==null ? "—" : (x>0?"+":x<0?"−":"")+Math.abs(x).toFixed(3);
+const esc = s=>String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;");
 
-function opt(label, on, attrs, color, disabled){
-  return `<button class="opt${on?' on':''}" ${attrs} ${disabled?'disabled':''}>${color?`<span class="dot" style="background:${color}"></span>`:''}${label}</button>`;
+/* ---------------- palette ---------------- */
+function chip(label, k, v, on, color, disabled, tip){
+  return `<button class="chip${on?' on':''}" ${disabled?'disabled':'draggable="true"'} data-k="${k}" data-v="${esc(v)}" title="${esc(disabled?'not measured in the paper':(tip||label))}">${color?`<span class="d" style="background:${color}"></span>`:''}${label}</button>`;
 }
-function bind(){ document.querySelectorAll('#controls [data-k]').forEach(b=>b.onclick=()=>{ const k=b.dataset.k, v=b.dataset.v; S[k]= isNaN(+v)||v===''?v:+v; if(k==='setting'){S.proto = ({split:'ff',corpus:'agg',same:'deb2'})[v];} if(k==='rchain'){S.rgen = ({planbench:4,t3k:5,t3:3,hanabi:6})[v] ?? 2;} render(); });
-  const r=$('#rgen'); if(r) r.oninput=()=>{S.rgen=+r.value; renderView();}; }
-
-/* ---------------- information-flow animation ---------------- */
-let anim=null;
-function flowSVG(kind){
-  // nodes: four agents on a square plus optional centre node
-  const W=420,H=250, A=[[90,60],[330,60],[90,190],[330,190]], C=[210,125];
-  let centre=null, edges=[], label="", packets="answer";
-  const all=(f)=>{for(let i=0;i<4;i++)for(let j=0;j<4;j++) if(i!==j) f(i,j);};
-  switch(kind){
-    case "debate": all((i,j)=>edges.push([A[i],A[j],FAM.Argue,"bubble"])); label="every agent reads every other agent's answer and reasons, round after round"; break;
-    case "board": centre={t:"board",c:FAM.Argue}; A.forEach(a=>{edges.push([a,C,FAM.Argue,"bubble"]); edges.push([C,a,FAM.Argue,"bubble"]);}); label="agents post conclusions to a shared board and read it back"; break;
-    case "board-facts": centre={t:"board",c:FAM.Fact}; A.forEach(a=>{edges.push([a,C,FAM.Fact,"fact"]); edges.push([C,a,FAM.Fact,"fact"]);}); label="only facts, verbatim, may be posted to the board"; break;
-    case "board-gated": centre={t:"board",c:FAM.Fact}; A.forEach(a=>{edges.push([a,C,FAM.Fact,"fact"]); edges.push([C,a,FAM.Fact,"fact"]);}); label="facts on the board; only members that hold every fact commit"; break;
-    case "context": centre={t:"system",c:FAM.Fact}; A.forEach(a=>edges.push([C,a,FAM.Fact,"fact"])); label="the system attaches every member's facts to the record"; break;
-    case "forward": all((i,j)=>edges.push([A[i],A[j],FAM.Fact,"fact"])); label="agents forward their private facts verbatim to each other"; break;
-    case "context+forward": centre={t:"system",c:FAM.Fact}; A.forEach(a=>edges.push([C,a,FAM.Fact,"fact"])); all((i,j)=>{ if((i+j)%2) edges.push([A[i],A[j],FAM.Fact,"fact"]);}); label="shared context plus verbatim forwarding"; break;
-    case "selforg": [1,2,3].forEach(i=>edges.push([A[i],A[0],FAM.Self,"coin"])); [1,2,3].forEach(i=>edges.push([A[i],A[0],FAM.Fact,"fact"])); label="members give their reading budget to one agent, which becomes a hub and reads every fact"; break;
-    case "selforg-plan": all((i,j)=>{ if(i<j) edges.push([A[i],A[j],FAM.Notes,"bubble"]);}); [1,2,3].forEach(i=>edges.push([A[i],A[0],FAM.Self,"coin"])); label="a planning round, then budget transfers to a hub"; break;
-    case "hub": [1,2,3].forEach(i=>edges.push([A[i],A[0],FAM.Design,"fact"])); edges.push([A[0],A[1],FAM.Design,"bubble"]); edges.push([A[0],A[2],FAM.Design,"bubble"]); edges.push([A[0],A[3],FAM.Design,"bubble"]); label="assigned roles: three members send facts to a designated hub, which posts the analysis"; break;
-    case "tree": case "relay": case "relay-plan": edges.push([A[3],A[2],kind==="tree"?FAM.Design:FAM.Self,"fact"]); edges.push([A[1],A[0],kind==="tree"?FAM.Design:FAM.Self,"fact"]); edges.push([A[2],A[0],kind==="tree"?FAM.Design:FAM.Self,"fact"]); label= kind==="tree"?"assigned two-level tree: leaves relay facts upward to the root":"under the budget cap no single hub can form; agents relay facts in two-level trees"; break;
-    case "prompt": [1,2,3].forEach(i=>edges.push([A[i],A[0],FAM.Notes,"fact"])); edges.push([A[0],A[1],FAM.Notes,"bubble"]);edges.push([A[0],A[2],FAM.Notes,"bubble"]);edges.push([A[0],A[3],FAM.Notes,"bubble"]); centre={t:"prompt",c:FAM.Notes,pos:[210,30]}; label="a prompt the model wrote for its own group describes a hub: post facts, give the reading budget to one agent"; break;
-    case "prompt-cap": edges.push([A[3],A[2],FAM.Notes,"fact"]); edges.push([A[1],A[0],FAM.Notes,"fact"]); edges.push([A[2],A[0],FAM.Notes,"fact"]); centre={t:"prompt",c:FAM.Notes,pos:[210,30]}; label="the self-written prompt under the budget cap organizes relays"; break;
-    case "aggregator": centre={t:"aggregator",c:FAM.Design}; A.forEach(a=>edges.push([a,C,FAM.Design,"fact"])); label="each agent reads part of the corpus and reports to a designed aggregator"; break;
-    case "noxfer": case "norelay": label="each agent reads one message and answers on its own"; break;
-    case "delm": centre={t:"shared ctx",c:"#6e8597"}; A.forEach(a=>{edges.push([a,C,"#6e8597","bubble"]);edges.push([C,a,"#6e8597","bubble"]);}); label="agents share one context with task decomposition and a queue of sub-tasks"; break;
-    case "orch": centre={t:"coordinator",c:"#9aa3ab"}; A.forEach(a=>{edges.push([C,a,"#9aa3ab","bubble"]);edges.push([a,C,"#9aa3ab","bubble"]);}); label="a coordinator creates and dispatches sub-agents"; break;
-    case "reviewer": centre={t:"reviewer",c:FAM.Fact}; A.forEach(a=>edges.push([a,C,FAM.Argue,"bubble"])); label="a reviewer selects among the members' answers posted to the board"; break;
-  }
-  const facts=["A","B","C","D"];
-  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">`;
-  edges.forEach(([p,q,c])=>{ s+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${c}" stroke-opacity=".22" stroke-width="1.5"/>`; });
-  if(centre){ const P=centre.pos||C; s+=`<rect x="${P[0]-46}" y="${P[1]-17}" width="92" height="34" rx="8" fill="#fff" stroke="${centre.c}" stroke-width="1.5"/><text x="${P[0]}" y="${P[1]+5}" text-anchor="middle" font-family="Inter" font-size="12.5" font-weight="600" fill="${centre.c}">${centre.t}</text>`; }
-  const colors=["#8BAA98","#8FB0CF","#A79BB5","#6E8597"];
-  A.forEach((a,i)=>{ s+=`<g transform="translate(${a[0]},${a[1]})"><circle r="25" fill="#fff" stroke="${colors[i]}" stroke-width="2"/><rect x="-11" y="-9" width="22" height="16" rx="4" fill="${colors[i]}"/><circle cx="-4.5" cy="-1" r="2.2" fill="#fff"/><circle cx="4.5" cy="-1" r="2.2" fill="#fff"/><rect x="-1" y="-15" width="2" height="6" fill="${colors[i]}"/>
-     <rect x="${i%2? 30:-56}" y="-9" width="24" height="18" rx="4" fill="#eef3f0" stroke="${FAM.Fact}" stroke-opacity=".5"/><text x="${i%2? 42:-44}" y="4" text-anchor="middle" font-family="Inter" font-size="11" font-weight="700" fill="${FAM.Fact}">${facts[i]}</text></g>`;});
-  s+=`<g id="pk"></g></svg>`;
-  return {svg:s, edges, label};
-}
-function startAnim(edges){
-  if(anim) cancelAnimationFrame(anim);
-  const g=document.getElementById('pk'); if(!g) return;
-  const t0=performance.now();
-  const step=(t)=>{
-    let h=""; const n=edges.length;
-    edges.forEach(([p,q,c,type],k)=>{
-      const per=2200, ph=((t-t0)/per + k/n*1.0)%1, x=p[0]+(q[0]-p[0])*ph, y=p[1]+(q[1]-p[1])*ph;
-      if(type==="fact") h+=`<rect x="${x-5}" y="${y-5}" width="10" height="10" rx="2" fill="${c}"/>`;
-      else if(type==="coin") h+=`<circle cx="${x}" cy="${y}" r="5.5" fill="#fff" stroke="${c}" stroke-width="2.2"/>`;
-      else h+=`<path d="M${x-7},${y-5} h14 a3,3 0 0 1 3,3 v5 a3,3 0 0 1 -3,3 h-8 l-4,4 v-4 h-2 a3,3 0 0 1 -3,-3 v-5 a3,3 0 0 1 3,-3z" fill="${c}" fill-opacity=".85"/>`;
-    });
-    g.innerHTML=h; anim=requestAnimationFrame(step);
-  };
-  anim=requestAnimationFrame(step);
-}
-
-/* ---------------- ladder gauge and budget strip ---------------- */
-function ladderSVG(level, descriptive){
-  const W=380,H=150, steps=[{t:"> one agent"},{t:"> majority vote"},{t:"> pass@n"}];
-  let s=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">`;
-  steps.forEach((st,i)=>{ const x=14+i*122, h=40+i*36, y=H-12-h, on=level>i;
-    s+=`<rect x="${x}" y="${y}" width="116" height="${h}" rx="6" fill="${on?LVLC[i+1]:'#eef1f4'}"/>
-        <text x="${x+10}" y="${H-22}" font-family="Source Serif 4" font-size="22" font-weight="700" fill="${on?'#fff':'#9aa3ab'}">${i+1}</text>
-        <text x="${x+30}" y="${H-24}" font-family="Inter" font-size="11.5" font-weight="600" fill="${on?'#fff':'#9aa3ab'}">${st.t}</text>`; });
-  if(level>0){ const i=level-1, x=14+i*122+58, y=H-12-(40+i*36)-14;
-    s+=`<g><circle cx="${x}" cy="${y}" r="9" fill="${level===3?FAM.Fact:'#25374f'}"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="Inter">${level}</text></g>`; }
-  else s+=`<text x="${W/2}" y="30" text-anchor="middle" font-family="Inter" font-size="13" fill="#a6374a" font-weight="600">level 0: does not beat one agent</text>`;
-  if(descriptive) s+=`<text x="${W-6}" y="16" text-anchor="end" font-family="Inter" font-size="11" fill="#6b7280">descriptive comparison</text>`;
-  return s+`</svg>`;
-}
-function budgetSVG(nB){
-  if(nB==null) return `<div class="note">Budget not reported for this cell.</div>`;
-  const W=380, per=Math.min(18, 340/Math.max(nB,4)); let s=`<svg viewBox="0 0 ${W} 86" style="width:100%;height:auto">`;
-  s+=`<text x="0" y="14" font-family="Inter" font-size="11.5" fill="#6b7280">group: 4 agents</text>`;
-  for(let i=0;i<4;i++) s+=`<rect x="${i*20}" y="22" width="15" height="15" rx="3" fill="${["#8BAA98","#8FB0CF","#A79BB5","#6E8597"][i]}"/>`;
-  s+=`<text x="0" y="58" font-family="Inter" font-size="11.5" fill="#6b7280">the same completion tokens pay for ${nB.toFixed(1)} independent agents</text>`;
-  const full=Math.floor(nB); for(let i=0;i<Math.ceil(nB);i++){ const w=(i<full?1:nB-full)*per*0.85; s+=`<rect x="${i*per}" y="66" width="${Math.max(w,1)}" height="14" rx="3" fill="#9aa3ab"/>`; }
-  return s+`</svg>`;
-}
-function accBars(acc, margin){
-  if(acc==null && margin==null) return '';
-  const T = (acc!=null && margin!=null) ? acc-margin : null, W=380, X=v=>20+v*340;
-  let s=`<svg viewBox="0 0 ${W} 74" style="width:100%;height:auto"><line x1="20" y1="58" x2="360" y2="58" stroke="#cbd5e1"/>`;
-  [0,0.5,1].forEach(v=>s+=`<text x="${X(v)}" y="72" text-anchor="middle" font-size="10.5" fill="#6b7280" font-family="Inter">${v}</text>`);
-  if(acc!=null) s+=`<rect x="20" y="14" width="${X(acc)-20}" height="16" rx="3" fill="${margin>0?FAM.Fact:'#a6374a'}"/><text x="${acc>0.72?X(acc)-6:X(acc)+6}" y="26.5" text-anchor="${acc>0.72?'end':'start'}" font-size="12" font-family="Inter" font-weight="600" fill="${acc>0.72?'#fff':'#1f2a37'}">group ${acc.toFixed(3)}</text>`;
-  if(T!=null) s+=`<line x1="${X(T)}" y1="8" x2="${X(T)}" y2="50" stroke="#25374f" stroke-width="2.5"/><text x="${X(T)}" y="46" text-anchor="${T>0.75?'end':'start'}" dx="${T>0.75?-5:5}" font-size="11.5" font-family="Inter" fill="#25374f">pass@n B ${T.toFixed(3)}</text>`;
-  return s+`</svg>`;
-}
-function lvlBadge(l){ return `<span class="lvl-badge" style="background:${l===3?FAM.Fact:l===0?'#a6374a':'#25374f'}">level ${l}</span>`; }
-
-/* ---------------- controls ---------------- */
-function renderControls(){
+function grp(title, inner){ return `<div class="grp"><h6>${title}</h6><div class="chips">${inner}</div></div>`; }
+const ORGLABEL = {none:"No transfer",so:"Self-organized",sop:"+ planning round",rules:"Prompt from rules",evolved:"Evolved prompt",hub:"Designed hub",tree:"Designed tree"};
+function palette(){
   let h="";
   if(S.tab==="build"){
-    h+=`<div class="ctl"><span class="lab">What the agents see</span><div class="opts col">`+
-      ["split","corpus","same"].map(k=>opt(`<b>${D.settings[k].title}</b><br><span class="note">${D.settings[k].bench} · ${D.settings[k].model}</span>`, S.setting===k, `data-k="setting" data-v="${k}"`)).join("")+`</div></div>`;
-    const list = S.setting==="split" ? [["bb","Blackboard","Argue"],["deb","Debate","Argue"],["sc","Shared context","Fact"],["ff","Fact forwarding","Fact"],["scff","Shared context + forwarding","Fact"],["fobb","Facts-only blackboard","Fact"],["gbb","Gated blackboard","Fact"]]
-               : S.setting==="corpus" ? D.corpus.map(p=>[p.id,p.name,p.fam]) : D.same.map(p=>[p.id,p.name,p.fam]);
-    const cur = S.setting==="split" ? (S.proto.startsWith("deb")?"deb":S.proto.startsWith("bb")?"bb":S.proto) : S.proto;
-    h+=`<div class="ctl"><span class="lab">What they exchange</span><div class="opts">`+list.map(([id,n,f])=>opt(n, cur===id, `data-k="proto" data-v="${id==='deb'?(S.hint?(S.rounds===3?'deb3h':'deb2h'):'deb2'):id==='bb'?(S.hint?'bbh':'bb'):id}"`, FAM[f])).join("")+`</div></div>`;
-    if(S.setting==="split" && (cur==="deb"||cur==="bb")){
-      if(cur==="deb"){ h+=`<div class="ctl"><span class="lab">Rounds</span><div class="opts">`+[2,3].map(r=>opt(`${r} rounds`, S.rounds===r, `onclick="S.rounds=${r};S.proto=S.hint?(${r}===3?'deb3h':'deb2h'):'deb2';render()"`, null, r===3 && !S.hint)).join("")+`</div></div>`; }
-      h+=`<div class="ctl"><span class="lab">Hint that facts are split</span><div class="opts">`+[[false,"off"],[true,"on"]].map(([v,t])=>opt(t, S.hint===v, `onclick="S.hint=${v};S.proto='${cur}'==='deb'?(${v}?(S.rounds===3?'deb3h':'deb2h'):(S.rounds=2,'deb2')):(${v}?'bbh':'bb');render()"`, null, cur==='deb' && !v && S.rounds===3)).join("")+`</div><div class="note" style="margin-top:6px">${cur==='deb'?'Three rounds were measured only with the hint.':''}</div></div>`;
+    h+=grp("What agents see", [["split","Split facts"],["corpus","Shared corpus"],["same","Same question"]].map(([k,t])=>chip(t,"setting",k,S.setting===k,null,false,D.settings[k].bench)).join(""));
+    if(S.setting==="split"){
+      const ex=[["bb","Blackboard","Argue"],["deb","Debate","Argue"],["sc","Shared context","Fact"],["ff","Fact forwarding","Fact"],["scff","Context + forwarding","Fact"],["fobb","Facts-only board","Fact"],["gbb","Gated board","Fact"]];
+      const cur=S.proto.startsWith("deb")?"deb":S.proto.startsWith("bb")?"bb":S.proto;
+      h+=grp("Exchange", ex.map(([id,t,f])=>chip(t,"proto",id,cur===id,FAM[f])).join(""));
+      if(cur==="deb") h+=grp("Debate", [["deb2","2 rounds"],["deb2h","2 rounds + hint"],["deb3h","3 rounds + hint"],["deb3","3 rounds"]].map(([id,t])=>chip(t,"debate",id,S.proto===id,null,id==="deb3")).join(""));
+      if(cur==="bb") h+=grp("Hint", [["bb","No hint"],["bbh","With hint"]].map(([id,t])=>chip(t,"board",id,S.proto===id)).join(""));
+      if(S.proto==="ff") h+=grp("Model", D.scales.map(x=>chip(x.model.replace("Qwen",""),"scale",x.model,S.scale===x.model)).join(""));
+    } else {
+      h+=grp("Exchange", D[S.setting].map(p=>chip(p.name,"proto",p.id,S.proto===p.id,FAM[p.fam])).join(""));
     }
-    if(S.setting==="split" && S.proto==="ff"){
-      h+=`<div class="ctl"><span class="lab">Model scale</span><div class="opts">`+D.scales.map(x=>opt(x.model, S.scale===x.model, `onclick="S.scale='${x.model}';render()"`)).join("")+`</div></div>`;
-    }
-    h+=`<div class="note">${D.settings[S.setting].blurb}</div>`;
   }
   if(S.tab==="org"){
-    h+=`<div class="ctl"><span class="lab">Reading budget</span><div class="opts">`+[["free","Free: members may give it away"],["cap","Capped: no single hub can form"]].map(([k,t])=>opt(t, S.budget===k, `data-k="budget" data-v="${k}"`)).join("")+`</div></div>`;
-    const L=D.org[S.budget];
-    h+=`<div class="ctl"><span class="lab">Who organizes the group</span><div class="opts col">`+L.map(p=>opt(p.name, S.organizer===p.id, `data-k="organizer" data-v="${p.id}"`, FAM[p.fam])).join("")+`</div></div>`;
-    h+=`<div class="ctl"><span class="lab">Do other models form hubs? (free budget)</span><div class="opts">`+D.org.families.map(x=>opt(x.model, S.famModel===x.model, `onclick="S.famModel='${x.model}';render()"`)).join("")+`</div></div>`;
-    h+=`<div class="note">${D.settings.org.blurb} Each agent can read one message.</div>`;
+    h+=grp("Reading budget", [["free","Free"],["cap","Capped"]].map(([k,t])=>chip(t,"budget",k,S.budget===k,null,false,k==="free"?"members may give their whole budget away":"each member keeps part of its budget")).join(""));
+    h+=grp("Organizer", D.org[S.budget].map(p=>chip(ORGLABEL[p.id]||p.name,"organizer",p.id,S.organizer===p.id,FAM[p.fam],false,p.name)).join(""));
+    h+=grp("Model family", D.org.families.map(x=>chip(x.model.replace("Qwen",""),"famModel",x.model,S.famModel===x.model)).join(""));
   }
   if(S.tab==="prior"){
     const rows=D.prior.rows;
-    h+=`<div class="ctl"><span class="lab">Method (Qwen3.5-9B members)</span><div class="opts col">`+D.prior.methods.map(m=>opt(m, S.pmethod===m, `onclick="S.pmethod='${m}';const r=D.prior.rows.filter(x=>x[0]===S.pmethod);if(!r.some(x=>x[1]===S.pbench))S.pbench=r[0][1];const n=r.filter(x=>x[1]===S.pbench);if(!n.some(x=>x[2]===S.pn))S.pn=n[0][2];render()"`)).join("")+`</div></div>`;
+    h+=grp("Method", D.prior.methods.map(m=>chip(m.replace("Multi-agent debate","Debate"),"pmethod",m,S.pmethod===m)).join(""));
     const benches=[...new Set(rows.map(r=>r[1]))];
-    h+=`<div class="ctl"><span class="lab">Benchmark (shared information)</span><div class="opts">`+benches.map(b=>{const ok=rows.some(r=>r[0]===S.pmethod&&r[1]===b); return opt(b, S.pbench===b, `onclick="S.pbench='${b}';const n=D.prior.rows.filter(x=>x[0]===S.pmethod&&x[1]===S.pbench);if(!n.some(x=>x[2]===S.pn))S.pn=n[0][2];render()"`, null, !ok);}).join("")+`</div></div>`;
+    h+=grp("Benchmark", benches.map(b=>chip(b,"pbench",b,S.pbench===b,null,!rows.some(r=>r[0]===S.pmethod&&r[1]===b))).join(""));
     const ns=rows.filter(r=>r[0]===S.pmethod&&r[1]===S.pbench).map(r=>r[2]);
-    h+=`<div class="ctl"><span class="lab">Group size N</span><div class="opts">`+[4,8,16,null].map(n=>opt(n==null?"self-chosen":n, S.pn===n, `onclick="S.pn=${n};render()"`, null, !ns.includes(n))).join("")+`</div></div>`;
-    h+=`<div class="note">Every agent sees the whole task. The comparison is accuracy minus the majority vote of independent agents at the same completion-token budget (Vote@B).</div>`;
+    h+=grp("Group size", [4,8,16,null].map(n=>chip(n==null?"Auto":"N = "+n,"pn",n==null?"null":n,S.pn===n,null,!ns.includes(n))).join(""));
   }
   if(S.tab==="rec"){
-    const chains=[["planbench","PlanBench (4 generations)"],["t3k","HiddenBench, chain T3k (5 generations)"],["t3","HiddenBench, chain T3 vs. self-training (3)"],["hanabi","Hanabi (6 generations)"],["sb0","SplitBench, 9B, 3-step debate"],["sb1","SplitBench, 27B, 3-step debate"],["sb2","SplitBench, 9B, standard debate"],["sb3","SplitBench, 4B, standard debate"]];
-    h+=`<div class="ctl"><span class="lab">Chain</span><div class="opts col">`+chains.map(([k,t])=>opt(t, S.rchain===k, `data-k="rchain" data-v="${k}"`)).join("")+`</div></div>`;
-    const maxg=({planbench:4,t3k:5,t3:3,hanabi:6})[S.rchain] ?? 2;
-    h+=`<div class="ctl"><span class="lab">Generation: G${S.rgen}</span><input id="rgen" type="range" min="0" max="${maxg}" step="1" value="${Math.min(S.rgen,maxg)}"></div>`;
-    h+=`<div class="note">Each generation trains on its predecessor's verified outputs, without labels or a teacher, and is released only when it outperforms its predecessor on fresh tasks.</div>`;
+    const ch=[["planbench","PlanBench"],["t3k","HiddenBench"],["t3","Collective vs. solo"],["hanabi","Hanabi"],["sb0","SplitBench 9B"],["sb1","SplitBench 27B"],["sb2","SplitBench 9B, standard"],["sb3","SplitBench 4B"]];
+    h+=grp("Chain", ch.map(([k,t])=>chip(t,"rchain",k,S.rchain===k)).join(""));
+    const maxg=MAXG[S.rchain] ?? 2, g=Math.min(S.rgen,maxg);
+    h+=`<div class="grp"><h6>Generation</h6><div class="gen"><input id="rgen" type="range" min="0" max="${maxg}" value="${g}" aria-label="generation"><b id="rgl">G${g}</b></div></div>`;
   }
-  $('#controls').innerHTML=h; bind();
+  h+=`<div class="hint">${S.tab==="rec"?"Drag the slider to step through the generations.":"Drag a chip onto the group in the middle, or click it."}</div>`;
+  $('#palette').innerHTML=h;
+  document.querySelectorAll('#palette .chip').forEach(c=>{
+    c.onclick=()=>apply(c.dataset.k,c.dataset.v);
+    c.ondragstart=e=>{c.classList.add('dragging'); e.dataTransfer.effectAllowed='copy'; e.dataTransfer.setData('application/x-rci',JSON.stringify({k:c.dataset.k,v:c.dataset.v})); e.dataTransfer.setData('text/plain',c.textContent);};
+    c.ondragend=()=>{c.classList.remove('dragging'); stage.classList.remove('drop');};
+  });
+  const r=$('#rgen'); if(r) r.oninput=()=>{S.rgen=+r.value; $('#rgl').textContent='G'+r.value; renderAll(false);};
+}
+function apply(k,v){
+  if(v==="null") v=null; else if(k==="pn") v=+v;
+  if(k==="setting"){ S.setting=v; S.proto=({split:"ff",corpus:"agg",same:"deb2"})[v]; }
+  else if(k==="proto"){ S.proto = v==="deb"?S.debate : v==="bb"?S.board : v; }
+  else if(k==="debate"){ S.debate=v; S.proto=v; }
+  else if(k==="board"){ S.board=v; S.proto=v; }
+  else if(k==="budget"){ S.budget=v; if(!D.org[v].some(x=>x.id===S.organizer)) S.organizer="so"; }
+  else if(k==="pmethod"){ S.pmethod=v; const r=D.prior.rows.filter(x=>x[0]===v); if(!r.some(x=>x[1]===S.pbench)) S.pbench=r[0][1]; const n=r.filter(x=>x[1]===S.pbench); if(!n.some(x=>x[2]===S.pn)) S.pn=n[0][2]; }
+  else if(k==="pbench"){ S.pbench=v; const n=D.prior.rows.filter(x=>x[0]===S.pmethod&&x[1]===v); if(!n.some(x=>x[2]===S.pn)) S.pn=n[0][2]; }
+  else if(k==="rchain"){ S.rchain=v; S.rgen=MAXG[v] ?? 2; }
+  else S[k]=v;
+  renderAll(true);
 }
 
-/* ---------------- view ---------------- */
-function cellView(p, extra){
-  const fl=flowSVG(p.flow);
-  const T = (p.acc!=null && p.margin!=null) ? p.acc-p.margin : null;
-  let v=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
-      <div><div class="kicker" style="color:${FAM[p.fam]}">${FAMNAME[p.fam]}</div><div style="font:700 22px var(--serif);color:var(--navy)">${p.name}${p.hint?' <span class="pill">+ hint</span>':''}${p.rounds?` <span class="pill">${p.rounds} rounds</span>`:''}</div></div>
-      ${lvlBadge(p.level)}</div>
-    <div class="metrics">
-      <div class="m"><div class="k">Accuracy</div><div class="v">${p.acc==null?'<small>not reported</small>':p.acc.toFixed(3)}</div><div class="s">group's committed answer</div></div>
-      <div class="m"><div class="k">Budget n<sub>B</sub></div><div class="v">${p.nB==null?'<small>not reported</small>':p.nB.toFixed(1)}<small> agents</small></div><div class="s">completion tokens / one agent</div></div>
-      <div class="m"><div class="k">pass@n<sub>B</sub></div><div class="v">${T==null?'<small>—</small>':T.toFixed(3)}</div><div class="s">any of n<sub>B</sub> independent agents right</div></div>
-      <div class="m"><div class="k">Margin</div><div class="v" style="color:${p.margin>0?FAM.Fact:'#a6374a'}">${fs(p.margin)}</div><div class="s">accuracy − pass@n<sub>B</sub></div></div>
-    </div>
-    <div class="row2">
-      <div class="box"><h5>How information moves</h5>${fl.svg}<div class="note">${fl.label}</div></div>
-      <div class="box"><h5>Equal-budget ladder</h5>${ladderSVG(p.level, p.descriptive)}${accBars(p.acc,p.margin)}<h5 style="margin-top:8px">Token budget</h5>${budgetSVG(p.nB)}</div>
-    </div>`;
-  v += extra||"";
-  v += `<div class="src">Source: ${p.src}${p.tasks?` · ${p.tasks} tasks`:''}${p.beforeMTC?' · level 3 holds before multiple-testing correction':''}${p.descriptive?' · prompt rows use a pool from another batch, so their level is descriptive':''}</div>`;
-  return {html:v, edges:fl.edges};
-}
-function verdict(p){
-  if(p.margin==null) return "";
-  let t = p.level===3 ? `This group produces correct answers that <b>no selection among ${p.nB?p.nB.toFixed(1):'its budget of'} independent agents</b> could reach at the same cost.`
-        : p.level===2 ? `This group outperforms the majority vote at equal budget, but <b>does not exceed pass@n<sub>B</sub></b>: a selector over independent answers could still match it.`
-        : p.level===1 ? `It outperforms a single agent only.` : `At equal budget it <b>does not outperform even a single agent</b>.`;
-  return `<div class="verdict">${t}</div>`;
-}
-
-function renderView(){
-  let out={html:"",edges:[]};
+/* ---------------- current configuration ---------------- */
+function current(){
   if(S.tab==="build"){
-    let p;
-    if(S.setting==="split"){ p=D.split.find(x=>x.id===S.proto);
-      if(S.proto==="ff"){ const sc=D.scales.find(x=>x.model===S.scale); p=Object.assign({},p,{acc:sc.acc,nB:sc.nB,margin:sc.margin,level:sc.level,src:sc.src,name:`Fact forwarding, ${sc.model}`}); } }
-    else p=D[S.setting].find(x=>x.id===S.proto);
-    let extra=verdict(p);
-    if(S.setting==="split") extra+=`<div class="note" style="margin-top:8px">Reference: one agent given every fact, at the same budget, reaches ${D.fullInfoAgent.toFixed(3)} (Table 2).</div>`;
-    out=cellView(p, extra);
+    let p = S.setting==="split" ? D.split.find(x=>x.id===S.proto) : D[S.setting].find(x=>x.id===S.proto);
+    if(S.setting==="split" && S.proto==="ff"){ const sc=D.scales.find(x=>x.model===S.scale); p=Object.assign({},p,sc,{name:"Fact forwarding"}); }
+    const model = S.setting==="split"&&S.proto==="ff" ? S.scale : D.settings[S.setting].model.split(",")[0];
+    return {kind:"cell", p, facts:S.setting==="split", doc:S.setting!=="split",
+      tags:[D.settings[S.setting].title, p.name+(p.rounds?` · ${p.rounds} rounds`:"")+(p.hint?" · hint":""), model, D.settings[S.setting].bench.split(",")[0]]};
   }
   if(S.tab==="org"){
-    const p=D.org[S.budget].find(x=>x.id===S.organizer) || D.org[S.budget][0]; S.organizer=p.id;
-    let extra=verdict(p);
-    if(p.share){ const w=p.share.wait, c=p.share.coord;
-      extra+=`<div class="box" style="margin-top:12px"><h5>Where the tokens go (${p.share.src}${p.share.note?', '+p.share.note:''})</h5>
-      <svg viewBox="0 0 380 46" style="width:100%;height:auto"><rect x="0" y="6" width="${380*c}" height="18" rx="4" fill="#a6374a" fill-opacity=".75"/><rect x="${380*c}" y="6" width="${380*(1-c)}" height="18" rx="4" fill="#4f7d69" fill-opacity=".8"/>
-      <rect x="0" y="6" width="${380*w}" height="18" rx="4" fill="#7a5c93" fill-opacity=".85"/>
-      <text x="0" y="40" font-size="11.5" font-family="Inter" fill="#6b7280">waiting ${Math.round(w*100)}% · coordination in total ${Math.round(c*100)}% · work ${Math.round((1-c)*100)}%</text></svg></div>`; }
-    const fm=D.org.families.find(x=>x.model===S.famModel);
-    extra+=`<div class="box" style="margin-top:12px"><h5>Hubs across model families (free budget, 65 tasks, Table 3b)</h5><table class="mini"><tr><th>Model</th><th>records with a hub</th><th>with a transfer</th><th>accuracy gain from transfers</th></tr>`+
-      D.org.families.map(x=>`<tr class="${x.model===fm.model?'sel':''}"><td>${x.model}</td><td>${x.hubs.toFixed(3)}</td><td>${x.transfers.toFixed(3)}</td><td>${fs(x.gain)}</td></tr>`).join("")+`</table></div>`;
-    out=cellView(p, extra);
+    const p=D.org[S.budget].find(x=>x.id===S.organizer)||D.org[S.budget][0];
+    return {kind:"cell", p, facts:true, tags:[S.budget==="free"?"Free budget":"Capped budget", p.name, "Qwen3.8-27B", p.tasks+" tasks"]};
   }
   if(S.tab==="prior"){
     const r=D.prior.rows.find(x=>x[0]===S.pmethod&&x[1]===S.pbench&&x[2]===S.pn);
-    const kind = S.pmethod.startsWith("Multi")?"debate": S.pmethod==="DeLM"?"delm": S.pmethod==="AOrchestra"?"orch": S.pmethod.includes("reviewer")?"reviewer":"board";
-    const fl=flowSVG(kind); const v=r[3], se=r[4], lo=v-1.96*se, hi=v+1.96*se;
-    const X=x=>190+x*320; let ci=`<svg viewBox="0 0 380 90" style="width:100%;height:auto"><rect x="${X(-0.55)}" y="18" width="${X(0)-X(-0.55)}" height="44" fill="#f3f5f7"/><line x1="${X(0)}" y1="10" x2="${X(0)}" y2="70" stroke="#25374f" stroke-dasharray="4 3"/>
-      <line x1="${X(lo)}" y1="40" x2="${X(hi)}" y2="40" stroke="#7a5c93" stroke-width="2"/><circle cx="${X(v)}" cy="40" r="6" fill="${hi<0?'#a6374a':lo>0?'#4f7d69':'#7a5c93'}"/>
-      <text x="${X(0)}" y="84" text-anchor="middle" font-size="11" font-family="Inter" fill="#25374f">equal-budget vote</text>
-      ${[-0.5,-0.25,0.25].map(t=>`<text x="${X(t)}" y="84" text-anchor="middle" font-size="10.5" font-family="Inter" fill="#6b7280">${t>0?'+':''}${t}</text>`).join("")}</svg>`;
-    const word = hi<0 ? `<b>below</b> the equal-budget vote` : lo>0 ? `<b>above</b> the equal-budget vote` : `not distinguishable from the equal-budget vote`;
-    out.html=`<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div class="kicker">Shared information · Qwen3.5-9B</div><div style="font:700 22px var(--serif);color:var(--navy)">${S.pmethod}</div><div class="note">${S.pbench}${S.pn?` · N = ${S.pn}`:' · group size set by the method'}</div></div><span class="lvl-badge" style="background:${lo>0?FAM.Fact:hi<0?'#a6374a':'#7a5c93'}">${lo>0?'level 2':hi<0?'below the vote':'≈ vote'}</span></div>
-      <div class="row2"><div class="box"><h5>How information moves</h5>${fl.svg}<div class="note">${fl.label}</div></div>
-      <div class="box"><h5>Accuracy minus Vote@B (95% interval)</h5><div class="big">${fs(v)} <small class="muted" style="font-size:14px">± ${(1.96*se).toFixed(3)}</small></div>${ci}</div></div>
-      <div class="verdict">${S.pmethod} is ${word} on ${S.pbench}. ${S.pmethod.includes('27B reviewer')?'A stronger reviewer that selects among the members\' answers is the only design above the vote on all four benchmarks it was run on.':'With shared information, a message mostly repeats what its reader already knows, so the extra tokens rarely beat simply voting.'}</div>
-      <div class="src">Source: Table 12</div>`;
-    out.edges=fl.edges;
+    const flow = S.pmethod.startsWith("Multi")?"debate": S.pmethod==="DeLM"?"delm": S.pmethod==="AOrchestra"?"orch": S.pmethod.includes("27B")?"reviewer27": S.pmethod.includes("9B")?"reviewer9":"board";
+    return {kind:"prior", r, flow, doc:true, tags:[S.pbench, S.pmethod, S.pn?("N = "+S.pn):"auto size", "Qwen3.5-9B"]};
   }
-  if(S.tab==="rec"){ out={html:recView(), edges:[]}; }
-  $('#view').innerHTML=out.html; startAnim(out.edges);
+  return {kind:"rec"};
 }
 
-function lineChart(series, opts){
-  const W=600,H=260,L=48,R=16,T=16,B=36, n=opts.n, ymin=opts.ymin, ymax=opts.ymax;
-  const X=i=>L+i*(W-L-R)/(n-1), Y=v=>T+(1-(v-ymin)/(ymax-ymin))*(H-T-B);
-  let s=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">`;
-  opts.ticks.forEach(t=>{ s+=`<line x1="${L}" x2="${W-R}" y1="${Y(t)}" y2="${Y(t)}" stroke="#eef1f4"/><text x="${L-8}" y="${Y(t)+4}" text-anchor="end" font-size="11" font-family="Inter" fill="#6b7280">${t}</text>`; });
-  for(let i=0;i<n;i++) s+=`<text x="${X(i)}" y="${H-14}" text-anchor="middle" font-size="11.5" font-family="Inter" fill="#4b5563">G${i}</text>`;
-  s+=`<rect x="${X(opts.sel)-14}" y="${T}" width="28" height="${H-T-B}" fill="#25374f" fill-opacity=".06" rx="6"/>`;
-  series.forEach(se=>{ const pts=se.v.map((v,i)=>v==null?null:[X(i),Y(v)]).filter(Boolean);
-    s+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${se.c}" stroke-width="${se.w||2.4}" ${se.dash?`stroke-dasharray="${se.dash}"`:''}/>`;
-    se.v.forEach((v,i)=>{ if(v!=null) s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${i===opts.sel?5.5:3.2}" fill="${i===opts.sel?se.c:'#fff'}" stroke="${se.c}" stroke-width="2"/>`; }); });
-  let lx=L; s+=`<g font-family="Inter" font-size="11.5">`; series.forEach(se=>{ s+=`<line x1="${lx}" x2="${lx+18}" y1="${T+4}" y2="${T+4}" stroke="${se.c}" stroke-width="2.4" ${se.dash?`stroke-dasharray="${se.dash}"`:''}/><text x="${lx+22}" y="${T+8}" fill="#1f2a37">${se.name}</text>`; lx+=30+se.name.length*6.2; }); s+=`</g>`;
-  return s+`</svg>`;
+/* ---------------- canvas: draggable agents and live message flow ---------------- */
+const CENTRE = {board:"Blackboard","board-facts":"Facts-only board","board-gated":"Gated board",context:"Shared context","context+forward":"Shared context",
+  prompt:"Self-written prompt","prompt-cap":"Self-written prompt",aggregator:"Aggregator",delm:"Shared context",orch:"Coordinator",reviewer27:"27B reviewer",reviewer9:"9B reviewer"};
+function flowEdges(kind){
+  const E=[], all=(f)=>{for(let i=0;i<4;i++)for(let j=0;j<4;j++) if(i!==j) f(i,j);};
+  const c="c";
+  switch(kind){
+    case "debate": all((i,j)=>E.push([i,j,FAM.Argue,"msg"])); break;
+    case "board": for(let i=0;i<4;i++){E.push([i,c,FAM.Argue,"msg"]);E.push([c,i,FAM.Argue,"msg"]);} break;
+    case "board-facts": case "board-gated": for(let i=0;i<4;i++){E.push([i,c,FAM.Fact,"fact"]);E.push([c,i,FAM.Fact,"fact"]);} break;
+    case "context": for(let i=0;i<4;i++) E.push([c,i,FAM.Fact,"fact"]); break;
+    case "forward": all((i,j)=>E.push([i,j,FAM.Fact,"fact"])); break;
+    case "context+forward": for(let i=0;i<4;i++) E.push([c,i,FAM.Fact,"fact"]); all((i,j)=>{if((i+j)%2)E.push([i,j,FAM.Fact,"fact"]);}); break;
+    case "selforg": [1,2,3].forEach(i=>{E.push([i,0,FAM.Self,"coin"]);E.push([i,0,FAM.Fact,"fact"]);}); break;
+    case "selforg-plan": all((i,j)=>{if(i<j)E.push([i,j,FAM.Notes,"msg"]);}); [1,2,3].forEach(i=>E.push([i,0,FAM.Self,"coin"])); break;
+    case "hub": [1,2,3].forEach(i=>{E.push([i,0,FAM.Design,"fact"]);E.push([0,i,FAM.Design,"msg"]);}); break;
+    case "tree": case "relay": case "relay-plan": { const col=kind==="tree"?FAM.Design:FAM.Self; E.push([3,2,col,"fact"]);E.push([1,0,col,"fact"]);E.push([2,0,col,"fact"]); break; }
+    case "prompt": [1,2,3].forEach(i=>{E.push([i,0,FAM.Notes,"fact"]);E.push([0,i,FAM.Notes,"msg"]);}); for(let i=0;i<4;i++) E.push([c,i,FAM.Notes,"doc"]); break;
+    case "prompt-cap": E.push([3,2,FAM.Notes,"fact"]);E.push([1,0,FAM.Notes,"fact"]);E.push([2,0,FAM.Notes,"fact"]); for(let i=0;i<4;i++) E.push([c,i,FAM.Notes,"doc"]); break;
+    case "aggregator": for(let i=0;i<4;i++) E.push([i,c,FAM.Design,"fact"]); break;
+    case "delm": for(let i=0;i<4;i++){E.push([i,c,FAM.Notes,"msg"]);E.push([c,i,FAM.Notes,"msg"]);} break;
+    case "orch": for(let i=0;i<4;i++){E.push([c,i,"#8a95a0","msg"]);E.push([i,c,"#8a95a0","msg"]);} break;
+    case "reviewer27": case "reviewer9": for(let i=0;i<4;i++){E.push([i,c,FAM.Argue,"msg"]);E.push([c,i,FAM.Argue,"msg"]);} break;
+  }
+  return E;
 }
-function recView(){
-  const g=S.rgen; let h="", note="";
-  if(S.rchain==="planbench"){ const P=D.planbench; const gg=Math.min(g,4);
-    h+=lineChart([{name:"group",v:P.group,c:"#3d5f7e"},{name:"any of four (oracle)",v:P.anyOfFour,c:"#9fb6c9",dash:"3 3",w:1.8},{name:"one agent, final plan",v:P.final,c:"#b8955a"},{name:"calls truncated",v:P.truncated,c:"#9aa3ab",dash:"5 4",w:1.6}],{n:5,ymin:0,ymax:1,ticks:[0,0.2,0.4,0.6,0.8,1],sel:gg});
-    const d=P.d[gg];
-    note=`<div class="metrics" style="margin-top:10px"><div class="m"><div class="k">Group</div><div class="v">${P.group[gg].toFixed(3)}</div></div><div class="m"><div class="k">Gain d vs. G${gg-1}</div><div class="v">${d?'+'+d[0].toFixed(3):'—'}</div><div class="s">${d?'SE '+d[1].toFixed(3)+' · fresh 800-problem slice':'base model'}</div></div><div class="m"><div class="k">One agent, final</div><div class="v">${P.final[gg].toFixed(3)}</div></div><div class="m"><div class="k">Tokens per call</div><div class="v">${P.tokensPerCall[gg].toLocaleString()}</div></div></div>
-      <div class="verdict">Four Qwen3.5-9B agents write Blocksworld plans; a plan simulator accepts plans without answer labels. All four rounds release a generation. The single agent improves too, and calls hit the 8,192-token cap less often (Table 6, Figure 10a).</div>`; }
-  if(S.rchain==="t3k"){ const Hb=D.hiddenbench; const gg=Math.min(g,5);
-    h+=lineChart([{name:"group (T3k)",v:Hb.t3k,c:"#8b3344"},{name:"one agent after the debate",v:Hb.t3kOne,c:"#c58a96",dash:"3 3",w:1.8}],{n:6,ymin:0.4,ymax:1,ticks:[0.4,0.6,0.8,1],sel:gg});
-    const rel=Hb.rounds.filter(r=>r.rel);
-    note=`<div class="metrics" style="margin-top:10px"><div class="m"><div class="k">Group</div><div class="v">${Hb.t3k[gg].toFixed(3)}</div></div><div class="m"><div class="k">Tokens per game</div><div class="v">${Hb.t3kTokensK[gg]}<small>k</small></div></div><div class="m"><div class="k">Release round</div><div class="v">${gg?('r'+rel[gg-1].r):'—'}</div><div class="s">${gg?'d = +'+rel[gg-1].d.toFixed(3)+' on fresh seeds':'base model'}</div></div><div class="m"><div class="k">Flat rounds</div><div class="v">3</div><div class="s">rounds 3, 6, 8 kept the incumbent</div></div></div>
-      <div class="verdict">Four agents debate for three rounds; a turn is accepted when its committed answer agrees with the base model's unanimous full-information answer. A candidate is released when its paired gain exceeds 0.026 (Figures 10b, 11a).</div>`; }
-  if(S.rchain==="t3"){ const Hb=D.hiddenbench; const gg=Math.min(g,3);
-    h+=lineChart([{name:"collective training (T3)",v:Hb.t3,c:"#7a5c93"},{name:"self-training, four agents",v:Hb.selfFour.slice(0,4),c:"#8a8f98",dash:"5 4"},{name:"self-training, one agent",v:Hb.selfOne.slice(0,4),c:"#b8bec6",dash:"2 3"}],{n:4,ymin:0,ymax:1,ticks:[0,0.2,0.4,0.6,0.8,1],sel:gg});
-    note=`<div class="metrics" style="margin-top:10px"><div class="m"><div class="k">Collective</div><div class="v">${Hb.t3[gg].toFixed(3)}</div></div><div class="m"><div class="k">Self-training (4)</div><div class="v">${Hb.selfFour[gg].toFixed(3)}</div></div><div class="m"><div class="k">Gap</div><div class="v" style="color:#4f7d69">${fs(Hb.t3[gg]-Hb.selfFour[gg])}</div></div><div class="m"><div class="k">Self-training (1)</div><div class="v">${Hb.selfOne[gg].toFixed(3)}</div></div></div>
-      <div class="verdict">With facts split across agents, the group learns what its agents cannot learn alone: single-agent self-training under the same caps improves, but stays far below collective training in every generation (Figure 11a).</div>`; }
-  if(S.rchain==="hanabi"){ const Hn=D.hanabi; const gg=Math.min(g,6);
-    h+=lineChart([{name:"recursive chain",v:Hn.rec,c:"#a6374a"},{name:"non-recursive control",v:[null,...Hn.control.slice(1),null,null,null],c:"#9aa3ab",dash:"5 4"}],{n:7,ymin:0,ymax:5,ticks:[0,1,2,3,4,5],sel:gg});
-    const gn=Hn.gain[gg];
-    note=`<div class="metrics" style="margin-top:10px"><div class="m"><div class="k">Challenge score</div><div class="v">${Hn.rec[gg].toFixed(3)}<small> / 25</small></div></div><div class="m"><div class="k">Gain vs. G${gg-1}</div><div class="v">${gn?'+'+gn[0].toFixed(3):'—'}</div><div class="s">${gn?'SE '+gn[1].toFixed(3)+' · 600 fresh deals':'base agents score zero'}</div></div><div class="m"><div class="k">Control</div><div class="v">${Hn.control[gg]!=null?Hn.control[gg].toFixed(3):'—'}</div><div class="s">trains on a fixed generation's games</div></div><div class="m"><div class="k">Released</div><div class="v">${gg}</div><div class="s">generations so far</div></div></div>
-      <div class="verdict">The base agents lose all their lives in every game. Each generation trains on the elite games of its predecessor, and a candidate is released when d − SE > 0 (Table 7).</div>`; }
-  if(S.rchain.startsWith("sb")){ const c=D.splitbench.chains[+S.rchain[2]]; const gg=Math.min(g,2);
-    h+=lineChart([{name:c.name+": margin over pass@n",v:c.m,c:"#3d5f7e"}],{n:3,ymin:-0.55,ymax:0.35,ticks:[-0.4,-0.2,0,0.2],sel:gg});
-    note=`<div class="metrics" style="margin-top:10px"><div class="m"><div class="k">Margin</div><div class="v" style="color:${c.m[gg]>0?'#4f7d69':'#a6374a'}">${fs(c.m[gg])}</div><div class="s">over base agents' pass@n</div></div><div class="m"><div class="k">Step</div><div class="v">${gg?fs(c.m[gg]-c.m[gg-1]):'—'}</div></div><div class="m"><div class="k">Control margin</div><div class="v">${c.control!=null?fs(c.control):'—'}</div><div class="s">${c.control!=null?'trained like G2 on G0 turns':'not in Table 4'}</div></div><div class="m"><div class="k">G2 − control</div><div class="v">${c.g2MinusControl!=null?fs(c.g2MinusControl):'—'}</div></div></div>
-      <div class="verdict">On SplitBench each generation trains on the protocol-verified first turns of its parent group, graded on 196 held-out tasks against pass@n of base-model agents (Table 4).</div>`; }
-  return `<div class="kicker">Recursion</div>`+h+note;
+const FLOWCAP = {debate:"Agents exchange answers and reasons.",board:"Agents post to a shared blackboard.","board-facts":"Agents post only their facts.","board-gated":"Only agents holding every fact commit.",
+  context:"The system attaches every agent's facts.",forward:"Agents forward their facts verbatim.","context+forward":"Shared context plus fact forwarding.",
+  selforg:"Agents give their reading budget to one hub.","selforg-plan":"A planning round, then budget transfers.",hub:"A designed hub collects every fact.",
+  tree:"A designed two-level tree relays facts.",relay:"Agents relay facts in small trees.","relay-plan":"A planning round, then relays.",
+  prompt:"A self-written prompt sets up a hub.","prompt-cap":"A self-written prompt sets up relays.",aggregator:"A designed aggregator combines the reports.",
+  noxfer:"Each agent reads one message and answers alone.",norelay:"Each agent forwards only its own facts.",delm:"Agents share one context and a task queue.",
+  orch:"A coordinator dispatches sub-agents.",reviewer27:"Agents post to a blackboard; a 27B reviewer checks it.",reviewer9:"Agents post to a blackboard; a 9B reviewer checks it."};
+let edges=[], anim=null, drag=null, curFlow=null;
+function nodePos(id){ return id==="c"?POS.c:POS.a[id]; }
+function drawStage(flow, opts){
+  const cv=$('#cv'); curFlow=flow; edges=flowEdges(flow);
+  const centreOn = edges.some(e=>e[0]==="c"||e[1]==="c");
+  const hubFlow = flow==="selforg"||flow==="hub"||flow==="prompt"||flow==="selforg-plan";
+  let s=`<g id="lines"></g><g id="pk"></g>`;
+  if(centreOn){ const lab=CENTRE[flow]||""; const w=Math.max(110,lab.length*7.6+28);
+    s+=`<g class="node" data-id="c" style="cursor:grab"><rect x="${-w/2}" y="-19" width="${w}" height="38" rx="10" fill="#fff" stroke="#9fb0bf" stroke-width="1.5"/><text y="4.5" text-anchor="middle" font-family="Inter" font-size="12.5" font-weight="600" fill="#2c4257">${lab}</text></g>`; }
+  for(let i=0;i<4;i++){
+    const hub = hubFlow && i===0, r=hub?32:27;
+    s+=`<g class="node" data-id="${i}" style="cursor:grab"><circle r="${r+6}" fill="transparent"/><circle r="${r}" fill="#fff" stroke="${AGC[i]}" stroke-width="${hub?3.5:2.4}"/>`
+      + `<rect x="-12" y="-9" width="24" height="18" rx="5" fill="${AGC[i]}"/><circle cx="-4.5" cy="0" r="2.4" fill="#fff"/><circle cx="4.5" cy="0" r="2.4" fill="#fff"/><rect x="-1.1" y="-15" width="2.2" height="6" rx="1" fill="${AGC[i]}"/><circle cy="-16" r="2" fill="${AGC[i]}"/>`
+      + (opts.facts?`<g transform="translate(${r-2},${r-6})"><rect x="-10" y="-9" width="20" height="18" rx="5" fill="#eef4f1" stroke="#4f7d71" stroke-opacity=".55"/><text y="4" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#4f7d71">${"ABCD"[i]}</text></g>`:"")
+      + (opts.doc?`<g transform="translate(${r-2},${r-6})"><rect x="-9" y="-10" width="18" height="20" rx="3" fill="#f3f5f8" stroke="#9fb0bf"/><path d="M-5 -4h10M-5 0h10M-5 4h7" stroke="#9fb0bf" stroke-width="1.3"/></g>`:"")
+      + (hub?`<g transform="translate(0,${-r-13})"><rect x="-17" y="-9" width="34" height="17" rx="8.5" fill="#9a4a57"/><text y="3.5" text-anchor="middle" font-family="Inter" font-size="10.5" font-weight="700" fill="#fff">hub</text></g>`:"")
+      + `<text y="${r+20}" text-anchor="middle" font-family="Inter" font-size="11" font-weight="500" fill="#7a8794">agent ${i+1}</text></g>`;
+  }
+  cv.innerHTML=s; place(); startAnim();
+  cv.querySelectorAll('.node').forEach(n=>n.onpointerdown=e=>{ e.preventDefault(); drag={id:n.dataset.id,el:n}; n.setPointerCapture(e.pointerId); n.style.cursor="grabbing"; });
+  cv.onpointermove=e=>{ if(!drag) return; const pt=cv.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; const q=pt.matrixTransform(cv.getScreenCTM().inverse());
+    const x=Math.max(46,Math.min(474,q.x)), y=Math.max(46,Math.min(296,q.y)); if(drag.id==="c") POS.c=[x,y]; else POS.a[+drag.id]=[x,y]; place(); };
+  cv.onpointerup=cv.onpointercancel=()=>{ if(drag){ drag.el.style.cursor="grab"; } drag=null; };
+}
+function place(){
+  const cv=$('#cv');
+  cv.querySelectorAll('.node').forEach(n=>{ const p=nodePos(n.dataset.id==="c"?"c":+n.dataset.id); n.setAttribute('transform',`translate(${p[0]},${p[1]})`); });
+  const seen=new Set(); let h="";
+  edges.forEach(([a,b,c])=>{ const k=[a,b].map(String).sort().join("-"); if(seen.has(k)) return; seen.add(k); const p=nodePos(a), q=nodePos(b); h+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${c}" stroke-opacity=".25" stroke-width="1.6" stroke-dasharray="1 0"/>`; });
+  const L=cv.querySelector('#lines'); if(L) L.innerHTML=h;
+}
+function startAnim(){
+  if(anim) cancelAnimationFrame(anim);
+  const t0=performance.now();
+  const step=(t)=>{ const g=document.getElementById('pk'); if(!g) return; let h=""; const n=edges.length;
+    edges.forEach(([a,b,c,type],k)=>{ const p=nodePos(a), q=nodePos(b), ph=((t-t0)/2600+k/Math.max(n,1))%1, e=ph<.5?2*ph*ph:1-Math.pow(-2*ph+2,2)/2, x=p[0]+(q[0]-p[0])*e, y=p[1]+(q[1]-p[1])*e, o=Math.min(1,Math.min(ph,1-ph)*8);
+      if(type==="fact") h+=`<rect x="${x-5}" y="${y-5}" width="10" height="10" rx="2.5" fill="${c}" opacity="${o}"/>`;
+      else if(type==="coin") h+=`<circle cx="${x}" cy="${y}" r="5.5" fill="#fff" stroke="${c}" stroke-width="2.2" opacity="${o}"/>`;
+      else if(type==="doc") h+=`<rect x="${x-5}" y="${y-6}" width="10" height="12" rx="1.5" fill="#fff" stroke="${c}" stroke-width="1.4" opacity="${o}"/>`;
+      else h+=`<rect x="${x-8}" y="${y-5}" width="16" height="10" rx="5" fill="${c}" fill-opacity=".8" opacity="${o}"/>`; });
+    g.innerHTML=h; anim=requestAnimationFrame(step); };
+  anim=requestAnimationFrame(step);
 }
 
-function render(){ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.t===S.tab)); renderControls(); renderView(); }
-document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{S.tab=t.dataset.t; if(S.tab==='org'&&!D.org[S.budget].some(x=>x.id===S.organizer)) S.organizer='so'; render();});
-render();
+/* ---------------- recursion chart in the stage ---------------- */
+function recChart(){
+  const g=S.rgen; let series=[], n=5, ymin=0, ymax=1, cap="";
+  const P=D.planbench, Hb=D.hiddenbench, Hn=D.hanabi;
+  if(S.rchain==="planbench"){ series=[["group of four",P.group,"#3f6a8c"],["one agent",P.final,"#a08c63"]]; n=5; cap="A plan simulator checks every plan; the group gains in every generation."; }
+  if(S.rchain==="t3k"){ series=[["group of four",Hb.t3k,"#6f6590"],["one agent",Hb.t3kOne,"#a89fbd"]]; n=6; ymin=0.4; cap="Each release beats the current generation on fresh tasks."; }
+  if(S.rchain==="t3"){ series=[["collective training",Hb.t3,"#4f7d71"],["single-agent self-training",Hb.selfFour.slice(0,4),"#a6b0ba"]]; n=4; cap="Collective training stays far above single-agent self-training."; }
+  if(S.rchain==="hanabi"){ series=[["recursive chain",Hn.rec,"#9a4a57"],["control chain",[null,...Hn.control.slice(1),null,null,null],"#a6b0ba"]]; n=7; ymax=5; cap="The challenge score rises from 0 to 4.5 out of 25."; }
+  if(S.rchain.startsWith("sb")){ const c=D.splitbench.chains[+S.rchain[2]]; series=[["margin over pass@n",c.m,"#3f6a8c"]]; n=3; ymin=-0.55; ymax=0.35; cap="Margin over pass@n of base-model agents rises with each generation."; }
+  const W=520,H=340,L=50,R=22,T=46,B=40, X=i=>L+i*(W-L-R)/(n-1), Y=v=>T+(1-(v-ymin)/(ymax-ymin))*(H-T-B), gg=Math.min(g,n-1);
+  let s=`<rect x="${X(gg)-17}" y="${T-8}" width="34" height="${H-T-B+16}" rx="9" fill="#4b6b84" fill-opacity=".07"/>`;
+  const ticks=ymax===5?[0,1,2,3,4,5]:ymin<0?[-0.4,-0.2,0,0.2]:ymin===0.4?[0.4,0.6,0.8,1]:[0,0.25,0.5,0.75,1];
+  ticks.forEach(t=>s+=`<line x1="${L}" x2="${W-R}" y1="${Y(t)}" y2="${Y(t)}" stroke="${t===0&&ymin<0?'#9fb0bf':'#eef1f4'}" ${t===0&&ymin<0?'stroke-dasharray="4 3"':''}/><text x="${L-9}" y="${Y(t)+4}" text-anchor="end" font-size="11" font-family="Inter" fill="#7a8794">${t}</text>`);
+  for(let i=0;i<n;i++) s+=`<text x="${X(i)}" y="${H-14}" text-anchor="middle" font-size="12" font-family="Inter" fill="${i===gg?'#1e2a35':'#7a8794'}" font-weight="${i===gg?700:500}">G${i}</text>`;
+  series.forEach(([nm,v,c],k)=>{ const pts=v.map((y,i)=>y==null?null:`${X(i)},${Y(y)}`).filter(Boolean);
+    s+=`<polyline points="${pts.join(" ")}" fill="none" stroke="${c}" stroke-width="${k?2:3}" stroke-linejoin="round" ${k?'stroke-dasharray="5 4"':''}/>`;
+    v.forEach((y,i)=>{ if(y!=null) s+=`<circle cx="${X(i)}" cy="${Y(y)}" r="${i===gg?6.5:3.6}" fill="${i===gg?c:'#fff'}" stroke="${c}" stroke-width="2"/>`; });
+    const lx=L+k*190; s+=`<line x1="${lx}" x2="${lx+18}" y1="18" y2="18" stroke="${c}" stroke-width="${k?2:3}" ${k?'stroke-dasharray="5 4"':''}/><text x="${lx+24}" y="22" font-size="11.5" font-family="Inter" fill="#46525e">${nm}</text>`; });
+  const cv=$('#cv'); cv.innerHTML=s; cv.onpointermove=null; cv.onpointerup=null; if(anim) cancelAnimationFrame(anim); edges=[];
+  return {cap};
+}
+
+/* ---------------- result cards ---------------- */
+let ORDER = null;
+function card(id, title, body){ return `<div class="rc" data-id="${id}"><div class="hd"><span>${title}</span><span class="handle" draggable="true" title="Drag to reorder">⋮⋮</span></div>${body}</div>`; }
+function levelBody(level, desc){
+  const col=level===3?FAM.Fact:level===0?"#9a4a57":"#4b6b84", txt=["Below one agent","Beats one agent","Beats the vote","Beats pass@n"][level];
+  const steps=[1,2,3].map(i=>`<div style="height:${6+i*8}px;background:${level>=i?col:'#e4e9ee'}"></div>`).join("");
+  return `<div class="lvl"><div class="ring" style="background:${col}">${level}</div><div style="flex:1;min-width:0"><div class="t">${txt}</div><div class="s">${desc||"equal-budget ladder"}</div><div class="steps">${steps}</div></div></div>`;
+}
+function numsBody(p){
+  const T=(p.acc!=null&&p.margin!=null)?p.acc-p.margin:null;
+  const nm=(k,v,tip,col)=>`<div class="num"><div class="k">${k}<span class="q" title="${tip}">?</span></div><div class="v" ${col?`style="color:${col}"`:''}>${v}</div></div>`;
+  return `<div class="nums">${nm("Accuracy",p.acc==null?'<small>not reported</small>':p.acc.toFixed(3),"The group's committed answer")}${nm("Budget",p.nB==null?'<small>not reported</small>':p.nB.toFixed(1)+'<small> agents</small>',"Completion tokens, in units of one independent agent")}${nm("pass@n<sub>B</sub>",T==null?'<small>not reported</small>':T.toFixed(3),"Chance that at least one of n_B independent agents is right")}${nm("Margin",fs(p.margin),"Accuracy minus pass@n_B",p.margin>0?FAM.Fact:'#9a4a57')}</div>`;
+}
+function budgetBody(nB){
+  if(nB==null) return `<div class="src">The paper reports no budget for this cell.</div>`;
+  const ag=AGC.map(c=>`<span style="width:12px;height:12px;border-radius:50%;background:${c}"></span>`).join("");
+  let ind=""; for(let i=0;i<Math.ceil(nB);i++){ const f=i<Math.floor(nB)?1:nB-Math.floor(nB); ind+=`<span style="width:${Math.max(12*f,3)}px;height:12px;border-radius:3px;background:#a6b0ba"></span>`; }
+  return `<div style="display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;font-size:12px;color:var(--mute)"><span>group</span><div style="display:flex;gap:3px">${ag}</div><span>same cost</span><div style="display:flex;gap:3px;flex-wrap:wrap">${ind}</div></div><div style="font-size:12.5px;color:var(--ink2);margin-top:8px">${nB.toFixed(1)} independent agents</div>`;
+}
+function results(cur){
+  let cards=[];
+  if(cur.kind==="cell"){
+    const p=cur.p;
+    cards.push(["level","Ladder level",levelBody(p.level, p.descriptive?"descriptive comparison":p.beforeMTC?"before multiple-testing correction":null)]);
+    cards.push(["nums","Numbers",numsBody(p)]);
+    cards.push(["budget","Token budget",budgetBody(p.nB)]);
+    if(p.share){ const w=p.share.wait,c=p.share.coord; cards.push(["tokens","Where tokens go",`<div class="bar"><span style="width:${w*100}%;background:#6f6590"></span><span style="width:${(c-w)*100}%;background:#c79aa2"></span><span style="flex:1;background:#9cc3b4"></span></div><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-top:6px"><span>waiting ${Math.round(w*100)}%</span><span>coordination ${Math.round((c-w)*100)}%</span><span>work ${Math.round((1-c)*100)}%</span></div>`]); }
+    if(S.tab==="org"){ cards.push(["fam","Hubs by model",`<table class="tbl">${D.org.families.map(x=>`<tr class="${x.model===S.famModel?'sel':''}"><td>${x.model}</td><td>${(x.hubs*100).toFixed(1)}%</td></tr>`).join("")}</table><div class="src" style="margin-top:6px">Share of records with a self-built hub, free budget.</div>`]); }
+    cards.push(["src","Source",`<div class="src">${p.src}${p.tasks?` · ${p.tasks} tasks`:''}${S.tab==="build"&&S.setting==="split"?` · full-information agent at equal budget: ${D.fullInfoAgent.toFixed(3)}`:''}</div>`]);
+  }
+  if(cur.kind==="prior"){
+    const [m,b,n,v,se]=cur.r, lo=v-1.96*se, hi=v+1.96*se, X=x=>(x+0.55)/0.75*100;
+    const col=hi<0?"#9a4a57":lo>0?FAM.Fact:"#6f6590", txt=hi<0?"Below the vote":lo>0?"Above the vote":"Tied with the vote";
+    cards.push(["level","Against the vote",`<div class="lvl"><div class="ring" style="background:${col};font-size:22px">${lo>0?'+':hi<0?'−':'='}</div><div><div class="t">${txt}</div><div class="s">equal-budget majority vote</div></div></div>`]);
+    cards.push(["nums","Gain over the vote",`<div class="num"><div class="v" style="color:${col}">${fs(v)} <small>± ${(1.96*se).toFixed(3)}</small></div></div><div style="position:relative;height:30px;margin-top:8px"><div style="position:absolute;left:${X(0)}%;top:0;bottom:0;border-left:2px dashed #2c4257"></div><div style="position:absolute;top:13px;height:4px;border-radius:2px;background:${col};left:${X(lo)}%;width:${X(hi)-X(lo)}%"></div><div style="position:absolute;top:8px;width:14px;height:14px;border-radius:50%;background:${col};left:calc(${X(v)}% - 7px)"></div></div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mute)"><span>−0.55</span><span>vote</span><span>+0.20</span></div>`]);
+    cards.push(["src","Source",`<div class="src">Table 12 · Qwen3.5-9B agents · 95% interval</div>`]);
+  }
+  if(cur.kind==="rec"){
+    const g=S.rgen; let rows=[];
+    if(S.rchain==="planbench"){ const P=D.planbench, gg=Math.min(g,4); rows=[["Group",P.group[gg].toFixed(3)],["One agent",P.final[gg].toFixed(3)],["Gain",P.d[gg]?"+"+P.d[gg][0].toFixed(3):"—"],["Truncated calls",P.truncated[gg].toFixed(3)]]; }
+    if(S.rchain==="t3k"){ const Hb=D.hiddenbench, gg=Math.min(g,5), rel=Hb.rounds.filter(r=>r.rel); rows=[["Group",Hb.t3k[gg].toFixed(3)],["One agent",Hb.t3kOne[gg].toFixed(3)],["Gain",gg?"+"+rel[gg-1].d.toFixed(3):"—"],["Tokens / game",Hb.t3kTokensK[gg]+"k"]]; }
+    if(S.rchain==="t3"){ const Hb=D.hiddenbench, gg=Math.min(g,3); rows=[["Collective",Hb.t3[gg].toFixed(3)],["Self-training",Hb.selfFour[gg].toFixed(3)],["Gap",fs(Hb.t3[gg]-Hb.selfFour[gg])],["Solo agent",Hb.selfOne[gg].toFixed(3)]]; }
+    if(S.rchain==="hanabi"){ const Hn=D.hanabi, gg=Math.min(g,6); rows=[["Score / 25",Hn.rec[gg].toFixed(3)],["Gain",Hn.gain[gg]?"+"+Hn.gain[gg][0].toFixed(3):"—"],["Control",Hn.control[gg]!=null?Hn.control[gg].toFixed(3):"—"],["Generations",String(gg)]]; }
+    if(S.rchain.startsWith("sb")){ const c=D.splitbench.chains[+S.rchain[2]], gg=Math.min(g,2); rows=[["Margin",fs(c.m[gg])],["Step",gg?fs(c.m[gg]-c.m[gg-1]):"—"],["Control",c.control!=null?fs(c.control):"—"],["G2 − control",c.g2MinusControl!=null?fs(c.g2MinusControl):"—"]]; }
+    const gl=Math.min(g,(MAXG[S.rchain]??2));
+    cards.push(["nums","Generation G"+gl,`<div class="nums">${rows.map(([k,v])=>`<div class="num"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("")}</div>`]);
+    const sbName = S.rchain.startsWith("sb") ? D.splitbench.chains[+S.rchain[2]].name+" · " : "";
+    cards.push(["src","Source",`<div class="src">${sbName}${({planbench:"Table 6 · 300 problems",t3k:"Figures 10b and 11a · 200 tasks × 2 seeds",t3:"Figure 11a · 200 tasks × 2 seeds",hanabi:"Table 7"})[S.rchain]||"Table 4 · 196 held-out tasks"} · label-free generations</div>`]);
+  }
+  const ids=cards.map(c=>c[0]); if(!ORDER) ORDER=ids.slice();
+  const ordered=[...ORDER.filter(i=>ids.includes(i)), ...ids.filter(i=>!ORDER.includes(i))];
+  $('#results').innerHTML=ordered.map(i=>{ const c=cards.find(x=>x[0]===i); return card(c[0],c[1],c[2]); }).join("");
+  bindReorder();
+}
+let dragCard=null;
+function bindReorder(){
+  document.querySelectorAll('#results .handle').forEach(h=>{
+    h.ondragstart=e=>{ const rc=h.closest('.rc'); dragCard=rc.dataset.id; e.dataTransfer.setData('application/x-rc',dragCard); e.dataTransfer.effectAllowed='move'; try{ e.dataTransfer.setDragImage(rc,20,20);}catch(_){} setTimeout(()=>rc.classList.add('lift'),0); };
+    h.ondragend=()=>{ dragCard=null; document.querySelectorAll('#results .rc').forEach(x=>x.classList.remove('lift','dragover')); };
+  });
+  document.querySelectorAll('#results .rc').forEach(rc=>{
+    rc.ondragover=e=>{ if(dragCard){ e.preventDefault(); rc.classList.add('dragover'); } };
+    rc.ondragleave=e=>{ if(!rc.contains(e.relatedTarget)) rc.classList.remove('dragover'); };
+    rc.ondrop=e=>{ e.preventDefault(); rc.classList.remove('dragover'); if(!dragCard||dragCard===rc.dataset.id) return;
+      const ids=[...document.querySelectorAll('#results .rc')].map(x=>x.dataset.id); const from=ids.indexOf(dragCard), to=ids.indexOf(rc.dataset.id);
+      ids.splice(from,1); ids.splice(to,0,dragCard); ORDER=ids; dragCard=null; renderAll(false); };
+  });
+}
+
+/* ---------------- render ---------------- */
+function renderAll(full){
+  document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===S.tab));
+  if(full!==false) palette();
+  const cur=current();
+  const recName={planbench:"PlanBench",t3k:"HiddenBench",t3:"HiddenBench, collective vs. solo",hanabi:"Hanabi"}[S.rchain]||"SplitBench";
+  $('#tags').innerHTML = cur.kind==="rec" ? `<span class="tag"><b>${recName}</b></span><span class="tag">generation G${Math.min(S.rgen,MAXG[S.rchain]??2)}</span>`
+    : cur.tags.map((t,i)=>`<span class="tag">${i===1?`<b>${t}</b>`:t}</span>`).join("");
+  if(cur.kind==="rec"){ const r=recChart(); $('#cap').textContent=r.cap; $('#tip').innerHTML=""; }
+  else { const flow=cur.kind==="cell"?cur.p.flow:cur.flow; drawStage(flow,{facts:!!cur.facts,doc:!!cur.doc}); $('#cap').textContent=FLOWCAP[flow]||"";
+    $('#tip').innerHTML=`<button class="reset" id="reset" title="Put the agents back">Reset layout</button>`; $('#reset').onclick=()=>{ POS=JSON.parse(JSON.stringify(HOME)); place(); }; }
+  results(cur);
+}
+const stage=$('#stage');
+const isChip=e=>[...e.dataTransfer.types].includes('application/x-rci');
+stage.ondragenter=e=>{ if(isChip(e)){ e.preventDefault(); stage.classList.add('drop'); } };
+stage.ondragover=e=>{ if(isChip(e)){ e.preventDefault(); e.dataTransfer.dropEffect='copy'; stage.classList.add('drop'); } };
+stage.ondragleave=e=>{ if(!stage.contains(e.relatedTarget)) stage.classList.remove('drop'); };
+stage.ondrop=e=>{ if(!isChip(e)) return; e.preventDefault(); stage.classList.remove('drop'); try{ const {k,v}=JSON.parse(e.dataTransfer.getData('application/x-rci')); apply(k,v);}catch(_){} };
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{ S.tab=b.dataset.t; ORDER=null; renderAll(true); });
+renderAll(true);
 </script>
 </body>
 </html>

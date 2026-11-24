@@ -80,7 +80,7 @@
   </section>
   <figure>
     <div class="video"><video src="video/ladder.mp4" poster="video/ladder_poster.jpg" controls muted loop preload="metadata" playsinline></video></div>
-    <figcaption><b>Placing protocols on the ladder.</b> The animation moves ten protocols of four Qwen3.8-27B agents on HiddenBench to their margin over pass@n<sub>B</sub>. Protocols that trade arguments stay at level 2, while protocols that pass facts on rise above pass@n.</figcaption>
+    <figcaption><b>Protocols on the ladder.</b> Ten protocols of four Qwen3.8-27B agents on HiddenBench move to their margin over pass@n<sub>B</sub>. Fact protocols rise above pass@n.</figcaption>
   </figure>
   <figure><img src="assets/fig/fig2.png" alt="The equal-budget ladder"><figcaption><b>Figure 2.</b> The equal-budget ladder, with four Qwen3.8-27B protocols on HiddenBench placed at the highest level each reaches.</figcaption></figure>
 
@@ -90,14 +90,14 @@
   </section>
   <figure>
     <div class="video"><video src="video/clip_shared.mp4" poster="video/clip_shared.jpg" controls muted loop preload="metadata" playsinline></video></div>
-    <figcaption><b>Shared information.</b> When every agent sees the whole task, extra talk does not beat the equal-budget vote.</figcaption>
+    <figcaption><b>Shared information.</b> Prior multi-agent methods stay at the equal-budget vote.</figcaption>
   </figure>
   <section class="prose">
     <p>Splitting the decisive facts across agents changes the picture. On HiddenBench, each of four Qwen3.8-27B agents holds only part of the evidence, so no agent can answer alone. Agents that exchange answers and reasons in a debate stay at level 2: the group reaches 0.688, below the 0.703 that pass@n reaches. In contrast, agents that forward their facts verbatim reach 0.959 at a budget of 6.2 agents, 31 points above pass@n and above one agent given every fact at the same budget. Moving information, not trading arguments, is what lifts the group to level 3.</p>
   </section>
   <figure>
     <div class="video"><video src="video/clip_facts.mp4" poster="video/clip_facts.jpg" controls muted loop preload="metadata" playsinline></video></div>
-    <figcaption><b>Split facts.</b> Debating agents stay at level 2, while agents that forward their facts reach level 3.</figcaption>
+    <figcaption><b>Split facts.</b> Debate stays at level 2, and fact forwarding reaches level 3.</figcaption>
   </figure>
   <figure><img src="assets/fig/fig5.png" alt="Protocol families on the ladder"><figcaption><b>Figure 5.</b> Protocol families on the ladder. With split facts, evidence protocols rise above pass@n; with shared information, prior multi-agent methods do not beat the vote.</figcaption></figure>
 
@@ -108,7 +108,7 @@
   </section>
   <figure>
     <div class="video"><video src="video/clip_org.mp4" poster="video/clip_org.jpg" controls muted loop preload="metadata" playsinline></video></div>
-    <figcaption><b>Emergent organization.</b> Agents hand their reading budget to one member, which becomes a hub and reads every fact.</figcaption>
+    <figcaption><b>Emergent organization.</b> Agents give their reading budget to one member, and that member reads every fact.</figcaption>
   </figure>
   <figure><img src="assets/fig/fig7.png" alt="How identical agents organize"><figcaption><b>Figure 7.</b> Three records read step by step: a self-built hub, a relay under a budget cap, a capped failure, and where their tokens go.</figcaption></figure>
 
@@ -119,14 +119,14 @@
   </section>
   <figure>
     <div class="video"><video src="video/chain.mp4" poster="video/chain_poster.jpg" controls muted loop preload="metadata" playsinline></video></div>
-    <figcaption><b>The gate in action.</b> In all eight rounds of HiddenBench chain T3k, each candidate meets the current generation on fresh seeds. Five rounds release a new generation, and three rounds keep the current one.</figcaption>
+    <figcaption><b>The gated generation chain.</b> Each candidate meets the current generation on fresh confirmation tasks. Five of eight rounds release a new generation.</figcaption>
   </figure>
   <section class="prose">
     <p>Because the group learns from its own interaction, it can learn what its agents cannot learn alone. Comparing two chains under the same caps on HiddenBench, we train one on the group's outputs and the other on each agent's solo outputs. The collectively trained group reaches 0.703, 0.755 and 0.836 over three generations, whereas four self-trained agents reach only 0.396, 0.563 and 0.658.</p>
   </section>
   <figure>
     <div class="video"><video src="video/clip_train.mp4" poster="video/clip_train.jpg" controls muted loop preload="metadata" playsinline></video></div>
-    <figcaption><b>Training without labels.</b> Collective training stays far above single-agent self-training in every generation.</figcaption>
+    <figcaption><b>Label-free training.</b> Collective training stays far above single-agent self-training.</figcaption>
   </figure>
 
   <section class="prose">

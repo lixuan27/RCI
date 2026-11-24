@@ -7,11 +7,13 @@ import math, random, re, subprocess, sys
 from PIL import Image, ImageDraw, ImageFont
 import imageio_ffmpeg
 
-W, H, SS, FPS = 1280, 720, 2, 30
+W, H, SS, FPS = 1280, 720, 3, 30
+OW, OH = 1920, 1080
 HAND = "/System/Library/Fonts/Supplemental/ChalkboardSE.ttc"
 _fc = {}
-def hand(sz, bold=False, light=False):
-    idx = 1 if bold else (2 if light else 0)
+def hand(sz, bold=False, light=False, heavy=False):
+    # ChalkboardSE.ttc faces: 0 Light, 1 Regular, 2 Bold
+    idx = 2 if heavy else (1 if bold else 0)
     k = (sz, idx)
     if k not in _fc:
         try: _fc[k] = ImageFont.truetype(HAND, int(sz * SS), index=idx)
@@ -21,7 +23,7 @@ def hand(sz, bold=False, light=False):
 PAPER = (251, 250, 247); GRID = (233, 236, 236)
 INK = (34, 34, 38); GREY = (112, 112, 118); LIGHT = (190, 192, 196)
 BLUE = (47, 91, 211); BLUEF = (216, 228, 251); RED = (214, 64, 52); YEL = (246, 226, 150); YELD = (196, 150, 40)
-GREEN = (46, 140, 87); GREENF = (214, 238, 222); PURP = (122, 92, 160); PURPF = (232, 224, 244)
+GREEN = (46, 140, 87); GREENF = (214, 238, 222); PURP = (122, 92, 160); PURPF = (232, 224, 244); SLATE_C = (90, 120, 150)
 
 def clamp(x, a=0.0, b=1.0): return max(a, min(b, x))
 def ease(x): x = clamp(x); return x * x * (3 - 2 * x)
@@ -101,7 +103,7 @@ class F:
         self.sline(x - 14 * s, y, x - 4 * s, y + 12 * s, col, a, 5, passes=1); self.sline(x - 4 * s, y + 12 * s, x + 18 * s, y - 16 * s, col, a, 5, passes=1)
     def cross(self, x, y, col=RED, a=1.0, s=1.0):
         self.sline(x - 14 * s, y - 14 * s, x + 14 * s, y + 14 * s, col, a, 5, passes=1); self.sline(x - 14 * s, y + 14 * s, x + 14 * s, y - 14 * s, col, a, 5, passes=1)
-    def out(self): return self.im.resize((W, H), Image.LANCZOS)
+    def out(self): return self.im.resize((OW, OH), Image.LANCZOS)
 
 def smiley(f, x, y, a=1.0, s=1.0, mood="happy", key=0, fill=BLUEF, stroke=BLUE):
     rr = 38 * s
@@ -121,8 +123,8 @@ def coin(f, x, y, label="+1", a=1.0, key=0):
     f.scircle(x, y, 18, YELD, YEL, a, 2.5, key); f.text(x, y + 1, label, hand(15, True), INK, a, "mm")
 def heading(f, t, a, b, s, x=70, y=58):
     al = seg(t, a, a + 0.6) * (1 - seg(t, b - 0.6, b))
-    f.text(x, y, s, hand(40, True), INK, al, "ls")
-    w = hand(40, True).getlength(s) / SS
+    f.text(x, y, s, hand(38, True), INK, al, "ls")
+    w = hand(38, True).getlength(s) / SS
     f.sline(x, y + 14, x + w * seg(t, a + 0.2, a + 1.0), y + 14, BLUE, al, 4, passes=1)
 def say(f, t, a, b, s, y=640, size=30, col=INK, bold=True):
     al = seg(t, a, a + 0.6) * (1 - seg(t, b - 0.6, b))
@@ -137,146 +139,202 @@ def stairs(f, x0, yb, a, lit=0, w=200, hs=(70, 130, 190), labels=True, key=0):
         f.text(x + 16, yb - hs[i] + 34, str(i + 1), hand(34, True), BLUE if on else LIGHT, a, "ls")
         if labels: f.text(x + w / 2, yb + 28, names[i], hand(19, True), INK if on else LIGHT, a, "mm")
 
-# ------------------------------------------------------------------ overview (~110 s)
+# ------------------------------------------------------------------ overview (~116 s)
+def panel(f, x0, y0, x1, y1, title, a, key=0):
+    f.srect(x0, y0, x1, y1, GREY, (255, 255, 255), a, 1.8, key)
+    f.text(x0 + 12, y0 + 22, title, hand(19), GREY, a, "lm")
+def takeaway(f, t, a, b, lines, y=600):
+    for k, (s, col) in enumerate(lines):
+        al = seg(t, a + k * 0.5, a + k * 0.5 + 0.6) * (1 - seg(t, b - 0.6, b))
+        f.text(W / 2, y + k * 34, s, hand(24, True), col, al, "mm")
+
+PRIOR = {"debate": [-0.005, 0.008, 0.022, -0.055, -0.178, -0.163, -0.016, -0.016, -0.173, -0.057, -0.045],
+         "DeLM": [0.022, 0.015, 0.022, -0.002, -0.243, -0.066, -0.506, -0.235, -0.304],
+         "AOrchestra": [0.021, -0.075, -0.112, -0.360]}
+REVIEWER27 = [0.050, 0.131, 0.037, 0.044]
+
 def overview(t):
     f = F()
-    if t < 8.5:                                   # S1
-        a = seg(t, 0.2, 1.2) * (1 - seg(t, 7.6, 8.4))
-        f.text(W / 2, 120, "Is a group of agents smarter than one?", hand(58, True), INK, a, "mm")
-        f.text(W / 2, 222, "?", hand(70, True), RED, a * seg(t, 1, 1.6), "mm")
-        for i in range(4): smiley(f, 400 + i * 160, 360, a * seg(t, 1.2 + i * 0.2, 1.8 + i * 0.2), 1.0, key=i)
-        f.text(W / 2, 445, "four copies of one model", hand(24, light=True), GREY, a, "mm")
-        f.text(W / 2, 560, "Recursive Collective Intelligence, told with a few circles", hand(34, True), BLUE, a * seg(t, 2.5, 3.3), "mm")
-    elif t < 24.5:                                # S2
-        u = t - 8; a = seg(u, 0.2, 1.0) * (1 - seg(u, 15.6, 16.4))
-        heading(f, u, 0, 16.4, "A team spends more tokens")
-        smiley(f, 190, 260, a, 1.0, key=11); f.text(190, 330, "one agent", hand(22, light=True), GREY, a, "mm")
-        f.srect(150, 360, 230, 384, INK, (198, 214, 236), a, 2, 12); f.text(190, 412, "1x tokens", hand(20, True), INK, a, "mm")
-        pts = [(470, 210), (600, 210), (470, 330), (600, 330)]
-        for i, p in enumerate(pts): smiley(f, *p, a, 0.85, key=20 + i)
-        g = seg(u, 1.5, 6)
-        for i in range(4):
-            for j in range(i + 1, 4):
-                ph = (u * 0.55 + (i + j) * 0.17) % 1
-                bubble(f, lerp(pts[i][0], pts[j][0], ph), lerp(pts[i][1], pts[j][1], ph), a * g, key=i * 4 + j)
-        f.srect(430, 380, 430 + 220 * g, 404, INK, (232, 224, 244), a * g, 2, 13)
-        f.text(535, 432, f"{lerp(1, 8.8, g):.1f}x tokens", hand(20, True), INK, a * g, "mm")
-        say(f, u, 1.0, 7.6, "Most evaluations credit a team for beating one agent ...", y=640, size=28)
-        b = seg(u, 7.6, 9.4)
-        for k in range(9): smiley(f, 860 + (k % 3) * 95, 180 + (k // 3) * 95, a * b, 0.55, mood="neutral", key=40 + k, fill=(240, 241, 243), stroke=GREY)
-        f.text(955, 455, "the same tokens pay for", hand(20, light=True), GREY, a * b, "mm")
-        f.text(955, 482, "8.8 independent agents", hand(22, True), INK, a * b, "mm")
-        v = seg(u, 10, 11.5)
-        f.srect(870, 505, 870 + 170 * v, 529, INK, YEL, a * v, 2, 14); f.text(1052, 517, "vote", hand(20, True), INK, a * v, "lm")
-        say(f, u, 8.2, 16.2, "... but a plain vote over independent answers already explains most of the gain.", y=640, size=26)
-    elif t < 44.5:                                # S3
-        u = t - 24; a = seg(u, 0.2, 1.0) * (1 - seg(u, 19.6, 20.4))
-        heading(f, u, 0, 20.4, "Grade the group at equal budget")
-        f.text(W / 2, 130, "a run that spends k tokens costs n_B = k / c_1 independent agents", hand(28, True), BLUE, a * seg(u, 0.6, 1.6), "mm")
-        lit = (u > 3.5) + (u > 6.5) + (u > 9.5)
-        stairs(f, 310, 450, a, lit, w=220, key=60)
-        f.sline(290, 450 - 190 - 18, 990, 450 - 190 - 18, RED, a * seg(u, 11, 12), 2.5, dash=9)
-        f.text(1005, 450 - 190 - 18, "pass@n", hand(22, True), RED, a * seg(u, 11, 12), "lm")
-        f.text(310, 528, "votes, judges and verifiers only pick among answers the agents gave,", hand(22, light=True), GREY, a * seg(u, 11.5, 12.5), "la")
-        f.text(310, 560, "so none of them can climb above pass@n at equal cost", hand(22, light=True), GREY, a * seg(u, 11.5, 12.5), "la")
-        say(f, u, 13.5, 20.2, "Level 3 needs correct answers that no single agent produced.", y=640, size=30, col=GREEN)
-    elif t < 66.5:                                # S4
-        u = t - 44; a = seg(u, 0.2, 1.0) * (1 - seg(u, 21.6, 22.4))
-        heading(f, u, 0, 22.4, "Move facts, not arguments")
-        f.text(70, 115, "HiddenBench: each of four Qwen3.8-27B agents holds part of the decisive facts", hand(22, light=True), GREY, a, "la")
-        pts = [(200, 240), (430, 240), (200, 440), (430, 440)]; L = "ABCD"; fw = u >= 10.5
+    if t < 7.5:                                    # 1 title
+        a = seg(t, 0.2, 1.0) * (1 - seg(t, 6.8, 7.5))
+        f.text(W / 2, 118, "Is a group of agents smarter than its members?", hand(50, heavy=True), INK, a, "mm")
+        f.text(W / 2, 210, "?", hand(62, heavy=True), RED, a * seg(t, 0.8, 1.4), "mm")
+        for i in range(5): smiley(f, 400 + i * 120, 330, a * seg(t, 1 + i * 0.15, 1.6 + i * 0.15), 0.85, key=i)
+        f.text(W / 2, 400, "five copies of one model", hand(22), GREY, a, "mm")
+        f.text(W / 2, 520, "Recursive Collective Intelligence, told with a few circles", hand(30, True), BLUE, a * seg(t, 2.2, 3.0), "mm")
+    elif t < 21.5:                                 # 2 what counts
+        u = t - 7.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 13.3, 14))
+        heading(f, u, 0, 14, "What counts as collective intelligence")
+        f.text(320, 120, "Work alone, then vote", hand(24, True), INK, a, "mm")
+        f.sline(640, 110, 640, 420, LIGHT, a, 2, dash=8)
+        f.text(960, 120, "Talk to each other", hand(24, True), INK, a * seg(u, 2, 2.8), "mm")
+        xs = [200, 280, 360, 440]
+        for i, x in enumerate(xs): smiley(f, x, 190, a, 0.62, "neutral", key=20 + i)
+        v = seg(u, 0.8, 2)
+        for x in xs: f.sline(x, 215, 320, 330, GREY, a * v, 1.6, key=int(x))
+        f.srect(285, 330, 355, 368, INK, (255, 255, 255), a * v, 2, 25); f.text(320, 349, "vote", hand(19, True), INK, a * v, "mm")
+        b = seg(u, 2, 3)
+        pts = [(860, 170), (1060, 170), (860, 320), (1060, 320)]
+        f.srect(915, 215, 1005, 275, INK, (255, 255, 255), a * b, 2, 26); f.text(960, 200, "shared board", hand(15), GREY, a * b, "mm")
+        for k in range(3): f.srect(928 + k * 24, 236, 946 + k * 24, 253, INK, YEL, a * b, 1.4, 27 + k)
         for i, p in enumerate(pts):
-            got = 4 if (fw and u > 13.5 + i * 0.3) else 1
-            smiley(f, *p, a, 0.9, "happy" if got == 4 else "neutral", key=80 + i)
-            hold = [i] + ([j for j in range(4) if j != i] if got == 4 else [])
-            for k, j in enumerate(hold): sticky(f, p[0] - 52 + k * 35, p[1] + 60, L[j], a, 0.85, key=90 + i * 4 + k)
-        if not fw:
+            smiley(f, *p, a * b, 0.62, key=30 + i); f.sline(p[0], p[1], 960, 245, BLUE, a * b, 1.6, key=31 + i, dash=6)
+        c = seg(u, 5, 6.5)
+        f.srect(240, 470, 240 + 40, 490, INK, (198, 214, 236), a * c, 2, 40); f.text(300, 480, "one agent: 1x tokens", hand(20), INK, a * c, "lm")
+        f.srect(760, 470, 760 + 300, 490, INK, PURPF, a * c, 2, 41); f.text(910, 512, "talking: 8.8x tokens", hand(20), INK, a * c, "mm")
+        takeaway(f, u, 7.5, 14, [("Talking costs more tokens, and a plain vote over that many agents already helps.", INK),
+                                 ("So grade a group against independent agents that spend the same tokens.", BLUE)], y=580)
+    elif t < 37.5:                                 # 3 ladder
+        u = t - 21.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 15.3, 16))
+        heading(f, u, 0, 16, "The equal-budget ladder")
+        f.text(W / 2, 128, "a group run that spends k tokens costs n_B = k / c_1 independent agents", hand(26, True), BLUE, a * seg(u, 0.5, 1.3), "mm")
+        lit = (u > 3) + (u > 5.5) + (u > 8)
+        stairs(f, 310, 430, a, lit, w=220, key=60)
+        f.sline(290, 430 - 190 - 16, 990, 430 - 190 - 16, RED, a * seg(u, 9.5, 10.3), 2.5, dash=9)
+        f.text(1005, 430 - 190 - 16, "pass@n", hand(22, True), RED, a * seg(u, 9.5, 10.3), "lm")
+        f.text(W / 2, 500, "votes, judges and verifiers only select among answers that agents gave", hand(21), GREY, a * seg(u, 10, 11), "mm")
+        takeaway(f, u, 11, 16, [("Level 3 means correct answers that no selection among independent answers reaches.", GREEN)], y=580)
+    elif t < 51.5:                                 # 4 shared information
+        u = t - 37.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 13.3, 14))
+        heading(f, u, 0, 14, "Shared information: more talk, no gain")
+        panel(f, 70, 110, 470, 470, "everyone sees the whole task", a, 70)
+        for i, (x, y) in enumerate([(170, 220), (370, 220), (170, 380), (370, 380)]):
+            smiley(f, x, y, a, 0.6, "neutral", key=71 + i)
+            f.srect(x - 16, y + 32, x + 16, y + 54, INK, YEL, a, 1.4, 75 + i); f.text(x, y + 43, "ABCD", hand(10, True), INK, a, "mm")
+        for i in range(4):
+            ph = (u * 0.5 + i * 0.25) % 1
+            bubble(f, lerp(170, 370, ph), lerp(220, 380, (ph + i * 0.3) % 1), a * seg(u, 1, 2), key=80 + i)
+        f.text(270, 455, "a message repeats what its reader knows", hand(16), GREY, a * seg(u, 2, 3), "mm")
+        panel(f, 520, 110, 1210, 470, "accuracy minus the equal-budget vote, six benchmarks, Qwen3.5-9B", a, 90)
+        X = lambda v: lerp(600, 1180, (v + 0.55) / 0.75)
+        f.sline(X(0), 140, X(0), 450, INK, a, 2, dash=7); f.text(X(0), 462, "vote", hand(17, True), INK, a, "mm")
+        rows = [("debate", PRIOR["debate"], PURP), ("DeLM", PRIOR["DeLM"], SLATE_C), ("AOrchestra", PRIOR["AOrchestra"], GREY), ("27B reviewer", REVIEWER27, GREEN)]
+        for k, (nm, vals, col) in enumerate(rows):
+            y = 185 + k * 72; r = seg(u, 2 + k * 1.6, 3.2 + k * 1.6)
+            f.text(610, y, nm, hand(19, True), col, a * r, "lm")
+            for j, v in enumerate(vals):
+                f.scircle(lerp(X(0), X(v), r), y + 22, 6, col, (255, 255, 255), a * r, 2, key=100 + k * 20 + j)
+        takeaway(f, u, 8.5, 14, [("Debate, DeLM and AOrchestra never beat the equal-budget vote.", RED),
+                                 ("Only a stronger reviewer that selects among the answers does.", GREEN)], y=560)
+    elif t < 67.5:                                 # 5 split facts
+        u = t - 51.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 15.3, 16))
+        heading(f, u, 0, 16, "Split facts: move facts, not arguments")
+        f.text(70, 112, "HiddenBench: each of four Qwen3.8-27B agents holds part of the decisive facts", hand(20), GREY, a, "la")
+        for side, (x0, title, col) in enumerate([(70, "Debate: answers and reasons", PURP), (660, "Fact forwarding: the facts, verbatim", GREEN)]):
+            pa = a * seg(u, 0.6 + side * 3.5, 1.4 + side * 3.5)
+            panel(f, x0, 140, x0 + 550, 470, title, pa, 140 + side)
+            pts = [(x0 + 150, 230), (x0 + 400, 230), (x0 + 150, 380), (x0 + 400, 380)]
+            done = side == 1 and u > 8
+            for i, p in enumerate(pts):
+                smiley(f, *p, pa, 0.6, "happy" if done else "neutral", key=150 + side * 10 + i)
+                hold = [i] + ([j for j in range(4) if j != i] if done else [])
+                for k, j in enumerate(hold): sticky(f, p[0] - 50 + k * 33, p[1] + 50, "ABCD"[j], pa, 0.75, key=160 + side * 20 + i * 4 + k)
             for i in range(4):
                 for j in range(4):
-                    if i != j:
-                        ph = (u * 0.5 + (i * 4 + j) * 0.07) % 1
-                        bubble(f, lerp(pts[i][0], pts[j][0], ph), lerp(pts[i][1], pts[j][1], ph), a, key=i * 4 + j)
-            f.text(315, 560, "debate: answers and reasons", hand(24, True), PURP, a * seg(u, 1, 2), "mm")
-        else:
-            for i in range(4):
-                for j in range(4):
-                    if i != j:
-                        ph = clamp((u - 11 - i * 0.4) / 2.2)
-                        if 0 < ph < 1: sticky(f, lerp(pts[i][0], pts[j][0], ph), lerp(pts[i][1], pts[j][1], ph), L[i], a, 0.75, key=i)
-            f.text(315, 560, "fact forwarding: the facts, verbatim", hand(24, True), GREEN, a * seg(u, 11, 12), "mm")
-        lv = 3 if (fw and u > 14) else 2
-        stairs(f, 640, 430, a, 3, w=180, hs=(60, 110, 160), labels=False, key=120)
-        mx = 640 + (lv - 1) * 180 + 90; my = 430 - (60, 110, 160)[lv - 1] - 40
-        smiley(f, mx, my, a, 0.6, "happy" if lv == 3 else "neutral", key=130)
-        if not fw:
-            f.text(910, 500, "0.688 accuracy vs 0.703 pass@n", hand(24, True), PURP, a * seg(u, 3, 4), "mm")
-            f.text(910, 534, "stuck at level 2", hand(22, light=True), GREY, a * seg(u, 3, 4), "mm")
-        else:
-            f.text(910, 500, "0.959 accuracy vs 0.649 pass@n", hand(24, True), GREEN, a * seg(u, 14, 15), "mm")
-            f.text(910, 534, "31 points above pass@n, level 3", hand(22, True), INK, a * seg(u, 14.5, 15.5), "mm")
-        say(f, u, 16, 22.2, "When everyone sees the whole task, debate does not beat the vote.", y=650, size=24, col=GREY, bold=False)
-    elif t < 84.5:                                # S5
-        u = t - 66; a = seg(u, 0.2, 1.0) * (1 - seg(u, 17.6, 18.4))
-        heading(f, u, 0, 18.4, "Organization emerges, and it costs tokens")
-        f.text(70, 115, "each agent may read one message, and may give that budget away", hand(22, light=True), GREY, a, "la")
-        hub = (360, 360); oth = [(170, 230), (170, 490), (550, 230)]
-        smiley(f, *hub, a, 1.15, "happy" if u > 7 else "neutral", key=150)
-        for i, p in enumerate(oth): smiley(f, *p, a, 0.85, key=151 + i)
+                    if i == j: continue
+                    if side == 0:
+                        ph = (u * 0.45 + (i * 4 + j) * 0.07) % 1
+                        if (i + j) % 2: bubble(f, lerp(pts[i][0], pts[j][0], ph), lerp(pts[i][1], pts[j][1], ph), pa, key=i * 4 + j)
+                    else:
+                        ph = clamp((u - 5 - i * 0.35) / 2.2)
+                        if 0 < ph < 1: sticky(f, lerp(pts[i][0], pts[j][0], ph), lerp(pts[i][1], pts[j][1], ph), "ABCD"[i], pa, 0.6, key=i)
+        f.text(345, 500, "0.688 accuracy vs 0.703 pass@n: level 2", hand(22, True), PURP, a * seg(u, 3, 3.8), "mm")
+        f.text(935, 500, "0.959 accuracy vs 0.649 pass@n: level 3", hand(22, True), GREEN, a * seg(u, 9, 9.8), "mm")
+        takeaway(f, u, 10.5, 16, [("Passing facts on lifts the group 31 points above pass@n at equal budget,", INK),
+                                  ("and above one agent given every fact at the same budget.", INK)], y=580)
+    elif t < 81.5:                                 # 6 organization
+        u = t - 67.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 13.3, 14))
+        heading(f, u, 0, 14, "Organization emerges, and it costs tokens")
+        panel(f, 70, 110, 620, 470, "each agent may read one message, and may give that budget away", a, 200)
+        hub = (345, 300); oth = [(170, 190), (170, 410), (520, 190)]
+        smiley(f, *hub, a, 0.95, "happy" if u > 6.5 else "neutral", key=210)
+        for i, p in enumerate(oth): smiley(f, *p, a, 0.62, key=211 + i)
         for i, p in enumerate(oth):
-            ph = clamp((u - 2 - i * 0.5) / 2.2)
-            if 0 < ph < 1: coin(f, lerp(p[0], hub[0], ph), lerp(p[1], hub[1], ph), "+1", a, key=160 + i)
-            ph2 = clamp((u - 5.2 - i * 0.4) / 2)
-            if 0 < ph2 < 1: sticky(f, lerp(p[0], hub[0], ph2), lerp(p[1], hub[1], ph2), "BCD"[i], a, 0.8, key=170 + i)
-        f.text(hub[0], hub[1] + 70, "a hub reads every fact", hand(22, True), RED, a * seg(u, 7, 8), "mm")
-        f.text(900, 200, "+18 points", hand(56, True), GREEN, a * seg(u, 8, 9), "mm")
-        f.text(900, 248, "over a group without transfers", hand(22, light=True), GREY, a * seg(u, 8, 9), "mm")
-        c = seg(u, 10, 12)
-        f.srect(720, 300, 720 + 360 * 0.67 * c, 330, INK, (246, 206, 200), a * c, 2, 180)
-        f.srect(720 + 360 * 0.67 * c, 300, 720 + 360 * c, 330, INK, GREENF, a * c, 2, 181)
-        f.text(720 + 120, 352, "coordination", hand(20, True), RED, a * c, "mm"); f.text(720 + 300, 352, "work", hand(20, True), GREEN, a * c, "mm")
-        f.text(900, 392, "about two thirds of the tokens go to coordination", hand(21, light=True), GREY, a * c, "mm")
-        n = seg(u, 13, 14)
-        f.srect(760, 430, 830, 520, INK, (255, 255, 255), a * n, 2, 182)
-        for k in range(4): f.sline(772, 450 + k * 17, 818, 450 + k * 17, LIGHT, a * n, 2, key=183 + k, passes=1)
-        f.text(850, 450, "a prompt the model writes from the rules", hand(21, True), INK, a * n, "la")
-        f.text(850, 480, "describes the same hub and reaches level 3", hand(21, True), INK, a * n, "la")
-        f.text(850, 510, "at less than half the budget (descriptive)", hand(21, light=True), GREY, a * n, "la")
-    elif t < 102.5:                               # S6
-        u = t - 84; a = seg(u, 0.2, 1.0) * (1 - seg(u, 17.6, 18.4))
-        heading(f, u, 0, 18.4, "The group trains its next generation")
-        steps = ["play fresh tasks", "check, no labels", "train candidates", "select", "confirm", "release"]
-        cx, cy, R = 290, 360, 135
-        for i, s in enumerate(steps):
-            ang = -math.pi / 2 + i / 6 * 2 * math.pi; x, y = cx + R * math.cos(ang), cy + R * math.sin(ang)
-            on = int((u * 1.1) % 6) == i
-            f.scircle(x, y, 10, BLUE if on else GREY, YEL if on else (255, 255, 255), a, 2, key=200 + i)
-            right = math.cos(ang) >= -0.1
-            f.text(x + (18 if right else -18), y, s, hand(19, on), INK if on else GREY, a, "lm" if right else "rm")
-        smiley(f, cx, cy, a, 0.9, key=210)
-        charts = [("PlanBench", [0.613, 0.857, 0.937, 0.940, 0.950], 0, 1, BLUE, "0.613 to 0.950"),
-                  ("HiddenBench (T3k)", [0.509, 0.713, 0.791, 0.811, 0.845, 0.886], 0.4, 1, PURP, "0.509 to 0.886"),
-                  ("Hanabi, score / 25", [0, 0.678, 2.953, 4.110, 4.420, 4.523, 4.482], 0, 5, RED, "0 to 4.5")]
+            ph = clamp((u - 1.5 - i * 0.5) / 2.0)
+            if 0 < ph < 1: coin(f, lerp(p[0], hub[0], ph), lerp(p[1], hub[1], ph), "+1", a, key=220 + i)
+            ph2 = clamp((u - 4.5 - i * 0.4) / 1.8)
+            if 0 < ph2 < 1: sticky(f, lerp(p[0], hub[0], ph2), lerp(p[1], hub[1], ph2), "BCD"[i], a, 0.7, key=230 + i)
+        f.text(hub[0], hub[1] + 60, "a hub forms and reads every fact", hand(19, True), RED, a * seg(u, 6.5, 7.3), "mm")
+        f.text(920, 170, "+18 points", hand(50, heavy=True), GREEN, a * seg(u, 7, 7.8), "mm")
+        f.text(920, 212, "over a group without transfers", hand(20), GREY, a * seg(u, 7, 7.8), "mm")
+        c = seg(u, 8.5, 10)
+        f.srect(740, 255, 740 + 360 * 0.67 * c, 283, INK, (246, 206, 200), a * c, 2, 240)
+        f.srect(740 + 360 * 0.67 * c, 255, 740 + 360 * c, 283, INK, GREENF, a * c, 2, 241)
+        f.text(860, 302, "coordination", hand(18, True), RED, a * c, "mm"); f.text(1040, 302, "work", hand(18, True), GREEN, a * c, "mm")
+        n = seg(u, 10, 11)
+        f.srect(700, 345, 752, 415, INK, (255, 255, 255), a * n, 2, 242)
+        for k in range(4): f.sline(710, 360 + k * 13, 742, 360 + k * 13, LIGHT, a * n, 2, key=243 + k, passes=1)
+        f.text(770, 362, "a prompt the model writes from the rules", hand(19, True), INK, a * n, "la")
+        f.text(770, 390, "describes the same hub: level 3 at under", hand(19, True), INK, a * n, "la")
+        f.text(770, 418, "half the budget (descriptive)", hand(19, True), INK, a * n, "la")
+        takeaway(f, u, 11, 14, [("Identical agents organize themselves, but coordination eats about two thirds of the tokens.", INK)], y=560)
+    elif t < 97.5:                                 # 7 improving without labels
+        u = t - 81.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 15.3, 16))
+        heading(f, u, 0, 16, "Improving without labels")
+        def mini_group(x, y, aa, key):
+            for k, (dx, dy) in enumerate([(-16, 8), (0, -10), (16, 8)]): smiley(f, x + dx, y + dy, aa, 0.36, key=key + k)
+        mini_group(140, 175, a, 300); f.text(140, 222, "generation g", hand(16), GREY, a, "mm")
+        f.arrow(185, 175, 290, 175, INK, a, 2, key=303); f.text(237, 155, "plays fresh tasks", hand(14), GREY, a, "mm")
+        f.srect(300, 140, 360, 210, INK, (255, 255, 255), a, 2, 304); f.check(330, 175, GREEN, a, 0.8)
+        f.text(330, 228, "automatic check, no labels", hand(14), GREY, a, "mm")
+        f.arrow(370, 175, 480, 175, INK, a * seg(u, 1, 2), 2, key=305); f.text(425, 155, "train candidates", hand(14), GREY, a * seg(u, 1, 2), "mm")
+        f.srect(490, 140, 600, 210, INK, YEL, a * seg(u, 2, 3), 2, 306); f.text(545, 175, "beats g on", hand(14, True), INK, a * seg(u, 2, 3), "mm"); f.text(545, 193, "fresh tasks?", hand(14, True), INK, a * seg(u, 2, 3), "mm")
+        f.arrow(610, 175, 720, 175, GREEN, a * seg(u, 3, 4), 2, key=307); f.text(665, 155, "release", hand(14, True), GREEN, a * seg(u, 3, 4), "mm")
+        mini_group(770, 175, a * seg(u, 3, 4), 308); f.text(770, 222, "generation g+1", hand(16), GREY, a * seg(u, 3, 4), "mm")
+        g = seg(u, 4, 5); f.sline(140, 128, 770, 128, BLUE, a * g, 2, key=311, dash=6); f.text(455, 112, "generation after generation", hand(16, True), BLUE, a * g, "mm")
+        rows = [("Single-agent self-training", [0.396, 0.563, 0.658], LIGHT, (226, 228, 230)), ("Collective training (ours)", [0.703, 0.755, 0.836], GREEN, GREENF)]
+        for k, (nm, vals, col, fillc) in enumerate(rows):
+            y0 = 275 + k * 150; r = seg(u, 5 + k * 2.5, 6 + k * 2.5)
+            f.text(80, y0, nm, hand(20, True), INK, a * r, "la")
+            for j, v in enumerate(vals):
+                x = 140 + j * 210; q = seg(u, 5.5 + k * 2.5 + j * 0.5, 6.3 + k * 2.5 + j * 0.5)
+                mini_group(x, y0 + 60, a * q, 320 + k * 10 + j)
+                f.srect(x + 42, y0 + 115 - 100 * v * q, x + 70, y0 + 115, INK, fillc, a * q, 1.8, 340 + k * 10 + j)
+                f.text(x + 56, y0 + 132, f"{v:.3f}", hand(16, True), INK, a * q, "mm")
+                f.text(x, y0 + 100, f"G{j + 1}", hand(15), GREY, a * q, "mm")
+        f.text(820, 360, "HiddenBench, chain T3, same caps", hand(18), GREY, a * seg(u, 6, 7), "la")
+        f.text(820, 395, "four agents trained on their own", hand(18), GREY, a * seg(u, 6, 7), "la")
+        f.text(820, 420, "solo outputs stay far below", hand(18), GREY, a * seg(u, 6, 7), "la")
+        takeaway(f, u, 11, 16, [("Trained on its own verified outputs, the group learns what its agents cannot learn alone.", GREEN)], y=640)
+    elif t < 107.5:                                # 8 public benchmarks
+        u = t - 97.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 9.3, 10))
+        heading(f, u, 0, 10, "Recursion on public benchmarks")
+        charts = [("PlanBench", [0.613, 0.857, 0.937, 0.940, 0.950], 0, 1, BLUE, "0.613 to 0.950, four generations"),
+                  ("HiddenBench (T3k)", [0.509, 0.713, 0.791, 0.811, 0.845, 0.886], 0.4, 1, PURP, "0.509 to 0.886, five generations"),
+                  ("Hanabi, score out of 25", [0, 0.678, 2.953, 4.110, 4.420, 4.523, 4.482], 0, 5, RED, "0 to 4.5, six generations")]
         for k, (nm, v, lo, hi, col, lab) in enumerate(charts):
-            x0, y0, cw, ch = 640 + k * 210, 220, 170, 210
-            f.text(x0, y0 - 22, nm, hand(21, True), INK, a, "la")
-            f.sline(x0, y0 + ch, x0 + cw, y0 + ch, INK, a, 2, key=220 + k); f.sline(x0, y0, x0, y0 + ch, INK, a, 2, key=230 + k)
-            g = seg(u, 2 + k * 1.2, 9 + k * 1.2) * (len(v) - 1)
+            x0, y0, cw, ch = 100 + k * 390, 170, 300, 250
+            f.text(x0, y0 - 24, nm, hand(22, True), INK, a, "la")
+            f.sline(x0, y0 + ch, x0 + cw, y0 + ch, INK, a, 2, key=400 + k); f.sline(x0, y0, x0, y0 + ch, INK, a, 2, key=410 + k)
+            gg = seg(u, 0.8 + k * 0.6, 5 + k * 0.6) * (len(v) - 1)
             P = [(x0 + i * cw / (len(v) - 1), y0 + ch - (v[i] - lo) / (hi - lo) * ch * 0.92) for i in range(len(v))]
             for i in range(len(v) - 1):
-                if g > i:
-                    q = clamp(g - i); f.sline(P[i][0], P[i][1], lerp(P[i][0], P[i + 1][0], q), lerp(P[i][1], P[i + 1][1], q), col, a, 3.5, key=240 + k * 10 + i, passes=1)
+                if gg > i:
+                    q = clamp(gg - i); f.sline(P[i][0], P[i][1], lerp(P[i][0], P[i + 1][0], q), lerp(P[i][1], P[i + 1][1], q), col, a, 3.5, key=420 + k * 10 + i, passes=1)
             for i, p in enumerate(P):
-                if g >= i: f.dot(p[0], p[1], 5, col, a)
-            f.text(x0 + cw / 2, y0 + ch + 30, lab, hand(22, True), col, a * seg(u, 9 + k, 10 + k), "mm")
-        say(f, u, 11, 18.2, "Trained only on outputs their own protocol accepts, every released generation", y=600, size=24)
-        say(f, u, 11, 18.2, "beats its predecessor on unseen tasks, for four to six generations.", y=636, size=24)
-    else:                                         # S7
-        u = t - 102; a = seg(u, 0.2, 1.2) * (1 - seg(u, 7.4, 8.0))
-        for i in range(4): smiley(f, 470 + i * 110, 200, a, 0.7, "happy", key=300 + i)
-        f.text(W / 2, 330, "A group outperforms its members when it moves information", hand(32, True), INK, a, "mm")
-        f.text(W / 2, 376, "more efficiently than it spends tokens on coordination,", hand(32, True), INK, a, "mm")
-        f.text(W / 2, 422, "and it can learn to do so from its own work.", hand(32, True), BLUE, a, "mm")
-        f.text(W / 2, 520, "lixuan27.github.io/RCI", hand(26, light=True), GREY, a, "mm")
+                if gg >= i: f.dot(p[0], p[1], 5, col, a)
+            f.text(x0 + cw / 2, y0 + ch + 32, lab, hand(19, True), col, a * seg(u, 5 + k * 0.6, 5.8 + k * 0.6), "mm")
+        takeaway(f, u, 6.5, 10, [("Every released generation beats its predecessor on unseen tasks.", INK)], y=560)
+    else:                                          # 9 summary
+        u = t - 107.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 8.4, 9))
+        heading(f, u, 0, 9, "Summary")
+        items = [("Measure fairly: grade a group against independent agents at the same token budget", "scale"),
+                 ("Move information: interaction pays when it moves facts that no agent holds alone", "fact"),
+                 ("Organize cheaply: hubs emerge on their own, but coordination costs tokens", "coin"),
+                 ("Improve without labels: gated generations climb for four to six generations", "loop")]
+        for k, (s, icon) in enumerate(items):
+            y = 150 + k * 78; r = a * seg(u, 0.5 + k * 0.8, 1.2 + k * 0.8)
+            x = 150
+            if icon == "scale":
+                f.sline(x - 22, y, x + 22, y, INK, r, 2.5, key=500); f.sline(x, y - 16, x, y + 14, INK, r, 2.5, key=501)
+                f.arc(x - 22, y + 2, 9, 0, 180, INK, r, 2); f.arc(x + 22, y + 2, 9, 0, 180, INK, r, 2)
+            elif icon == "fact": sticky(f, x, y, "A", r, 1.0, key=502)
+            elif icon == "coin": coin(f, x, y, "+1", r, key=503)
+            else:
+                f.arc(x, y, 16, 200, 520, BLUE, r, 2.5); f.sline(x + 13, y - 12, x + 20, y - 3, BLUE, r, 2.5, passes=1)
+            f.text(x + 46, y, s, hand(23, True), INK, r, "lm")
+        for i in range(5): smiley(f, 470 + i * 85, 520, a * seg(u, 4, 5), 0.6, "happy", key=520 + i)
+        f.text(W / 2, 600, "lixuan27.github.io/RCI", hand(22), GREY, a * seg(u, 4.5, 5.5), "mm")
     return f.out()
 
 # ------------------------------------------------------------------ ladder (~30 s)
@@ -340,14 +398,14 @@ def chain_video(t):
     f.text(gx0 + 295, 556, "Fresh seeds every round stop selection on the noise of a reused set.", hand(21, light=True), GREY, a * seg(t, 31.5, 32.5), "mm")
     return f.out()
 
-SCENES = {"overview": (overview, 110), "ladder": (ladder_video, 30), "chain": (chain_video, 36)}
+SCENES = {"overview": (overview, 116.5), "ladder": (ladder_video, 30), "chain": (chain_video, 36)}
 SCRATCH = "."
 
 def render(name, out, preview=None):
     fn, dur = SCENES[name]
     if preview is not None:
         fn(preview).save(out); return
-    cmd = [imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
+    cmd = [imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{OW}x{OH}", "-r", str(FPS), "-i", "-",
            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "21", "-preset", "medium", "-movflags", "+faststart", out]
     p = subprocess.Popen(cmd, stdin=subprocess.PIPE, stderr=subprocess.DEVNULL)
     n = int(dur * FPS)

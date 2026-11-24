@@ -124,14 +124,14 @@
   </figure>
 
   <section class="prose">
-    <h2 class="sec">What the public benchmarks show</h2>
-    <p>Running these gated chains from four Qwen3.5-9B agents, we see steady recursion on three public benchmarks that test different abilities. On PlanBench, all four rounds release a generation, and the group's accuracy on Blocksworld rises from 0.613 to 0.950. On HiddenBench, the group rises from 0.509 to 0.886 over five generations. On Hanabi, the base agents score zero, yet six generations raise the challenge score to 4.5 out of 25, while a control chain that never trains on its own games stays near 2.9. In every case, each released generation beats its predecessor on unseen tasks.</p>
+    <h2 class="sec">Recursion on PlanBench, HiddenBench and Hanabi</h2>
+    <p>Running these gated chains from four Qwen3.5-9B agents, we see steady recursion on three benchmarks that test different abilities. On PlanBench, all four rounds release a generation, and the group's accuracy on Blocksworld rises from 0.613 to 0.950. On HiddenBench, the group rises from 0.509 to 0.886 over five generations. On Hanabi, the base agents score zero, yet six generations raise the challenge score to 4.5 out of 25, while a control chain that never trains on its own games stays near 2.9. In every case, each released generation beats its predecessor on unseen tasks.</p>
   </section>
   <figure>
     <div class="video"><video src="video/clip_bench.mp4" poster="video/clip_bench.jpg" controls muted loop preload="metadata" playsinline></video></div>
-    <figcaption><b>Recursion on public benchmarks.</b> Accuracy or score of each released generation on PlanBench, HiddenBench and Hanabi.</figcaption>
+    <figcaption><b>Recursion on three benchmarks.</b> Accuracy or score of each released generation on PlanBench, HiddenBench and Hanabi.</figcaption>
   </figure>
-  <figure><img src="assets/fig/fig10.png" alt="Every round of the public-benchmark chains"><figcaption><b>Figure 10.</b> Every round of the public-benchmark chains, including the flat rounds that keep the current generation.</figcaption></figure>
+  <figure><img src="assets/fig/fig10.png" alt="Every round of the three chains"><figcaption><b>Figure 10.</b> Every round of the three chains, including the flat rounds that keep the current generation.</figcaption></figure>
 
   <section class="prose">
     <h2 class="sec">Explore the results</h2>

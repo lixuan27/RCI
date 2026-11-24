@@ -32,13 +32,12 @@
   </div>
   <nav class="toc">
     <a href="#s1"><span class="n">1</span>Grading a group at equal cost</a>
-    <a href="#s5"><span class="n">5</span>Recursion continues on public benchmarks</a>
+    <a href="#s5"><span class="n">5</span>What we learned</a>
     <a href="#s2"><span class="n">2</span>Interaction helps when it moves facts</a>
-    <a href="#s6"><span class="n">6</span>What we learned</a>
-    <a href="#s3"><span class="n">3</span>How identical agents organize themselves</a>
     <a href="#try"><span class="n"></span>Try it yourself</a>
-    <a href="#s4"><span class="n">4</span>Groups that train their next generation</a>
+    <a href="#s3"><span class="n">3</span>How identical agents organize themselves</a>
     <a href="#cite"><span class="n"></span>Citation</a>
+    <a href="#s4"><span class="n">4</span>Recursive collective intelligence</a>
   </nav>
 </header>
 
@@ -73,7 +72,7 @@
     <p>Fact forwarding reaches 0.959 at a budget of 6.2 agents. This places it 31 points above pass@n of independent agents and even above one agent given every fact at the same budget (0.942). Combining shared context with forwarding raises accuracy further to 0.972. Across model scales, forwarding stays above pass@n at 9B, 27B and 35B-A3B.</p></div>
 </article>
 <figure class="w"><img src="../assets/fig/fig5.png" alt="Protocol families on the ladder"><figcaption><b>Figure 5.</b> (a) Protocol families on the ladder. (b) Evidence protocols rise above pass@n when the facts are split. (c) Prior methods stay at the vote when every agent sees the whole question.</figcaption></figure>
-<figure class="w"><img src="../assets/fig/fig6.png" alt="Qualitative results"><figcaption><b>Figure 6.</b> (a) The vote buries the one right member. (b) With shared context, an argument misleads even the member holding every fact, whereas forwarded facts lead all four members to the answer. (c) Members hand their reading budget to a hub. (d) A prompt written from the rules already describes the same hub. Italics are verbatim.</figcaption></figure>
+<figure class="w"><img src="../assets/fig/fig6.png" alt="Qualitative results"><figcaption><b>Figure 6.</b> (a) The vote buries the one right member. (b) With shared context, an argument misleads even the member holding every fact, whereas forwarded facts lead all four members to the answer. (c) Members hand their reading budget to a hub. (d) A prompt written from the rules already describes the same hub. Boxed text is quoted verbatim.</figcaption></figure>
 
 <article class="prose">
   <h2 class="sec" id="s3"><span class="num">3</span>How identical agents organize themselves</h2>
@@ -86,7 +85,7 @@
 <figure class="w"><img src="../assets/fig/fig9.png" alt="Accuracy and cost to level 3"><figcaption><b>Figure 9.</b> Each protocol is compared with a reference on the same pool. Evidence protocols stay above pass@n even at the reference's budget, whereas designed and self-prompted organizations need their own lower budget to exceed it.</figcaption></figure>
 
 <article class="prose">
-  <h2 class="sec" id="s4"><span class="num">4</span>Groups that train their next generation</h2>
+  <h2 class="sec" id="s4"><span class="num">4</span>Recursive collective intelligence</h2>
   <div class="callout def"><div class="lab">Definition · RCI</div>
     <p>A group is <b>recursively collectively intelligent</b> when its next generation, trained only on the group's own output, becomes smarter on the same ladder at equal cost.</p></div>
   <p>On SplitBench, our hidden-profile benchmark, each generation trains on its parent group's protocol-verified turns. We then grade it on 196 held-out tasks against pass@n of base-model agents. The first generation improves the group at every scale, and a second generation climbs further.</p>
@@ -97,7 +96,6 @@
   </ul>
   <p>We think the gain belongs to the group itself. In the first step, trained 9B agents working alone stay as accurate as before, while their group's accuracy rises. A related question arises when a task scores only the group's joint deliverable. In that setting, Shapley credit charges each wrong claim to its author, and it is the only credit rule that raises held-out precision above the untrained group.</p>
 
-  <h2 class="sec" id="s5"><span class="num">5</span>Recursion continues on public benchmarks</h2>
   <p>To test longer horizons, we run <b>gated chains</b> that start from four Qwen3.5-9B agents. In each round, the current generation plays fresh tasks while an automatic check accepts outputs without answer labels. Candidates then train from the current weights, and the best candidate is released once its paired gain on fresh confirmation tasks exceeds a threshold.</p>
 </article>
 <figure class="w">
@@ -111,11 +109,11 @@
     <li><b>Hanabi.</b> The base agents lose all their lives and score zero. Over six generations, each generation outperforms its predecessor on fresh deals, lifting the challenge score to 4.5 out of 25. A control chain that trains on games of a fixed generation levels off near 2.9.</li>
   </ul>
 </article>
-<figure class="w"><img src="../assets/fig/fig10.png" alt="Recursion on public benchmarks"><figcaption><b>Figure 10.</b> (a) Accuracy across PlanBench generations. (b) All eight HiddenBench rounds, including the flat ones. (c) Hanabi releases compared with the non-recursive control.</figcaption></figure>
+<figure class="w"><img src="../assets/fig/fig10.png" alt="Recursion on three benchmarks"><figcaption><b>Figure 10.</b> (a) Accuracy across PlanBench generations. (b) All eight HiddenBench rounds, including the flat ones. (c) Hanabi releases compared with the non-recursive control.</figcaption></figure>
 <figure class="w"><img src="../assets/fig/fig11.png" alt="HiddenBench details"><figcaption><b>Figure 11.</b> (a) Collective training compared with single-agent self-training. (b) Protocols evaluated with the same base model on the 65 official tasks. (c) Groups reported by the benchmark's authors, compared with one agent that holds every fact.</figcaption></figure>
 
 <article class="prose">
-  <h2 class="sec" id="s6"><span class="num">6</span>What we learned</h2>
+  <h2 class="sec" id="s5"><span class="num">5</span>What we learned</h2>
   <ul>
     <li><b>Information structure shapes both inference and training.</b> Interaction exceeds pass@n when it moves information held by different agents. The same condition reappears when a group trains on its own work, which suggests that one principle governs both settings.</li>
     <li><b>Organization has a price.</b> Identical agents build hubs and relays on their own, and coordinating these structures can consume most of the budget. Writing the organization down in a prompt recovers much of this cost.</li>
@@ -141,7 +139,7 @@
 <div class="toc-float" id="tocf"><button aria-label="Contents" onclick="document.getElementById('tocf').classList.toggle('open')">☰</button>
   <div class="panel">
     <a href="#s1">1 · Grading a group at equal cost</a><a href="#s2">2 · Interaction helps when it moves facts</a><a href="#s3">3 · How identical agents organize themselves</a>
-    <a href="#s4">4 · Groups that train their next generation</a><a href="#s5">5 · Recursion continues on public benchmarks</a><a href="#s6">6 · What we learned</a><a href="#cite">Citation</a>
+    <a href="#s4">4 · Recursive collective intelligence</a><a href="#s5">5 · What we learned</a><a href="#cite">Citation</a>
   </div></div>
 <script>
 const bar=document.getElementById('progress'), secs=[...document.querySelectorAll('h2.sec[id]')], links=[...document.querySelectorAll('#tocf .panel a')];

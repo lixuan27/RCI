@@ -293,9 +293,9 @@ def overview(t):
                 f.text(x, y0 + 100, f"G{j + 1}", hand(15), GREY, a * q, "mm")
         f.text(820, 360, "HiddenBench with equal training caps", hand(18), GREY, a * seg(u, 6, 7), "la")
         takeaway(f, u, 11, 16, [("Collective training stays far above single-agent self-training.", GREEN)], y=640)
-    elif t < 107.5:                                # 8 public benchmarks
+    elif t < 107.5:                                # 8 three benchmarks
         u = t - 97.5; a = seg(u, 0.2, 0.9) * (1 - seg(u, 9.3, 10))
-        heading(f, u, 0, 10, "Recursion on public benchmarks")
+        heading(f, u, 0, 10, "Recursion on three benchmarks")
         charts = [("PlanBench", [0.613, 0.857, 0.937, 0.940, 0.950], 0, 1, BLUE, "0.613 to 0.950 in 4 generations"),
                   ("HiddenBench", [0.509, 0.713, 0.791, 0.811, 0.845, 0.886], 0.4, 1, PURP, "0.509 to 0.886 in 5 generations"),
                   ("Hanabi (score / 25)", [0, 0.678, 2.953, 4.110, 4.420, 4.523, 4.482], 0, 5, RED, "0 to 4.5 in 6 generations")]

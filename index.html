@@ -7,84 +7,90 @@
 <meta name="description" content="Recursive Collective Intelligence: Emergence on an Equal-Budget Ladder in Multi-Agent LLM Systems.">
 <meta property="og:title" content="Recursive Collective Intelligence">
 <meta property="og:description" content="When does interaction make a group of LLM agents smarter at equal cost, and can a group improve its next generation from its own work?">
-<meta property="og:image" content="assets/fig/fig1.png">
+<meta property="og:image" content="video/overview_poster.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
 <style>
-  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:12px 0 4px}
-  .stat{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:#fff}
-  .stat .n{font:700 34px var(--serif);color:var(--navy);line-height:1.1}
-  .stat .n.g{color:var(--sage)}
-  .stat .t{font-size:14px;color:var(--ink2);margin-top:6px}
-  .cta{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#25374f,#3d5f7e);color:#fff;border-radius:16px;padding:24px 26px;margin:10px 0}
-  .cta h3{color:#fff;margin:0 0 4px;font-size:22px}
-  .cta p{margin:0;color:#dbe5ee;max-width:620px}
-  .cta .btn{background:#fff;color:var(--navy);border-color:#fff}
-  .abstract{font-family:var(--serif);font-size:18px;line-height:1.7;color:#243042}
+  .head{text-align:center;padding:52px 0 8px}
+  .head h1.title{margin-left:auto;margin-right:auto;max-width:900px}
+  .head .authors,.head .btns{justify-content:center}
+  .head .affils{text-align:center}
+  .sect{padding:8px 0}
+  .sect h2.sec{margin-top:58px}
+  .abstract p{font-size:18.5px}
+  .vcard figcaption{max-width:none}
+  .cta{display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between;border:1px solid var(--line);background:#fff;border-radius:14px;padding:22px 24px;margin:40px 0 0}
+  .cta h3{margin:0 0 4px}
+  .cta p{margin:0;color:var(--ink2);max-width:600px;font-size:15.5px}
 </style>
 </head>
 <body>
 <div class="topbar"><div class="wrap">
   <a class="brand" href="./">RCI<span>.</span></a>
-  <div class="nav-links"><a href="blog/">Blog</a><a href="playground/">Playground</a><a href="https://github.com/lixuan27/RCI-official">Code</a></div>
+  <div class="nav-links"><a class="on" href="./">Project</a><a href="blog/">Blog</a><a href="playground/">Playground</a><a href="https://github.com/lixuan27/RCI-official">Code</a></div>
 </div></div>
 
-<header class="hero"><div class="wrap">
-  <h1>Recursive Collective Intelligence: Emergence on an Equal-Budget Ladder in Multi-Agent LLM Systems</h1>
-  <div class="authors">
-    <span>Lixuan He<sup>1</sup></span><span>Shengqu Cai<sup>1</sup></span><span>Fang Wu<sup>1</sup></span><span>Shikang Zheng<sup>2</sup></span><span>Liwei Jiang<sup>3</sup></span><span>Manling Li<sup>4</sup></span><br>
-    <span>Yi Ma<sup>2</sup></span><span>Li Fei-Fei<sup>1</sup></span><span>Leonidas Guibas<sup>1</sup></span><span>Gordon Wetzstein<sup>1</sup></span><span>Yejin Choi<sup>1</sup></span><span>Yining Hong<sup>1</sup></span>
-  </div>
+<main class="wrap">
+<header class="head">
+  <div class="kicker">Project page</div>
+  <h1 class="title">Recursive Collective Intelligence: Emergence on an Equal-Budget Ladder in Multi-Agent LLM Systems</h1>
+  <div class="authors"><span>Lixuan He<sup>1</sup></span><span>Shengqu Cai<sup>1</sup></span><span>Fang Wu<sup>1</sup></span><span>Shikang Zheng<sup>2</sup></span><span>Liwei Jiang<sup>3</sup></span><span>Manling Li<sup>4</sup></span><span>Yi Ma<sup>2</sup></span><span>Li Fei-Fei<sup>1</sup></span><span>Leonidas Guibas<sup>1</sup></span><span>Gordon Wetzstein<sup>1</sup></span><span>Yejin Choi<sup>1</sup></span><span>Yining Hong<sup>1</sup></span></div>
   <div class="affils"><sup>1</sup>Stanford University &nbsp; <sup>2</sup>University of California, Berkeley &nbsp; <sup>3</sup>NVIDIA &nbsp; <sup>4</sup>Northwestern University</div>
   <div class="btns">
-    <a class="btn off" aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Paper (coming soon)</a>
+    <a class="btn off" aria-disabled="true">Paper (coming soon)</a>
     <a class="btn" href="https://github.com/lixuan27/RCI-official"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.4-4-1.4-.6-1.4-1.4-1.8-1.4-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.6 18.3 5 18.3 5c.7 1.7.3 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5"/></svg>Code</a>
-    <a class="btn ghost" href="blog/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>Blog</a>
-    <a class="btn ghost" href="playground/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/><path d="M9 6h6M6 9v6M18 9v6M9 18h6"/></svg>Interactive playground</a>
+    <a class="btn ghost" href="blog/">Blog</a>
+    <a class="btn ghost" href="playground/">Interactive playground</a>
   </div>
-</div></header>
+</header>
 
-<section style="padding-top:10px"><div class="wrap">
-  <figure style="margin-top:4px"><img src="assets/fig/fig1.png" alt="Accuracy of collective training across generations on PlanBench, HiddenBench and Hanabi">
-    <figcaption><b>Recursive collective intelligence.</b> Each generation trains on its predecessor's verified outputs, without labels or a teacher; diamonds mark released generations. On PlanBench the group exceeds, from G1 on, any final plan of the four base agents. On HiddenBench (chain T3) it rises far above the vote of four base agents and above single-agent self-training with the same caps. On Hanabi (right axis) the recursive chain rises above a non-recursive control.</figcaption></figure>
-</div></section>
+<figure class="w" style="margin-top:28px">
+  <div class="video"><video src="video/overview.mp4" poster="video/overview_poster.jpg" controls preload="metadata" playsinline></video></div>
+  <figcaption style="text-align:center;max-width:none"><b>The idea in under two minutes.</b> Equal-budget grading, when interaction pays, emergent organization, and groups that train their next generation.</figcaption>
+</figure>
 
-<section><div class="wrap prose">
-  <h2 class="sec">Abstract</h2>
-  <p class="abstract">Large language models increasingly work as teams of agents, and a team is expected to solve problems beyond the reach of any single member. Most evaluations credit a team for outperforming a single agent, without accounting for the additional computation: a team may consume many times the tokens of one agent, and a plain vote over independent answers already explains most of the reported gain. Two questions therefore remain open: when does interaction itself make a group smarter, and can a group improve its next generation by learning from its own work? We answer both with the <b>equal-budget ladder</b>, which grades a group against independent agents at three levels: outperforming a single agent, a compute-matched majority vote, and compute-matched pass@n. On this ladder we define <b>Recursive Collective Intelligence (RCI)</b> as a group whose own output, without a teacher or external labels, makes its next generation smarter at equal cost. Three findings follow. First, interaction improves collective intelligence when it moves information across agents: forwarding split facts lifts groups above pass@n by up to 31 percentage points across three model scales. Second, organization emerges spontaneously: identical 27B agents form hubs and improve accuracy by 18 percentage points; encoding their organization in a prompt enables them to reach level 3 at less than half the token budget in a descriptive comparison. Third, groups recursively improve themselves: two generations of label-free training progressively climb the ladder, with the second 9B generation surpassing both pass@n and a control trained on base-model turns. A group therefore outperforms its members when it forwards useful information more efficiently than it spends tokens on coordination, and learns to do so from its own work.</p>
-</div></section>
-
-<section><div class="wrap">
-  <div class="prose"><h2 class="sec">Findings at a glance</h2></div>
-  <div class="stat-grid">
-    <div class="stat"><div class="n g">+31 pp</div><div class="t">Fact forwarding above pass@n<sub>B</sub> of independent agents at equal budget (Qwen3.8-27B, HiddenBench).</div></div>
-    <div class="stat"><div class="n">+18 pp</div><div class="t">Accuracy gained when identical 27B agents form hubs on their own by giving their reading budget away.</div></div>
-    <div class="stat"><div class="n">0.613 → 0.950</div><div class="t">PlanBench group accuracy over four label-free generations, each released on fresh problems.</div></div>
-    <div class="stat"><div class="n">0.509 → 0.886</div><div class="t">HiddenBench group accuracy over five generations of chain T3k; collective training stays above single-agent self-training.</div></div>
+<section class="sect">
+  <div class="stats">
+    <div><div class="n g">+31 pts</div><div class="t">Fact forwarding above pass@n<sub>B</sub> of independent agents at equal budget (Qwen3.8-27B, HiddenBench)</div></div>
+    <div><div class="n">+18 pts</div><div class="t">Accuracy when identical 27B agents form hubs on their own by giving their reading budget away</div></div>
+    <div><div class="n">0.613 → 0.950</div><div class="t">PlanBench group accuracy over four label-free generations</div></div>
+    <div><div class="n">0.509 → 0.886</div><div class="t">HiddenBench over five generations; collective training stays above single-agent self-training</div></div>
   </div>
-</div></section>
+</section>
 
-<section><div class="wrap">
-  <div class="prose"><h2 class="sec">The equal-budget ladder</h2>
-  <p>A group that spends the tokens of <i>n</i><sub>B</sub> independent agents is compared with those agents. It reaches level 1 when it outperforms a single agent, level 2 when it outperforms their majority vote, and level 3 when it exceeds their pass@<i>n</i><sub>B</sub>, the chance that any of them is right. No vote, judge or verifier that selects among independent answers can exceed pass@<i>n</i>, so a group at level 3 must have produced correct answers through what its members exchanged.</p></div>
-  <figure><img src="assets/fig/fig2.png" alt="The equal-budget ladder with four protocols placed on it"><figcaption><b>The equal-budget ladder.</b> Four Qwen3.8-27B protocols on HiddenBench, each placed at the highest level it reaches.</figcaption></figure>
-  <figure><img src="assets/fig/fig3.png" alt="Overview of one generation"><figcaption><b>One generation.</b> Copies of one policy interact, commit to an answer, are compared with independent agents at the same token cost, and the next generation trains on the outputs the group's own protocol accepts.</figcaption></figure>
-</div></section>
+<section class="sect col abstract">
+  <h2 class="sec" style="margin-top:30px">Abstract</h2>
+  <div class="prose"><p>Large language models increasingly work as teams of agents, and a team is expected to solve problems beyond the reach of any single member. Most evaluations credit a team for outperforming a single agent, without accounting for the additional computation: a team may consume many times the tokens of one agent, and a plain vote over independent answers already explains most of the reported gain. Two questions therefore remain open: when does interaction itself make a group smarter, and can a group improve its next generation by learning from its own work? We answer both with the <b>equal-budget ladder</b>, which grades a group against independent agents at three levels: outperforming a single agent, a compute-matched majority vote, and compute-matched pass@n. On this ladder we define <b>Recursive Collective Intelligence (RCI)</b> as a group whose own output, without a teacher or external labels, makes its next generation smarter at equal cost. Three findings follow. First, interaction improves collective intelligence when it moves information across agents: forwarding split facts lifts groups above pass@n by up to 31 percentage points across three model scales. Second, organization emerges spontaneously: identical 27B agents form hubs and improve accuracy by 18 percentage points; encoding their organization in a prompt enables them to reach level 3 at less than half the token budget in a descriptive comparison. Third, groups recursively improve themselves: two generations of label-free training progressively climb the ladder, with the second 9B generation surpassing both pass@n and a control trained on base-model turns. A group therefore outperforms its members when it forwards useful information more efficiently than it spends tokens on coordination, and learns to do so from its own work.</p></div>
+</section>
 
-<section><div class="wrap">
-  <div class="cta"><div><h3>Try the ladder yourself</h3><p>Choose what agents see, what they exchange and how they organize, and watch the token budget, accuracy, ladder level and information flow change. Every option is a measured configuration from the paper.</p></div><a class="btn" href="playground/">Open the playground →</a></div>
-</div></section>
+<section class="sect">
+  <div class="col"><h2 class="sec">Two concepts, animated</h2></div>
+  <div class="grid2">
+    <figure class="vcard" style="margin:0"><div class="video"><video src="video/ladder.mp4" poster="video/ladder_poster.jpg" controls muted loop preload="metadata" playsinline></video></div>
+      <figcaption><b>The equal-budget ladder.</b> Ten 27B protocols on HiddenBench by their margin over pass@n<sub>B</sub>: arguments stay at level 2, facts rise above pass@n.</figcaption></figure>
+    <figure class="vcard" style="margin:0"><div class="video"><video src="video/chain.mp4" poster="video/chain_poster.jpg" controls muted loop preload="metadata" playsinline></video></div>
+      <figcaption><b>The gated generation chain.</b> Each candidate meets the current generation on fresh seeds and is released only when its paired gain exceeds the threshold.</figcaption></figure>
+  </div>
+</section>
 
-<section><div class="wrap">
-  <div class="prose"><h2 class="sec">Recursion on public benchmarks</h2>
-  <p>A gated chain releases a new generation only when it outperforms its predecessor on tasks that no earlier round has used. Starting from four Qwen3.5-9B agents, the chains improve for four to six successive generations on PlanBench, HiddenBench and Hanabi.</p></div>
-  <figure><img src="assets/fig/fig4.png" alt="The gated generation chain"><figcaption><b>The gated generation chain.</b> Play fresh tasks, check outputs without answer labels, train candidates from the current weights, select, confirm on fresh tasks, and release only when the paired gain exceeds the threshold.</figcaption></figure>
-  <figure><img src="assets/fig/fig10.png" alt="Recursion results on PlanBench, HiddenBench and Hanabi"><figcaption><b>Every round.</b> PlanBench generations 0 to 4, all eight HiddenBench (T3k) rounds with their flat rounds, and each Hanabi release against its predecessor.</figcaption></figure>
-  <p class="prose" style="margin-top:8px">Read the full story in the <a href="blog/">blog post</a>.</p>
-</div></section>
+<section class="sect">
+  <div class="col"><h2 class="sec">Method</h2>
+  <div class="prose"><p>A group that spends the tokens of <i>n</i><sub>B</sub> independent agents is compared with those agents. No vote, judge or verifier that selects among independent answers can exceed pass@<i>n</i>, so a group at level 3 must have produced correct answers through what its members exchanged.</p></div></div>
+  <figure class="w"><img src="assets/fig/fig2.png" alt="Equal-budget ladder"><figcaption><b>Figure 2.</b> The equal-budget ladder, with four Qwen3.8-27B protocols on HiddenBench placed at the highest level each reaches.</figcaption></figure>
+  <figure class="w"><img src="assets/fig/fig3.png" alt="Overview of one generation"><figcaption><b>Figure 3.</b> One generation: interact, commit, compare with independent agents at equal cost, and train the next generation on outputs the protocol accepts.</figcaption></figure>
+  <figure class="w"><img src="assets/fig/fig4.png" alt="Gated generation chain"><figcaption><b>Figure 4.</b> The gated generation chain used on public benchmarks.</figcaption></figure>
+</section>
 
-<section><div class="wrap prose">
+<section class="sect">
+  <div class="col"><h2 class="sec">Results</h2></div>
+  <figure class="w"><img src="assets/fig/fig1.png" alt="Recursive collective intelligence across generations"><figcaption><b>Figure 1.</b> Each generation trains on its predecessor's verified outputs, without labels. PlanBench exceeds any final plan of the four base agents from G1 on; HiddenBench (chain T3) stays above single-agent self-training; Hanabi's recursive chain rises above a non-recursive control.</figcaption></figure>
+  <figure class="w"><img src="assets/fig/fig5.png" alt="Protocol families"><figcaption><b>Figure 5.</b> Protocol families on the ladder: with split facts, evidence protocols rise above pass@n; with shared information, prior multi-agent methods do not beat the vote.</figcaption></figure>
+  <figure class="w"><img src="assets/fig/fig10.png" alt="Recursion on public benchmarks"><figcaption><b>Figure 10.</b> Every round of the public-benchmark chains.</figcaption></figure>
+  <div class="cta"><div><h3>Try the ladder yourself</h3><p>Choose what agents see, what they exchange and how they organize, and see the token budget, accuracy, ladder level and information flow. Every option is a measured configuration from the paper.</p></div><a class="btn" href="playground/">Open the playground →</a></div>
+</section>
+
+<section class="sect col">
   <h2 class="sec">Citation</h2>
 <pre class="bib">@article{he2026rci,
   title   = {Recursive Collective Intelligence: Emergence on an
@@ -95,8 +101,8 @@
              Hong, Yining},
   year    = {2026}
 }</pre>
-</div></section>
-
-<footer><div class="wrap">© 2026 the authors · Recursive Collective Intelligence · <a href="https://github.com/lixuan27/RCI-official">code</a> · <a href="blog/">blog</a> · <a href="playground/">playground</a></div></footer>
+</section>
+</main>
+<footer><div class="wrap">© 2026 the authors · <a href="blog/">blog</a> · <a href="playground/">playground</a> · <a href="https://github.com/lixuan27/RCI-official">code</a></div></footer>
 </body>
 </html>

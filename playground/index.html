@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RCI Playground</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  body{background:#f4f6f8}
+  .pg-head{padding:28px 0 6px}
+  .pg-head h1{font-family:var(--serif);color:var(--navy);font-size:clamp(26px,3.4vw,38px);margin:0 0 6px;text-wrap:balance}
+  .pg-head p{color:var(--ink2);max-width:820px;margin:0}
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 14px}
+  .tab{font:600 14px var(--sans);padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink2);cursor:pointer}
+  .tab.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+  .grid{display:grid;grid-template-columns:330px minmax(0,1fr);gap:18px;align-items:start}
+  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;min-width:0}
+  .ctl{margin-bottom:16px}
+  .ctl>label,.ctl .lab{display:block;font:600 12px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:7px}
+  .opts{display:flex;flex-wrap:wrap;gap:6px}
+  .opt{font:500 13.5px var(--sans);padding:6px 11px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;text-align:left}
+  .opt:hover{border-color:#cbd5e1}
+  .opt.on{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy);background:#f1f5fa}
+  .opt[disabled]{opacity:.38;cursor:not-allowed;text-decoration:line-through}
+  .opt .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+  .opts.col{flex-direction:column}.opts.col .opt{width:100%}
+  .note{font-size:12.5px;color:var(--mute);line-height:1.5}
+  .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+  @media (max-width:640px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .m{background:var(--soft);border-radius:12px;padding:10px 12px;min-width:0}
+  .m .k{font:600 11.5px var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--mute)}
+  .m .v{font:700 26px var(--serif);color:var(--navy);line-height:1.2}
+  .m .v small{font:500 13px var(--sans);color:var(--mute)}
+  .m .s{font-size:12px;color:var(--ink2)}
+  .row2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;margin-top:14px}
+  @media (max-width:760px){.row2{grid-template-columns:1fr}}
+  .box{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;min-width:0}
+  .box h5{margin:0 0 6px;font:600 13px var(--sans);color:var(--ink2);letter-spacing:.02em}
+  .verdict{margin-top:14px;padding:12px 14px;border-radius:12px;background:#f8fafc;border:1px solid var(--line);font-size:14.5px}
+  .verdict b{color:var(--navy)}
+  .src{font-size:12px;color:var(--mute);margin-top:8px}
+  .lvl-badge{display:inline-flex;align-items:center;gap:6px;font:700 13px var(--sans);padding:3px 10px;border-radius:999px;color:#fff}
+  table.mini{width:100%;border-collapse:collapse;font-size:13px}
+  table.mini td,table.mini th{padding:5px 6px;border-bottom:1px solid var(--line);text-align:right}
+  table.mini th:first-child,table.mini td:first-child{text-align:left}
+  table.mini tr.sel td{background:#f1f5fa;font-weight:600}
+  input[type=range]{width:100%}
+  .hide{display:none!important}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap">
+  <a class="brand" href="../">RCI<span>.</span></a>
+  <div class="nav-links"><a href="../">Home</a><a href="../blog/">Blog</a><a href="https://github.com/lixuan27/RCI-main">Code</a></div>
+</div></div>
+
+<div class="wrap">
+  <div class="pg-head">
+    <div class="kicker">Interactive</div>
+    <h1>Design a group of agents and see where it lands on the equal-budget ladder</h1>
+    <p>Every option below is a component we measured in the paper. Pick what the agents see, what they exchange and how they organize. The page shows the group's accuracy, its token budget in independent agents (n<sub>B</sub>), pass@n<sub>B</sub> of independent agents at that budget, the margin, the ladder level, and how information moves. Options we did not measure are greyed out.</p>
+  </div>
+
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-t="build">Build a group</button>
+    <button class="tab" data-t="org">Self-organization</button>
+    <button class="tab" data-t="prior">Prior methods</button>
+    <button class="tab" data-t="rec">Recursion</button>
+  </div>
+
+  <div class="grid">
+    <aside class="panel" id="controls"></aside>
+    <main class="panel" id="view"></main>
+  </div>
+  <p class="note" style="margin:14px 2px 40px">Levels: 1 = outperforms a single agent, 2 = outperforms the majority vote of n<sub>B</sub> independent agents, 3 = exceeds their pass@n<sub>B</sub> (one-sided paired tests at 0.025, clustered by question). pass@n<sub>B</sub> is shown as accuracy minus margin. "Not reported" marks quantities the paper does not give for that cell.</p>
+</div>
+
+<script src="../assets/data.js"></script>
+<script>
+const D = window.RCI;
+const FAM = {Fact:"#4f7d69", Argue:"#7a5c93", Self:"#a6374a", Notes:"#6e8597", Design:"#b8955a", Solo:"#8a919a"};
+const FAMNAME = {Fact:"Evidence", Argue:"Debate", Self:"Emergent", Notes:"Self-prompted", Design:"Designed", Solo:"Independent"};
+const LVLC = ["#9aa3ab","#b8c2cc","#7f9bb0","#4f7d69"];
+const S = {tab:"build", setting:"split", proto:"ff", rounds:2, hint:true, scale:"Qwen3.8-27B", budget:"free", organizer:"so", famModel:"Qwen3.8-27B",
+           pmethod:"Multi-agent debate", pbench:"GPQA-Diamond", pn:8, rchain:"planbench", rgen:4};
+const $ = s=>document.querySelector(s);
+const f3 = x=> x==null ? "—" : (x>=0?"":"−")+Math.abs(x).toFixed(3);
+const fs = x=> x==null ? "—" : (x>0?"+":x<0?"−":"")+Math.abs(x).toFixed(3);
+
+function opt(label, on, attrs, color, disabled){
+  return `<button class="opt${on?' on':''}" ${attrs} ${disabled?'disabled':''}>${color?`<span class="dot" style="background:${color}"></span>`:''}${label}</button>`;
+}
+function bind(){ document.querySelectorAll('#controls [data-k]').forEach(b=>b.onclick=()=>{ const k=b.dataset.k, v=b.dataset.v; S[k]= isNaN(+v)||v===''?v:+v; if(k==='setting'){S.proto = ({split:'ff',corpus:'agg',same:'deb2'})[v];} if(k==='rchain'){S.rgen = ({planbench:4,t3k:5,t3:3,hanabi:6})[v] ?? 2;} render(); });
+  const r=$('#rgen'); if(r) r.oninput=()=>{S.rgen=+r.value; renderView();}; }
+
+/* ---------------- information-flow animation ---------------- */
+let anim=null;
+function flowSVG(kind){
+  // nodes: four agents on a square plus optional centre node
+  const W=420,H=250, A=[[90,60],[330,60],[90,190],[330,190]], C=[210,125];
+  let centre=null, edges=[], label="", packets="answer";
+  const all=(f)=>{for(let i=0;i<4;i++)for(let j=0;j<4;j++) if(i!==j) f(i,j);};
+  switch(kind){
+    case "debate": all((i,j)=>edges.push([A[i],A[j],FAM.Argue,"bubble"])); label="every agent reads every other agent's answer and reasons, round after round"; break;
+    case "board": centre={t:"board",c:FAM.Argue}; A.forEach(a=>{edges.push([a,C,FAM.Argue,"bubble"]); edges.push([C,a,FAM.Argue,"bubble"]);}); label="agents post conclusions to a shared board and read it back"; break;
+    case "board-facts": centre={t:"board",c:FAM.Fact}; A.forEach(a=>{edges.push([a,C,FAM.Fact,"fact"]); edges.push([C,a,FAM.Fact,"fact"]);}); label="only facts, verbatim, may be posted to the board"; break;
+    case "board-gated": centre={t:"board",c:FAM.Fact}; A.forEach(a=>{edges.push([a,C,FAM.Fact,"fact"]); edges.push([C,a,FAM.Fact,"fact"]);}); label="facts on the board; only members that hold every fact commit"; break;
+    case "context": centre={t:"system",c:FAM.Fact}; A.forEach(a=>edges.push([C,a,FAM.Fact,"fact"])); label="the system attaches every member's facts to the record"; break;
+    case "forward": all((i,j)=>edges.push([A[i],A[j],FAM.Fact,"fact"])); label="agents forward their private facts verbatim to each other"; break;
+    case "context+forward": centre={t:"system",c:FAM.Fact}; A.forEach(a=>edges.push([C,a,FAM.Fact,"fact"])); all((i,j)=>{ if((i+j)%2) edges.push([A[i],A[j],FAM.Fact,"fact"]);}); label="shared context plus verbatim forwarding"; break;
+    case "selforg": [1,2,3].forEach(i=>edges.push([A[i],A[0],FAM.Self,"coin"])); [1,2,3].forEach(i=>edges.push([A[i],A[0],FAM.Fact,"fact"])); label="members give their reading budget to one agent, which becomes a hub and reads every fact"; break;
+    case "selforg-plan": all((i,j)=>{ if(i<j) edges.push([A[i],A[j],FAM.Notes,"bubble"]);}); [1,2,3].forEach(i=>edges.push([A[i],A[0],FAM.Self,"coin"])); label="a planning round, then budget transfers to a hub"; break;
+    case "hub": [1,2,3].forEach(i=>edges.push([A[i],A[0],FAM.Design,"fact"])); edges.push([A[0],A[1],FAM.Design,"bubble"]); edges.push([A[0],A[2],FAM.Design,"bubble"]); edges.push([A[0],A[3],FAM.Design,"bubble"]); label="assigned roles: three members send facts to a designated hub, which posts the analysis"; break;
+    case "tree": case "relay": case "relay-plan": edges.push([A[3],A[2],kind==="tree"?FAM.Design:FAM.Self,"fact"]); edges.push([A[1],A[0],kind==="tree"?FAM.Design:FAM.Self,"fact"]); edges.push([A[2],A[0],kind==="tree"?FAM.Design:FAM.Self,"fact"]); label= kind==="tree"?"assigned two-level tree: leaves relay facts upward to the root":"under the budget cap no single hub can form; agents relay facts in two-level trees"; break;
+    case "prompt": [1,2,3].forEach(i=>edges.push([A[i],A[0],FAM.Notes,"fact"])); edges.push([A[0],A[1],FAM.Notes,"bubble"]);edges.push([A[0],A[2],FAM.Notes,"bubble"]);edges.push([A[0],A[3],FAM.Notes,"bubble"]); centre={t:"prompt",c:FAM.Notes,pos:[210,30]}; label="a prompt the model wrote for its own group describes a hub: post facts, give the reading budget to one agent"; break;
+    case "prompt-cap": edges.push([A[3],A[2],FAM.Notes,"fact"]); edges.push([A[1],A[0],FAM.Notes,"fact"]); edges.push([A[2],A[0],FAM.Notes,"fact"]); centre={t:"prompt",c:FAM.Notes,pos:[210,30]}; label="the self-written prompt under the budget cap organizes relays"; break;
+    case "aggregator": centre={t:"aggregator",c:FAM.Design}; A.forEach(a=>edges.push([a,C,FAM.Design,"fact"])); label="each agent reads part of the corpus and reports to a designed aggregator"; break;
+    case "noxfer": case "norelay": label="each agent reads one message and answers on its own"; break;
+    case "delm": centre={t:"shared ctx",c:"#6e8597"}; A.forEach(a=>{edges.push([a,C,"#6e8597","bubble"]);edges.push([C,a,"#6e8597","bubble"]);}); label="agents share one context with task decomposition and a queue of sub-tasks"; break;
+    case "orch": centre={t:"coordinator",c:"#9aa3ab"}; A.forEach(a=>{edges.push([C,a,"#9aa3ab","bubble"]);edges.push([a,C,"#9aa3ab","bubble"]);}); label="a coordinator creates and dispatches sub-agents"; break;
+    case "reviewer": centre={t:"reviewer",c:FAM.Fact}; A.forEach(a=>edges.push([a,C,FAM.Argue,"bubble"])); label="a reviewer selects among the members' answers posted to the board"; break;
+  }
+  const facts=["A","B","C","D"];
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">`;
+  edges.forEach(([p,q,c])=>{ s+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${c}" stroke-opacity=".22" stroke-width="1.5"/>`; });
+  if(centre){ const P=centre.pos||C; s+=`<rect x="${P[0]-46}" y="${P[1]-17}" width="92" height="34" rx="8" fill="#fff" stroke="${centre.c}" stroke-width="1.5"/><text x="${P[0]}" y="${P[1]+5}" text-anchor="middle" font-family="Inter" font-size="12.5" font-weight="600" fill="${centre.c}">${centre.t}</text>`; }
+  const colors=["#8BAA98","#8FB0CF","#A79BB5","#6E8597"];
+  A.forEach((a,i)=>{ s+=`<g transform="translate(${a[0]},${a[1]})"><circle r="25" fill="#fff" stroke="${colors[i]}" stroke-width="2"/><rect x="-11" y="-9" width="22" height="16" rx="4" fill="${colors[i]}"/><circle cx="-4.5" cy="-1" r="2.2" fill="#fff"/><circle cx="4.5" cy="-1" r="2.2" fill="#fff"/><rect x="-1" y="-15" width="2" height="6" fill="${colors[i]}"/>
+     <rect x="${i%2? 30:-56}" y="-9" width="24" height="18" rx="4" fill="#eef3f0" stroke="${FAM.Fact}" stroke-opacity=".5"/><text x="${i%2? 42:-44}" y="4" text-anchor="middle" font-family="Inter" font-size="11" font-weight="700" fill="${FAM.Fact}">${facts[i]}</text></g>`;});
+  s+=`<g id="pk"></g></svg>`;
+  return {svg:s, edges, label};
+}
+function startAnim(edges){
+  if(anim) cancelAnimationFrame(anim);
+  const g=document.getElementById('pk'); if(!g) return;
+  const t0=performance.now();
+  const step=(t)=>{
+    let h=""; const n=edges.length;
+    edges.forEach(([p,q,c,type],k)=>{
+      const per=2200, ph=((t-t0)/per + k/n*1.0)%1, x=p[0]+(q[0]-p[0])*ph, y=p[1]+(q[1]-p[1])*ph;
+      if(type==="fact") h+=`<rect x="${x-5}" y="${y-5}" width="10" height="10" rx="2" fill="${c}"/>`;
+      else if(type==="coin") h+=`<circle cx="${x}" cy="${y}" r="5.5" fill="#fff" stroke="${c}" stroke-width="2.2"/>`;
+      else h+=`<path d="M${x-7},${y-5} h14 a3,3 0 0 1 3,3 v5 a3,3 0 0 1 -3,3 h-8 l-4,4 v-4 h-2 a3,3 0 0 1 -3,-3 v-5 a3,3 0 0 1 3,-3z" fill="${c}" fill-opacity=".85"/>`;
+    });
+    g.innerHTML=h; anim=requestAnimationFrame(step);
+  };
+  anim=requestAnimationFrame(step);
+}
+
+/* ---------------- ladder gauge and budget strip ---------------- */
+function ladderSVG(level, descriptive){
+  const W=380,H=150, steps=[{t:"> one agent"},{t:"> majority vote"},{t:"> pass@n"}];
+  let s=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">`;
+  steps.forEach((st,i)=>{ const x=14+i*122, h=40+i*36, y=H-12-h, on=level>i;
+    s+=`<rect x="${x}" y="${y}" width="116" height="${h}" rx="6" fill="${on?LVLC[i+1]:'#eef1f4'}"/>
+        <text x="${x+10}" y="${H-22}" font-family="Source Serif 4" font-size="22" font-weight="700" fill="${on?'#fff':'#9aa3ab'}">${i+1}</text>
+        <text x="${x+30}" y="${H-24}" font-family="Inter" font-size="11.5" font-weight="600" fill="${on?'#fff':'#9aa3ab'}">${st.t}</text>`; });
+  if(level>0){ const i=level-1, x=14+i*122+58, y=H-12-(40+i*36)-14;
+    s+=`<g><circle cx="${x}" cy="${y}" r="9" fill="${level===3?FAM.Fact:'#25374f'}"/><text x="${x}" y="${y+4}" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="Inter">${level}</text></g>`; }
+  else s+=`<text x="${W/2}" y="30" text-anchor="middle" font-family="Inter" font-size="13" fill="#a6374a" font-weight="600">level 0: does not beat one agent</text>`;
+  if(descriptive) s+=`<text x="${W-6}" y="16" text-anchor="end" font-family="Inter" font-size="11" fill="#6b7280">descriptive comparison</text>`;
+  return s+`</svg>`;
+}
+function budgetSVG(nB){
+  if(nB==null) return `<div class="note">Budget not reported for this cell.</div>`;
+  const W=380, per=Math.min(18, 340/Math.max(nB,4)); let s=`<svg viewBox="0 0 ${W} 86" style="width:100%;height:auto">`;
+  s+=`<text x="0" y="14" font-family="Inter" font-size="11.5" fill="#6b7280">group: 4 agents</text>`;
+  for(let i=0;i<4;i++) s+=`<rect x="${i*20}" y="22" width="15" height="15" rx="3" fill="${["#8BAA98","#8FB0CF","#A79BB5","#6E8597"][i]}"/>`;
+  s+=`<text x="0" y="58" font-family="Inter" font-size="11.5" fill="#6b7280">the same completion tokens pay for ${nB.toFixed(1)} independent agents</text>`;
+  const full=Math.floor(nB); for(let i=0;i<Math.ceil(nB);i++){ const w=(i<full?1:nB-full)*per*0.85; s+=`<rect x="${i*per}" y="66" width="${Math.max(w,1)}" height="14" rx="3" fill="#9aa3ab"/>`; }
+  return s+`</svg>`;
+}
+function accBars(acc, margin){
+  if(acc==null && margin==null) return '';
+  const T = (acc!=null && margin!=null) ? acc-margin : null, W=380, X=v=>20+v*340;
+  let s=`<svg viewBox="0 0 ${W} 74" style="width:100%;height:auto"><line x1="20" y1="58" x2="360" y2="58" stroke="#cbd5e1"/>`;
+  [0,0.5,1].forEach(v=>s+=`<text x="${X(v)}" y="72" text-anchor="middle" font-size="10.5" fill="#6b7280" font-family="Inter">${v}</text>`);
+  if(acc!=null) s+=`<rect x="20" y="14" width="${X(acc)-20}" height="16" rx="3" fill="${margin>0?FAM.Fact:'#a6374a'}"/><text x="${acc>0.72?X(acc)-6:X(acc)+6}" y="26.5" text-anchor="${acc>0.72?'end':'start'}" font-size="12" font-family="Inter" font-weight="600" fill="${acc>0.72?'#fff':'#1f2a37'}">group ${acc.toFixed(3)}</text>`;
+  if(T!=null) s+=`<line x1="${X(T)}" y1="8" x2="${X(T)}" y2="50" stroke="#25374f" stroke-width="2.5"/><text x="${X(T)}" y="46" text-anchor="${T>0.75?'end':'start'}" dx="${T>0.75?-5:5}" font-size="11.5" font-family="Inter" fill="#25374f">pass@n B ${T.toFixed(3)}</text>`;
+  return s+`</svg>`;
+}
+function lvlBadge(l){ return `<span class="lvl-badge" style="background:${l===3?FAM.Fact:l===0?'#a6374a':'#25374f'}">level ${l}</span>`; }
+
+/* ---------------- controls ---------------- */
+function renderControls(){
+  let h="";
+  if(S.tab==="build"){
+    h+=`<div class="ctl"><span class="lab">What the agents see</span><div class="opts col">`+
+      ["split","corpus","same"].map(k=>opt(`<b>${D.settings[k].title}</b><br><span class="note">${D.settings[k].bench} · ${D.settings[k].model}</span>`, S.setting===k, `data-k="setting" data-v="${k}"`)).join("")+`</div></div>`;
+    const list = S.setting==="split" ? [["bb","Blackboard","Argue"],["deb","Debate","Argue"],["sc","Shared context","Fact"],["ff","Fact forwarding","Fact"],["scff","Shared context + forwarding","Fact"],["fobb","Facts-only blackboard","Fact"],["gbb","Gated blackboard","Fact"]]
+               : S.setting==="corpus" ? D.corpus.map(p=>[p.id,p.name,p.fam]) : D.same.map(p=>[p.id,p.name,p.fam]);
+    const cur = S.setting==="split" ? (S.proto.startsWith("deb")?"deb":S.proto.startsWith("bb")?"bb":S.proto) : S.proto;
+    h+=`<div class="ctl"><span class="lab">What they exchange</span><div class="opts">`+list.map(([id,n,f])=>opt(n, cur===id, `data-k="proto" data-v="${id==='deb'?(S.hint?(S.rounds===3?'deb3h':'deb2h'):'deb2'):id==='bb'?(S.hint?'bbh':'bb'):id}"`, FAM[f])).join("")+`</div></div>`;
+    if(S.setting==="split" && (cur==="deb"||cur==="bb")){
+      if(cur==="deb"){ h+=`<div class="ctl"><span class="lab">Rounds</span><div class="opts">`+[2,3].map(r=>opt(`${r} rounds`, S.rounds===r, `onclick="S.rounds=${r};S.proto=S.hint?(${r}===3?'deb3h':'deb2h'):'deb2';render()"`, null, r===3 && !S.hint)).join("")+`</div></div>`; }
+      h+=`<div class="ctl"><span class="lab">Hint that facts are split</span><div class="opts">`+[[false,"off"],[true,"on"]].map(([v,t])=>opt(t, S.hint===v, `onclick="S.hint=${v};S.proto='${cur}'==='deb'?(${v}?(S.rounds===3?'deb3h':'deb2h'):(S.rounds=2,'deb2')):(${v}?'bbh':'bb');render()"`, null, cur==='deb' && !v && S.rounds===3)).join("")+`</div><div class="note" style="margin-top:6px">${cur==='deb'?'Three rounds were measured only with the hint.':''}</div></div>`;
+    }
+    if(S.setting==="split" && S.proto==="ff"){
+      h+=`<div class="ctl"><span class="lab">Model scale</span><div class="opts">`+D.scales.map(x=>opt(x.model, S.scale===x.model, `onclick="S.scale='${x.model}';render()"`)).join("")+`</div></div>`;
+    }
+    h+=`<div class="note">${D.settings[S.setting].blurb}</div>`;
+  }
+  if(S.tab==="org"){
+    h+=`<div class="ctl"><span class="lab">Reading budget</span><div class="opts">`+[["free","Free: members may give it away"],["cap","Capped: no single hub can form"]].map(([k,t])=>opt(t, S.budget===k, `data-k="budget" data-v="${k}"`)).join("")+`</div></div>`;
+    const L=D.org[S.budget];
+    h+=`<div class="ctl"><span class="lab">Who organizes the group</span><div class="opts col">`+L.map(p=>opt(p.name, S.organizer===p.id, `data-k="organizer" data-v="${p.id}"`, FAM[p.fam])).join("")+`</div></div>`;
+    h+=`<div class="ctl"><span class="lab">Do other models form hubs? (free budget)</span><div class="opts">`+D.org.families.map(x=>opt(x.model, S.famModel===x.model, `onclick="S.famModel='${x.model}';render()"`)).join("")+`</div></div>`;
+    h+=`<div class="note">${D.settings.org.blurb} Each agent can read one message.</div>`;
+  }
+  if(S.tab==="prior"){
+    const rows=D.prior.rows;
+    h+=`<div class="ctl"><span class="lab">Method (Qwen3.5-9B members)</span><div class="opts col">`+D.prior.methods.map(m=>opt(m, S.pmethod===m, `onclick="S.pmethod='${m}';const r=D.prior.rows.filter(x=>x[0]===S.pmethod);if(!r.some(x=>x[1]===S.pbench))S.pbench=r[0][1];const n=r.filter(x=>x[1]===S.pbench);if(!n.some(x=>x[2]===S.pn))S.pn=n[0][2];render()"`)).join("")+`</div></div>`;
+    const benches=[...new Set(rows.map(r=>r[1]))];
+    h+=`<div class="ctl"><span class="lab">Benchmark (shared information)</span><div class="opts">`+benches.map(b=>{const ok=rows.some(r=>r[0]===S.pmethod&&r[1]===b); return opt(b, S.pbench===b, `onclick="S.pbench='${b}';const n=D.prior.rows.filter(x=>x[0]===S.pmethod&&x[1]===S.pbench);if(!n.some(x=>x[2]===S.pn))S.pn=n[0][2];render()"`, null, !ok);}).join("")+`</div></div>`;
+    const ns=rows.filter(r=>r[0]===S.pmethod&&r[1]===S.pbench).map(r=>r[2]);
+    h+=`<div class="ctl"><span class="lab">Group size N</span><div class="opts">`+[4,8,16,null].map(n=>opt(n==null?"self-chosen":n, S.pn===n, `onclick="S.pn=${n};render()"`, null, !ns.includes(n))).join("")+`</div></div>`;
+    h+=`<div class="note">Every agent sees the whole task. The comparison is accuracy minus the majority vote of independent agents at the same completion-token budget (Vote@B).</div>`;
+  }
+  if(S.tab==="rec"){
+    const chains=[["planbench","PlanBench (4 generations)"],["t3k","HiddenBench, chain T3k (5 generations)"],["t3","HiddenBench, chain T3 vs. self-training (3)"],["hanabi","Hanabi (6 generations)"],["sb0","SplitBench, 9B, 3-step debate"],["sb1","SplitBench, 27B, 3-step debate"],["sb2","SplitBench, 9B, standard debate"],["sb3","SplitBench, 4B, standard debate"]];
+    h+=`<div class="ctl"><span class="lab">Chain</span><div class="opts col">`+chains.map(([k,t])=>opt(t, S.rchain===k, `data-k="rchain" data-v="${k}"`)).join("")+`</div></div>`;
+    const maxg=({planbench:4,t3k:5,t3:3,hanabi:6})[S.rchain] ?? 2;
+    h+=`<div class="ctl"><span class="lab">Generation: G${S.rgen}</span><input id="rgen" type="range" min="0" max="${maxg}" step="1" value="${Math.min(S.rgen,maxg)}"></div>`;
+    h+=`<div class="note">Each generation trains on its predecessor's verified outputs, without labels or a teacher, and is released only when it outperforms its predecessor on fresh tasks.</div>`;
+  }
+  $('#controls').innerHTML=h; bind();
+}
+
+/* ---------------- view ---------------- */
+function cellView(p, extra){
+  const fl=flowSVG(p.flow);
+  const T = (p.acc!=null && p.margin!=null) ? p.acc-p.margin : null;
+  let v=`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+      <div><div class="kicker" style="color:${FAM[p.fam]}">${FAMNAME[p.fam]}</div><div style="font:700 22px var(--serif);color:var(--navy)">${p.name}${p.hint?' <span class="pill">+ hint</span>':''}${p.rounds?` <span class="pill">${p.rounds} rounds</span>`:''}</div></div>
+      ${lvlBadge(p.level)}</div>
+    <div class="metrics">
+      <div class="m"><div class="k">Accuracy</div><div class="v">${p.acc==null?'<small>not reported</small>':p.acc.toFixed(3)}</div><div class="s">group's committed answer</div></div>
+      <div class="m"><div class="k">Budget n<sub>B</sub></div><div class="v">${p.nB==null?'<small>not reported</small>':p.nB.toFixed(1)}<small> agents</small></div><div class="s">completion tokens / one agent</div></div>
+      <div class="m"><div class="k">pass@n<sub>B</sub></div><div class="v">${T==null?'<small>—</small>':T.toFixed(3)}</div><div class="s">any of n<sub>B</sub> independent agents right</div></div>
+      <div class="m"><div class="k">Margin</div><div class="v" style="color:${p.margin>0?FAM.Fact:'#a6374a'}">${fs(p.margin)}</div><div class="s">accuracy − pass@n<sub>B</sub></div></div>
+    </div>
+    <div class="row2">
+      <div class="box"><h5>How information moves</h5>${fl.svg}<div class="note">${fl.label}</div></div>
+      <div class="box"><h5>Equal-budget ladder</h5>${ladderSVG(p.level, p.descriptive)}${accBars(p.acc,p.margin)}<h5 style="margin-top:8px">Token budget</h5>${budgetSVG(p.nB)}</div>
+    </div>`;
+  v += extra||"";
+  v += `<div class="src">Source: ${p.src}${p.tasks?` · ${p.tasks} tasks`:''}${p.beforeMTC?' · level 3 holds before multiple-testing correction':''}${p.descriptive?' · prompt rows use a pool from another batch, so their level is descriptive':''}</div>`;
+  return {html:v, edges:fl.edges};
+}
+function verdict(p){
+  if(p.margin==null) return "";
+  let t = p.level===3 ? `This group produces correct answers that <b>no selection among ${p.nB?p.nB.toFixed(1):'its budget of'} independent agents</b> could reach at the same cost.`
+        : p.level===2 ? `This group outperforms the majority vote at equal budget, but <b>does not exceed pass@n<sub>B</sub></b>: a selector over independent answers could still match it.`
+        : p.level===1 ? `It outperforms a single agent only.` : `At equal budget it <b>does not outperform even a single agent</b>.`;
+  return `<div class="verdict">${t}</div>`;
+}
+
+function renderView(){
+  let out={html:"",edges:[]};
+  if(S.tab==="build"){
+    let p;
+    if(S.setting==="split"){ p=D.split.find(x=>x.id===S.proto);
+      if(S.proto==="ff"){ const sc=D.scales.find(x=>x.model===S.scale); p=Object.assign({},p,{acc:sc.acc,nB:sc.nB,margin:sc.margin,level:sc.level,src:sc.src,name:`Fact forwarding, ${sc.model}`}); } }
+    else p=D[S.setting].find(x=>x.id===S.proto);
+    let extra=verdict(p);
+    if(S.setting==="split") extra+=`<div class="note" style="margin-top:8px">Reference: one agent given every fact, at the same budget, reaches ${D.fullInfoAgent.toFixed(3)} (Table 2).</div>`;
+    out=cellView(p, extra);
+  }
+  if(S.tab==="org"){
+    const p=D.org[S.budget].find(x=>x.id===S.organizer) || D.org[S.budget][0]; S.organizer=p.id;
+    let extra=verdict(p);
+    if(p.share){ const w=p.share.wait, c=p.share.coord;
+      extra+=`<div class="box" style="margin-top:12px"><h5>Where the tokens go (${p.share.src}${p.share.note?', '+p.share.note:''})</h5>
+      <svg viewBox="0 0 380 46" style="width:100%;height:auto"><rect x="0" y="6" width="${380*c}" height="18" rx="4" fill="#a6374a" fill-opacity=".75"/><rect x="${380*c}" y="6" width="${380*(1-c)}" height="18" rx="4" fill="#4f7d69" fill-opacity=".8"/>
+      <rect x="0" y="6" width="${380*w}" height="18" rx="4" fill="#7a5c93" fill-opacity=".85"/>
+      <text x="0" y="40" font-size="11.5" font-family="Inter" fill="#6b7280">waiting ${Math.round(w*100)}% · coordination in total ${Math.round(c*100)}% · work ${Math.round((1-c)*100)}%</text></svg></div>`; }
+    const fm=D.org.families.find(x=>x.model===S.famModel);
+    extra+=`<div class="box" style="margin-top:12px"><h5>Hubs across model families (free budget, 65 tasks, Table 3b)</h5><table class="mini"><tr><th>Model</th><th>records with a hub</th><th>with a transfer</th><th>accuracy gain from transfers</th></tr>`+
+      D.org.families.map(x=>`<tr class="${x.model===fm.model?'sel':''}"><td>${x.model}</td><td>${x.hubs.toFixed(3)}</td><td>${x.transfers.toFixed(3)}</td><td>${fs(x.gain)}</td></tr>`).join("")+`</table></div>`;
+    out=cellView(p, extra);
+  }
+  if(S.tab==="prior"){
+    const r=D.prior.rows.find(x=>x[0]===S.pmethod&&x[1]===S.pbench&&x[2]===S.pn);
+    const kind = S.pmethod.startsWith("Multi")?"debate": S.pmethod==="DeLM"?"delm": S.pmethod==="AOrchestra"?"orch": S.pmethod.includes("reviewer")?"reviewer":"board";
+    const fl=flowSVG(kind); const v=r[3], se=r[4], lo=v-1.96*se, hi=v+1.96*se;
+    const X=x=>190+x*320; let ci=`<svg viewBox="0 0 380 90" style="width:100%;height:auto"><rect x="${X(-0.55)}" y="18" width="${X(0)-X(-0.55)}" height="44" fill="#f3f5f7"/><line x1="${X(0)}" y1="10" x2="${X(0)}" y2="70" stroke="#25374f" stroke-dasharray="4 3"/>
+      <line x1="${X(lo)}" y1="40" x2="${X(hi)}" y2="40" stroke="#7a5c93" stroke-width="2"/><circle cx="${X(v)}" cy="40" r="6" fill="${hi<0?'#a6374a':lo>0?'#4f7d69':'#7a5c93'}"/>
+      <text x="${X(0)}" y="84" text-anchor="middle" font-size="11" font-family="Inter" fill="#25374f">equal-budget vote</text>
+      ${[-0.5,-0.25,0.25].map(t=>`<text x="${X(t)}" y="84" text-anchor="middle" font-size="10.5" font-family="Inter" fill="#6b7280">${t>0?'+':''}${t}</text>`).join("")}</svg>`;
+    const word = hi<0 ? `<b>below</b> the equal-budget vote` : lo>0 ? `<b>above</b> the equal-budget vote` : `not distinguishable from the equal-budget vote`;
+    out.html=`<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div class="kicker">Shared information · Qwen3.5-9B</div><div style="font:700 22px var(--serif);color:var(--navy)">${S.pmethod}</div><div class="note">${S.pbench}${S.pn?` · N = ${S.pn}`:' · group size set by the method'}</div></div><span class="lvl-badge" style="background:${lo>0?FAM.Fact:hi<0?'#a6374a':'#7a5c93'}">${lo>0?'level 2':hi<0?'below the vote':'≈ vote'}</span></div>
+      <div class="row2"><div class="box"><h5>How information moves</h5>${fl.svg}<div class="note">${fl.label}</div></div>
+      <div class="box"><h5>Accuracy minus Vote@B (95% interval)</h5><div class="big">${fs(v)} <small class="muted" style="font-size:14px">± ${(1.96*se).toFixed(3)}</small></div>${ci}</div></div>
+      <div class="verdict">${S.pmethod} is ${word} on ${S.pbench}. ${S.pmethod.includes('27B reviewer')?'A stronger reviewer that selects among the members\' answers is the only design above the vote on all four benchmarks it was run on.':'With shared information, a message mostly repeats what its reader already knows, so the extra tokens rarely beat simply voting.'}</div>
+      <div class="src">Source: Table 12</div>`;
+    out.edges=fl.edges;
+  }
+  if(S.tab==="rec"){ out={html:recView(), edges:[]}; }
+  $('#view').innerHTML=out.html; startAnim(out.edges);
+}
+
+function lineChart(series, opts){
+  const W=600,H=260,L=48,R=16,T=16,B=36, n=opts.n, ymin=opts.ymin, ymax=opts.ymax;
+  const X=i=>L+i*(W-L-R)/(n-1), Y=v=>T+(1-(v-ymin)/(ymax-ymin))*(H-T-B);
+  let s=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto">`;
+  opts.ticks.forEach(t=>{ s+=`<line x1="${L}" x2="${W-R}" y1="${Y(t)}" y2="${Y(t)}" stroke="#eef1f4"/><text x="${L-8}" y="${Y(t)+4}" text-anchor="end" font-size="11" font-family="Inter" fill="#6b7280">${t}</text>`; });
+  for(let i=0;i<n;i++) s+=`<text x="${X(i)}" y="${H-14}" text-anchor="middle" font-size="11.5" font-family="Inter" fill="#4b5563">G${i}</text>`;
+  s+=`<rect x="${X(opts.sel)-14}" y="${T}" width="28" height="${H-T-B}" fill="#25374f" fill-opacity=".06" rx="6"/>`;
+  series.forEach(se=>{ const pts=se.v.map((v,i)=>v==null?null:[X(i),Y(v)]).filter(Boolean);
+    s+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${se.c}" stroke-width="${se.w||2.4}" ${se.dash?`stroke-dasharray="${se.dash}"`:''}/>`;
+    se.v.forEach((v,i)=>{ if(v!=null) s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="${i===opts.sel?5.5:3.2}" fill="${i===opts.sel?se.c:'#fff'}" stroke="${se.c}" stroke-width="2"/>`; }); });
+  let lx=L; s+=`<g font-family="Inter" font-size="11.5">`; series.forEach(se=>{ s+=`<line x1="${lx}" x2="${lx+18}" y1="${T+4}" y2="${T+4}" stroke="${se.c}" stroke-width="2.4" ${se.dash?`stroke-dasharray="${se.dash}"`:''}/><text x="${lx+22}" y="${T+8}" fill="#1f2a37">${se.name}</text>`; lx+=30+se.name.length*6.2; }); s+=`</g>`;
+  return s+`</svg>`;
+}
+function recView(){
+  const g=S.rgen; let h="", note="";
+  if(S.rchain==="planbench"){ const P=D.planbench; const gg=Math.min(g,4);
+    h+=lineChart([{name:"group",v:P.group,c:"#3d5f7e"},{name:"any of four (oracle)",v:P.anyOfFour,c:"#9fb6c9",dash:"3 3",w:1.8},{name:"one agent, final plan",v:P.final,c:"#b8955a"},{name:"calls truncated",v:P.truncated,c:"#9aa3ab",dash:"5 4",w:1.6}],{n:5,ymin:0,ymax:1,ticks:[0,0.2,0.4,0.6,0.8,1],sel:gg});
+    const d=P.d[gg];
+    note=`<div class="metrics" style="margin-top:10px"><div class="m"><div class="k">Group</div><div class="v">${P.group[gg].toFixed(3)}</div></div><div class="m"><div class="k">Gain d vs. G${gg-1}</div><div class="v">${d?'+'+d[0].toFixed(3):'—'}</div><div class="s">${d?'SE '+d[1].toFixed(3)+' · fresh 800-problem slice':'base model'}</div></div><div class="m"><div class="k">One agent, final</div><div class="v">${P.final[gg].toFixed(3)}</div></div><div class="m"><div class="k">Tokens per call</div><div class="v">${P.tokensPerCall[gg].toLocaleString()}</div></div></div>
+      <div class="verdict">Four Qwen3.5-9B agents write Blocksworld plans; a plan simulator accepts plans without answer labels. All four rounds release a generation. The single agent improves too, and calls hit the 8,192-token cap less often (Table 6, Figure 10a).</div>`; }
+  if(S.rchain==="t3k"){ const Hb=D.hiddenbench; const gg=Math.min(g,5);
+    h+=lineChart([{name:"group (T3k)",v:Hb.t3k,c:"#8b3344"},{name:"one agent after the debate",v:Hb.t3kOne,c:"#c58a96",dash:"3 3",w:1.8}],{n:6,ymin:0.4,ymax:1,ticks:[0.4,0.6,0.8,1],sel:gg});
+    const rel=Hb.rounds.filter(r=>r.rel);
+    note=`<div class="metrics" style="margin-top:10px"><div class="m"><div class="k">Group</div><div class="v">${Hb.t3k[gg].toFixed(3)}</div></div><div class="m"><div class="k">Tokens per game</div><div class="v">${Hb.t3kTokensK[gg]}<small>k</small></div></div><div class="m"><div class="k">Release round</div><div class="v">${gg?('r'+rel[gg-1].r):'—'}</div><div class="s">${gg?'d = +'+rel[gg-1].d.toFixed(3)+' on fresh seeds':'base model'}</div></div><div class="m"><div class="k">Flat rounds</div><div class="v">3</div><div class="s">rounds 3, 6, 8 kept the incumbent</div></div></div>
+      <div class="verdict">Four agents debate for three rounds; a turn is accepted when its committed answer agrees with the base model's unanimous full-information answer. A candidate is released when its paired gain exceeds 0.026 (Figures 10b, 11a).</div>`; }
+  if(S.rchain==="t3"){ const Hb=D.hiddenbench; const gg=Math.min(g,3);
+    h+=lineChart([{name:"collective training (T3)",v:Hb.t3,c:"#7a5c93"},{name:"self-training, four agents",v:Hb.selfFour.slice(0,4),c:"#8a8f98",dash:"5 4"},{name:"self-training, one agent",v:Hb.selfOne.slice(0,4),c:"#b8bec6",dash:"2 3"}],{n:4,ymin:0,ymax:1,ticks:[0,0.2,0.4,0.6,0.8,1],sel:gg});
+    note=`<div class="metrics" style="margin-top:10px"><div class="m"><div class="k">Collective</div><div class="v">${Hb.t3[gg].toFixed(3)}</div></div><div class="m"><div class="k">Self-training (4)</div><div class="v">${Hb.selfFour[gg].toFixed(3)}</div></div><div class="m"><div class="k">Gap</div><div class="v" style="color:#4f7d69">${fs(Hb.t3[gg]-Hb.selfFour[gg])}</div></div><div class="m"><div class="k">Self-training (1)</div><div class="v">${Hb.selfOne[gg].toFixed(3)}</div></div></div>
+      <div class="verdict">With facts split across agents, the group learns what its agents cannot learn alone: single-agent self-training under the same caps improves, but stays far below collective training in every generation (Figure 11a).</div>`; }
+  if(S.rchain==="hanabi"){ const Hn=D.hanabi; const gg=Math.min(g,6);
+    h+=lineChart([{name:"recursive chain",v:Hn.rec,c:"#a6374a"},{name:"non-recursive control",v:[null,...Hn.control.slice(1),null,null,null],c:"#9aa3ab",dash:"5 4"}],{n:7,ymin:0,ymax:5,ticks:[0,1,2,3,4,5],sel:gg});
+    const gn=Hn.gain[gg];
+    note=`<div class="metrics" style="margin-top:10px"><div class="m"><div class="k">Challenge score</div><div class="v">${Hn.rec[gg].toFixed(3)}<small> / 25</small></div></div><div class="m"><div class="k">Gain vs. G${gg-1}</div><div class="v">${gn?'+'+gn[0].toFixed(3):'—'}</div><div class="s">${gn?'SE '+gn[1].toFixed(3)+' · 600 fresh deals':'base agents score zero'}</div></div><div class="m"><div class="k">Control</div><div class="v">${Hn.control[gg]!=null?Hn.control[gg].toFixed(3):'—'}</div><div class="s">trains on a fixed generation's games</div></div><div class="m"><div class="k">Released</div><div class="v">${gg}</div><div class="s">generations so far</div></div></div>
+      <div class="verdict">The base agents lose all their lives in every game. Each generation trains on the elite games of its predecessor, and a candidate is released when d − SE > 0 (Table 7).</div>`; }
+  if(S.rchain.startsWith("sb")){ const c=D.splitbench.chains[+S.rchain[2]]; const gg=Math.min(g,2);
+    h+=lineChart([{name:c.name+": margin over pass@n",v:c.m,c:"#3d5f7e"}],{n:3,ymin:-0.55,ymax:0.35,ticks:[-0.4,-0.2,0,0.2],sel:gg});
+    note=`<div class="metrics" style="margin-top:10px"><div class="m"><div class="k">Margin</div><div class="v" style="color:${c.m[gg]>0?'#4f7d69':'#a6374a'}">${fs(c.m[gg])}</div><div class="s">over base agents' pass@n</div></div><div class="m"><div class="k">Step</div><div class="v">${gg?fs(c.m[gg]-c.m[gg-1]):'—'}</div></div><div class="m"><div class="k">Control margin</div><div class="v">${c.control!=null?fs(c.control):'—'}</div><div class="s">${c.control!=null?'trained like G2 on G0 turns':'not in Table 4'}</div></div><div class="m"><div class="k">G2 − control</div><div class="v">${c.g2MinusControl!=null?fs(c.g2MinusControl):'—'}</div></div></div>
+      <div class="verdict">On SplitBench each generation trains on the protocol-verified first turns of its parent group, graded on 196 held-out tasks against pass@n of base-model agents (Table 4).</div>`; }
+  return `<div class="kicker">Recursion</div>`+h+note;
+}
+
+function render(){ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.t===S.tab)); renderControls(); renderView(); }
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{S.tab=t.dataset.t; if(S.tab==='org'&&!D.org[S.budget].some(x=>x.id===S.organizer)) S.organizer='so'; render();});
+render();
+</script>
+</body>
+</html>

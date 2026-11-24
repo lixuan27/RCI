@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>When Is a Group of Agents Smarter Than Its Members?</title>
+<meta name="description" content="Blog post: the equal-budget ladder and recursive collective intelligence in multi-agent LLM systems.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+<style>
+  .bhero{position:relative;margin:22px 0 0;border-radius:20px;overflow:hidden;background:linear-gradient(160deg,#1d2c40 0%,#2e4a66 55%,#4f7d69 120%);min-height:320px;display:flex;align-items:flex-end}
+  .bhero canvas{position:absolute;inset:0;width:100%;height:100%}
+  .bhero .t{position:relative;padding:34px 36px;color:#fff}
+  .bhero h1{font-family:var(--serif);font-size:clamp(30px,4.6vw,50px);line-height:1.12;margin:0;max-width:860px;text-wrap:balance}
+  .bhero .sub{color:#d6e2ec;margin-top:10px;font-size:17px;max-width:720px}
+  .meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin:16px 0 6px;font-size:14px;color:var(--ink2)}
+  .meta .authors{text-align:left;margin:0;max-width:none;font-size:14.5px}
+  .meta .authors span{margin:0 10px 0 0}
+  .btns.left{justify-content:flex-start}
+  .card .go{color:var(--mute);font-weight:400}
+  .card .cap{font-size:12px;color:var(--mute);margin-top:4px}
+  .prose p{font-size:17px}
+  .prose ul{padding-left:20px}.prose li{margin:6px 0}
+  .callout{border:1px solid var(--line);border-radius:12px;padding:14px 18px;background:#fbfcfd;margin:16px 0}
+  .callout .kicker{margin-bottom:4px}
+  .def{border-left:3px solid var(--navy);padding:4px 0 4px 16px;margin:16px 0;font-family:var(--serif);font-size:18px;color:#243042}
+  figure.wide{max-width:1040px;margin-left:auto;margin-right:auto}
+  .levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}
+  .levels div{border-radius:12px;padding:12px 14px;color:#fff;font-size:14.5px}
+  .levels b{font:700 22px var(--serif);display:block}
+  @media (max-width:640px){.levels{grid-template-columns:1fr}.bhero .t{padding:24px}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap">
+  <a class="brand" href="../">RCI<span>.</span></a>
+  <div class="toc-btn" id="toc"><button onclick="document.getElementById('toc').classList.toggle('open')">☰ Contents</button>
+    <div class="toc-panel">
+      <a href="#tldr">TL;DR</a><a href="#results">All results at equal budget</a>
+      <a href="#s1">1 &nbsp;Credit a group at equal cost</a><a href="#s2">2 &nbsp;Move facts, not arguments</a>
+      <a href="#s3">3 &nbsp;Organization emerges, and costs tokens</a><a href="#s4">4 &nbsp;Recursive collective intelligence</a>
+      <a href="#s5">5 &nbsp;Recursion on public benchmarks</a><a href="#s6">6 &nbsp;What we learned</a><a href="#cite">Citation</a>
+    </div></div>
+  <div class="nav-links"><a href="../">Project</a><a href="../playground/">Playground</a><a href="https://github.com/lixuan27/RCI-main">Code</a></div>
+</div></div>
+
+<div class="wrap">
+  <div class="bhero"><canvas id="net"></canvas><div class="t">
+    <div class="kicker" style="color:#bfe0cf">Blog · Recursive Collective Intelligence</div>
+    <h1>When is a group of agents smarter than its members working apart?</h1>
+    <div class="sub">We grade groups of LLM agents against independent agents that spend the same tokens, and ask whether a group can make its next generation smarter from its own work.</div>
+  </div></div>
+  <div class="meta">
+    <div class="authors"><span>Lixuan He<sup>1</sup></span><span>Shengqu Cai<sup>1</sup></span><span>Fang Wu<sup>1</sup></span><span>Shikang Zheng<sup>2</sup></span><span>Liwei Jiang<sup>3</sup></span><span>Manling Li<sup>4</sup></span><span>Yi Ma<sup>2</sup></span><span>Li Fei-Fei<sup>1</sup></span><span>Leonidas Guibas<sup>1</sup></span><span>Gordon Wetzstein<sup>1</sup></span><span>Yejin Choi<sup>1</sup></span><span>Yining Hong<sup>1</sup></span>
+      <div class="affils" style="text-align:left"><sup>1</sup>Stanford University &nbsp;<sup>2</sup>UC Berkeley &nbsp;<sup>3</sup>NVIDIA &nbsp;<sup>4</sup>Northwestern University</div></div>
+  </div>
+  <div class="btns left">
+    <a class="btn off" aria-disabled="true">Paper (coming soon)</a>
+    <a class="btn" href="https://github.com/lixuan27/RCI-main">Code</a>
+    <a class="btn ghost" href="../playground/">Interactive playground</a>
+    <a class="btn ghost" href="../">Project page</a>
+  </div>
+</div>
+
+<section id="tldr"><div class="wrap prose">
+  <h2 class="sec">TL;DR</h2>
+  <div class="tldr">
+  <p>A team of agents usually spends many times the tokens of one agent, and simply voting over independent answers already explains most reported gains. We therefore credit a group only against <b>independent agents that spend the same tokens</b>, on a three-level <b>equal-budget ladder</b>: beat one agent, beat their majority vote, and exceed their pass@n, which no selection among independent answers can exceed.</p>
+  <p><b>Interaction pays when it moves information.</b> When every agent sees the whole task, debate and recent multi-agent systems do not beat the compute-matched vote. When the decisive facts are split across agents, forwarding those facts verbatim lifts the group <b>31 percentage points above pass@n</b> at equal budget.</p>
+  <p><b>Organization emerges, and groups improve themselves.</b> Identical 27B agents give their reading budget to one member and form hubs on their own, raising accuracy by 18 points. Trained only on outputs that their own protocol accepts, without labels or a teacher, groups climb the ladder over generations, and on PlanBench, HiddenBench and Hanabi every released generation outperforms its predecessor on unseen tasks for four to six generations.</p>
+  </div>
+</div></section>
+
+<section id="results" style="padding-top:0"><div class="wrap">
+  <div class="prose"><p class="muted" style="font-size:13.5px;margin:0">All results at equal budget</p></div>
+  <div class="cards" id="cards"></div>
+</div></section>
+
+<section id="s1"><div class="wrap">
+  <div class="prose">
+    <h2 class="sec"><span class="num">1</span>Credit a group at equal cost</h2>
+    <p>Multi-agent systems are commonly credited for outperforming a single agent. Part of that improvement, however, comes from extra computation rather than collaboration. Majority voting over independent samples already improves on a single agent, and the more samples are drawn, the more likely at least one of them is right. A fair test therefore compares a group with <b>independent copies of the same model that spend the same tokens</b>.</p>
+    <p>If a group run spends <i>k</i> completion tokens and one independent agent costs <i>c</i><sub>1</sub>, the group's budget is <i>n</i><sub>B</sub> = <i>k</i>/<i>c</i><sub>1</sub> agents. Against <i>n</i><sub>B</sub> independent agents, the ladder has three levels:</p>
+    <div class="levels">
+      <div style="background:#b8c2cc"><b>1</b>outperforms a single agent: its extra tokens buy a better answer</div>
+      <div style="background:#7f9bb0"><b>2</b>outperforms the majority vote of n<sub>B</sub> independent agents</div>
+      <div style="background:#4f7d69"><b>3</b>exceeds their pass@n<sub>B</sub>, the chance that any one of them is right</div>
+    </div>
+    <p>Level 3 is a test of interaction. Voting, confidence weighting, verifiers and judges all <i>select</i> among independent answers, so none of them can exceed pass@n at equal cost. A group above pass@n must have produced correct answers through what its members exchanged.</p>
+  </div>
+  <figure class="wide"><img src="../assets/fig/fig2.png" alt="Equal-budget ladder"><figcaption><b>The equal-budget ladder.</b> Four Qwen3.8-27B protocols on HiddenBench, each placed at the highest level it reaches: the blackboard and debate stay below pass@n, while shared context and fact forwarding exceed it.</figcaption></figure>
+  <figure class="wide"><img src="../assets/fig/fig3.png" alt="Overview of one generation"><figcaption><b>One generation of the loop.</b> Collective: copies of one policy write, read and cite messages, and hubs can form. Commit: the answer with the most backers wins. Compare: the record's tokens set its cost n<sub>B</sub>, and the group is graded against n<sub>B</sub> independent agents. Train: the next generation learns from outputs the protocol accepts.</figcaption></figure>
+</div></section>
+
+<section id="s2"><div class="wrap">
+  <div class="prose">
+    <h2 class="sec"><span class="num">2</span>Move facts, not arguments</h2>
+    <p><b>When every agent already holds the evidence, a message mostly repeats what its reader knows.</b> With Qwen3.5-9B agents on six shared-information benchmarks, including GPQA-Diamond, BrowseComp-Plus, LongBench v2, the page images of MMLongBench-Doc, SWE-bench Verified and FATE-M, multi-agent debate, DeLM and AOrchestra never outperform the compute-matched vote. Only a blackboard with a stronger 27B reviewer, which selects among the members' answers, beats the vote on all four benchmarks it was run on. At 27B on GPQA-Diamond, the blackboard and a two-round debate stay at level 0.</p>
+    <p><b>When the decisive facts are split across agents, the picture changes.</b> On HiddenBench, each of four Qwen3.8-27B agents holds part of the decisive facts. Protocols that exchange answers and reasons stay at level 2 unless they debate for three rounds with a hint that facts are split. Protocols that pass the facts on exceed pass@n:</p>
+    <ul>
+      <li>shared context, which attaches every member's facts to the record: 0.881, 19 points above pass@n;</li>
+      <li>fact forwarding, where agents forward their facts verbatim: 0.959 at 6.2 agents' budget, 31 points above pass@n and above one agent given every fact at the same budget (0.942);</li>
+      <li>both together: 0.972, 33 points above pass@n.</li>
+    </ul>
+    <p>Fact forwarding stays above pass@n across three model scales: 9B, 27B and 35B-A3B.</p>
+  </div>
+  <figure class="wide"><img src="../assets/fig/fig5.png" alt="Protocol families on the ladder"><figcaption><b>Protocol families.</b> (b) With split facts, evidence protocols rise above pass@n. (c) With shared information, debate, DeLM and AOrchestra never outperform the vote.</figcaption></figure>
+  <figure class="wide"><img src="../assets/fig/fig6.png" alt="Qualitative results"><figcaption><b>What the records show.</b> (a) The vote buries the one right member. (b) With shared context an argument misleads even the member holding every fact; forwarded facts lead all four to the answer. (c) Members hand their budget to a hub; a member of another group waits for its hub. (d) A prompt written from the rules already describes the hub. Italics are verbatim.</figcaption></figure>
+</div></section>
+
+<section id="s3"><div class="wrap">
+  <div class="prose">
+    <h2 class="sec"><span class="num">3</span>Organization emerges, and costs tokens</h2>
+    <p>We gave each agent a reading budget of one message and let members give their budget away. <b>Identical 27B agents organize themselves.</b> Most of them give their budget away; in about a third of the records one agent collects enough budget to read every fact and becomes a hub. The hub answers like one agent given every fact, so accuracy rises by 18 points over a group without transfers. A planning round strengthens this behaviour and brings the group close to a designed hub. Under a cap that prevents a single hub, agents build relays instead, mostly two-level trees.</p>
+    <p>All these self-built structures outperform the vote but are not confirmed above pass@n, and their budgets explain why: <b>a self-organizing group spends about two thirds of its tokens on coordination</b>, mostly negotiating transfers and waiting for the hub. Organization is not free.</p>
+    <p>The model can also write down its own organization. A prompt that the model writes from the rules alone, for its own group, describes the same hub as prompts evolved over four generations, and reaches level 3 at less than half the token budget of the self-organized group on the same tasks (a descriptive comparison). Among the six models we tested, only Qwen3.8-27B forms hubs often; other model families rarely do, and allowing transfers barely changes their accuracy.</p>
+  </div>
+  <figure class="wide"><img src="../assets/fig/fig7.png" alt="How identical agents organize"><figcaption><b>Read by read.</b> A self-built hub, a relay under the budget cap, a capped failure, and where the tokens go.</figcaption></figure>
+  <figure class="wide"><img src="../assets/fig/fig9.png" alt="Accuracy and cost to level 3"><figcaption><b>Accuracy and cost.</b> Each protocol against a reference on the same pool. Evidence protocols stay above pass@n even at the reference's budget; designed and self-prompted organizations exceed it only at their own, lower budget.</figcaption></figure>
+</div></section>
+
+<section id="s4"><div class="wrap prose">
+  <h2 class="sec"><span class="num">4</span>Recursive collective intelligence</h2>
+  <div class="def">A group is <b>recursively collectively intelligent</b> when its own output, without a teacher or external labels, makes its next generation smarter on the same ladder, at equal cost.</div>
+  <p>On SplitBench, our hidden-profile benchmark, each generation trains on its parent group's protocol-verified turns and is graded on 196 held-out tasks against pass@n of base-model agents. The first generation improves the group at every scale; a second climbs further.</p>
+  <ul>
+    <li><b>9B, 3-step debate:</b> the margin over pass@n rises from −0.253 to −0.028 to +0.159, and the second generation is 0.192 above a control trained with the same recipe on base-model turns.</li>
+    <li><b>27B, 3-step debate:</b> from −0.009 to +0.201 to +0.284; the second step comes from cost, as the budget falls from 9.6 to 6.4 agents while accuracy holds.</li>
+    <li><b>4B, standard debate:</b> from −0.498 to −0.077 to +0.117.</li>
+  </ul>
+  <p>The gain belongs to the group: in the first step, trained 9B agents are as accurate alone as before, while their group's accuracy rises on the tasks that members of both generations solve alone. When a task scores only the group's joint deliverable, the credit rule decides what the shared policy learns: rewarding individual success or the team makes agents report more claims at lower precision, while Shapley credit charges each wrong claim to its author and is best on every metric.</p>
+</div></section>
+
+<section id="s5"><div class="wrap">
+  <div class="prose">
+    <h2 class="sec"><span class="num">5</span>Recursion on public benchmarks</h2>
+    <p>Recursion should continue beyond two generations and hold on benchmarks that others built. We run <b>gated chains</b> that start from four Qwen3.5-9B agents. In each round the current generation plays fresh tasks, an automatic check accepts outputs without answer labels, candidates train from its weights, and the best candidate is released only when its paired gain on fresh confirmation tasks exceeds a threshold.</p>
+  </div>
+  <figure class="wide"><img src="../assets/fig/fig4.png" alt="Gated generation chain"><figcaption><b>The gated generation chain.</b></figcaption></figure>
+  <div class="prose">
+    <ul>
+      <li><b>PlanBench:</b> all four rounds release a generation, and the group's accuracy on Blocksworld rises from 0.613 to 0.950. A single agent's first draft rises with it, from 0.371 to 0.672, and fewer calls hit the token cap, which we report beside every generation's accuracy.</li>
+      <li><b>HiddenBench:</b> collective training raises the group from 0.509 to 0.886 over five generations of chain T3k, with three flat rounds in which the candidate did not clear the threshold. In chain T3, single-agent self-training under the same caps also improves but stays far below collective training in every generation: the group learns what its agents cannot learn alone.</li>
+      <li><b>Hanabi:</b> the base agents lose all their lives and score zero. Six generations each outperform their predecessor on fresh deals, and the challenge score rises to 4.5 out of 25, while a control chain that trains on games of a fixed generation stays near 2.9.</li>
+    </ul>
+  </div>
+  <figure class="wide"><img src="../assets/fig/fig10.png" alt="Recursion on public benchmarks"><figcaption><b>Every round.</b> (a) PlanBench, (b) all eight HiddenBench T3k rounds including flat rounds, (c) Hanabi releases and the non-recursive control.</figcaption></figure>
+  <figure class="wide"><img src="../assets/fig/fig11.png" alt="HiddenBench details"><figcaption><b>HiddenBench.</b> (a) Collective training against single-agent self-training. (b) Protocols with the same base model on the 65 official tasks. (c) Groups reported by the benchmark's authors, against one agent that holds all facts.</figcaption></figure>
+</div></section>
+
+<section id="s6"><div class="wrap prose">
+  <h2 class="sec"><span class="num">6</span>What we learned</h2>
+  <ul>
+    <li><b>Information structure governs both inference and training.</b> Interaction exceeds pass@n when it moves information that no single agent holds, and the same condition reappears when a group trains on its own work.</li>
+    <li><b>Organization has a price.</b> Hubs and relays emerge from identical agents, but coordination can consume most of the budget; writing the organization down recovers it.</li>
+    <li><b>A gain can come from a cheaper behaviour.</b> Reporting the cost of every generation beside its accuracy separates recursive improvement from cheaper behaviour.</li>
+    <li><b>Sustained recursion needs fresh problems and fresh evidence.</b> Self-improving collectives should be built with a source of new problems, released by gates on unseen problems, and evaluated at equal cost.</li>
+  </ul>
+  <div class="callout"><div class="kicker">Try it</div>Change what agents see, what they exchange and how they organize, and watch the budget, accuracy and ladder level change in the <a href="../playground/">interactive playground</a>. Code is at <a href="https://github.com/lixuan27/RCI-main">github.com/lixuan27/RCI-main</a>.</div>
+</div></section>
+
+<section id="cite"><div class="wrap prose">
+  <h2 class="sec">Citation</h2>
+<pre class="bib">@article{he2026rci,
+  title   = {Recursive Collective Intelligence: Emergence on an
+             Equal-Budget Ladder in Multi-Agent LLM Systems},
+  author  = {He, Lixuan and Cai, Shengqu and Wu, Fang and Zheng, Shikang and
+             Jiang, Liwei and Li, Manling and Ma, Yi and Fei-Fei, Li and
+             Guibas, Leonidas and Wetzstein, Gordon and Choi, Yejin and
+             Hong, Yining},
+  year    = {2026}
+}</pre>
+</div></section>
+<footer><div class="wrap">© 2026 the authors · <a href="../">project page</a> · <a href="../playground/">playground</a> · <a href="https://github.com/lixuan27/RCI-main">code</a></div></footer>
+
+<script src="../assets/data.js"></script>
+<script>
+const D=window.RCI, C={sage:"#4f7d69",plum:"#7a5c93",crim:"#a6374a",navy:"#25374f",sand:"#b8955a",gray:"#9aa3ab",slate:"#6e8597"};
+function hbars(items,{min,max,zero=0,fmt=v=>v.toFixed(3),color}){ const W=340,rh=20,H=items.length*rh+22,L=150,X=v=>L+(v-min)/(max-min)*(W-L-30);
+  let s=`<svg viewBox="0 0 ${W} ${H}">`; s+=`<line x1="${X(zero)}" x2="${X(zero)}" y1="0" y2="${H-18}" stroke="#94a3b8" stroke-dasharray="3 3"/>`;
+  items.forEach((it,i)=>{const y=i*rh+3, a=X(Math.min(zero,it.v)), b=X(Math.max(zero,it.v)); s+=`<text x="${L-6}" y="${y+12}" text-anchor="end" font-size="10.5" font-family="Inter" fill="#374151">${it.n}</text><rect x="${a}" y="${y+2}" width="${Math.max(b-a,1)}" height="12" rx="2" fill="${it.c||color(it.v)}"/><text x="${it.v>=zero?b+4:a-4}" y="${y+12}" text-anchor="${it.v>=zero?'start':'end'}" font-size="10" font-family="Inter" fill="#6b7280">${fmt(it.v)}</text>`;});
+  return s+`</svg>`; }
+function line(series,n,{min,max,labels}){ const W=340,H=170,L=30,R=10,T=12,B=26,X=i=>L+i*(W-L-R)/(n-1),Y=v=>T+(1-(v-min)/(max-min))*(H-T-B);
+  let s=`<svg viewBox="0 0 ${W} ${H}">`; [min,(min+max)/2,max].forEach(t=>s+=`<line x1="${L}" x2="${W-R}" y1="${Y(t)}" y2="${Y(t)}" stroke="#eef1f4"/><text x="${L-4}" y="${Y(t)+3}" text-anchor="end" font-size="9.5" fill="#6b7280" font-family="Inter">${+t.toFixed(2)}</text>`);
+  for(let i=0;i<n;i++) s+=`<text x="${X(i)}" y="${H-8}" text-anchor="middle" font-size="10" fill="#6b7280" font-family="Inter">${labels?labels[i]:'G'+i}</text>`;
+  series.forEach(se=>{const p=se.v.map((v,i)=>v==null?null:`${X(i)},${Y(v)}`).filter(Boolean); s+=`<polyline points="${p.join(' ')}" fill="none" stroke="${se.c}" stroke-width="2.2" ${se.d?`stroke-dasharray="${se.d}"`:''}/>`; se.v.forEach((v,i)=>{if(v!=null)s+=`<circle cx="${X(i)}" cy="${Y(v)}" r="2.8" fill="#fff" stroke="${se.c}" stroke-width="1.8"/>`;});});
+  let lx=L+4; series.forEach(se=>{s+=`<rect x="${lx}" y="${T}" width="10" height="3" fill="${se.c}"/><text x="${lx+13}" y="${T+4}" font-size="9.5" font-family="Inter" fill="#374151">${se.n}</text>`; lx+=22+se.n.length*5.3;});
+  return s+`</svg>`; }
+const cards=[
+  {t:"Split facts, Qwen3.8-27B", s:"margin over pass@n at equal budget (HiddenBench)", svg:hbars(D.split.map(p=>({n:p.name+(p.hint?" + hint":"")+(p.rounds?`, ${p.rounds}r`:""),v:p.margin,c:p.fam==="Fact"?C.sage:C.plum})),{min:-0.36,max:0.36,color:()=>C.plum}), cap:"Table 2, Figure 5b"},
+  {t:"Fact forwarding across scales", s:"margin over pass@n at equal budget", svg:hbars(D.scales.map(x=>({n:x.model,v:x.margin,c:C.sage})),{min:0,max:0.36,color:()=>C.sage}), cap:"Tables 2 and 9"},
+  {t:"Who forms hubs?", s:"share of records with a self-built hub (free budget)", svg:hbars(D.org.families.map(x=>({n:x.model,v:x.hubs,c:x.hubs>0.1?C.crim:C.gray})),{min:0,max:0.4,color:()=>C.crim}), cap:"Table 3b"},
+  {t:"PlanBench", s:"selection-set accuracy by generation", svg:line([{n:"group",v:D.planbench.group,c:"#3d5f7e"},{n:"one agent, final",v:D.planbench.final,c:C.sand},{n:"truncated calls",v:D.planbench.truncated,c:C.gray,d:"4 3"}],5,{min:0,max:1}), cap:"Table 6"},
+  {t:"HiddenBench", s:"collective training (T3) vs. single-agent self-training", svg:line([{n:"collective T3",v:D.hiddenbench.t3,c:C.plum},{n:"self-training, 4 agents",v:D.hiddenbench.selfFour.slice(0,4),c:C.gray,d:"4 3"}],4,{min:0,max:1}), cap:"Figure 11a"},
+  {t:"Hanabi", s:"challenge score out of 25", svg:line([{n:"recursive",v:D.hanabi.rec,c:C.crim},{n:"control",v:[null,...D.hanabi.control.slice(1),null,null,null],c:C.gray,d:"4 3"}],7,{min:0,max:5}), cap:"Table 7"},
+];
+document.getElementById('cards').innerHTML=cards.map(c=>`<div class="card"><h4>${c.t}<span class="go">→</span></h4><div class="sub">${c.s}</div>${c.svg}<div class="cap">${c.cap}</div></div>`).join("");
+// hero: a slow network of agents passing facts
+(function(){const cv=document.getElementById('net'),ctx=cv.getContext('2d');let W,H,N=[];const cols=["#8BAA98","#8FB0CF","#A79BB5","#C9D6DF"];
+ function rs(){W=cv.width=cv.clientWidth*devicePixelRatio;H=cv.height=cv.clientHeight*devicePixelRatio;N=[];for(let i=0;i<26;i++)N.push({x:Math.random()*W,y:Math.random()*H*0.8,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,c:cols[i%4]});}
+ rs();addEventListener('resize',rs);let t=0;
+ (function f(){t++;ctx.clearRect(0,0,W,H);for(const a of N){a.x+=a.vx;a.y+=a.vy;if(a.x<0||a.x>W)a.vx*=-1;if(a.y<0||a.y>H)a.vy*=-1;}
+  for(let i=0;i<N.length;i++)for(let j=i+1;j<N.length;j++){const a=N[i],b=N[j],d=Math.hypot(a.x-b.x,a.y-b.y);if(d<200*devicePixelRatio){ctx.strokeStyle=`rgba(255,255,255,${0.12*(1-d/(200*devicePixelRatio))})`;ctx.lineWidth=devicePixelRatio;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+   const p=((t/180)+(i*7+j)%10/10)%1;ctx.fillStyle="rgba(191,224,207,.55)";ctx.fillRect(a.x+(b.x-a.x)*p-2*devicePixelRatio,a.y+(b.y-a.y)*p-2*devicePixelRatio,4*devicePixelRatio,4*devicePixelRatio);}}
+  for(const a of N){ctx.fillStyle=a.c;ctx.beginPath();ctx.arc(a.x,a.y,4*devicePixelRatio,0,7);ctx.fill();}
+  requestAnimationFrame(f);})();})();
+document.addEventListener('click',e=>{const t=document.getElementById('toc');if(!t.contains(e.target))t.classList.remove('open');});
+</script>
+</body>
+</html>

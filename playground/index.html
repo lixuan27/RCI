@@ -74,9 +74,12 @@
   .tbl td:last-child{text-align:right;font-variant-numeric:tabular-nums}
   .tbl tr.sel td{font-weight:700;color:var(--ink)}
   .foot{font-size:12.5px;color:var(--mute);margin-top:18px;line-height:1.6}
+  #bgfx{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+.pg-wrap{position:relative;z-index:1}
 </style>
 </head>
 <body>
+<canvas id="bgfx" aria-hidden="true" data-strength="0.8" data-quiet="0"></canvas>
 <div class="topbar"><div class="wrap" style="max-width:1240px">
   <a class="brand" href="../">RCI<span>.</span></a>
   <div class="nav-links"><a href="../">Project</a><a href="../blog/">Blog</a><a class="on" href="./">Playground</a><a href="https://github.com/lixuan27/RCI-official">Code</a></div>
@@ -389,5 +392,6 @@ stage.ondrop=e=>{ if(!isChip(e)) return; e.preventDefault(); stage.classList.rem
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{ S.tab=b.dataset.t; ORDER=null; renderAll(true); });
 renderAll(true);
 </script>
+<script src="../assets/bgfx.js"></script>
 </body>
 </html>

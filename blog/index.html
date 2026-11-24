@@ -11,6 +11,33 @@
 <style>
 #bgfx{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
 main.wrap{position:relative;z-index:1}
+/* sidebar contents */
+.side-toc{position:fixed;top:92px;left:max(18px,calc(50vw - 360px - 262px));width:226px;z-index:20;display:none;
+  font-family:var(--sans);background:rgba(245,247,249,.82);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  border:1px solid rgba(220,227,233,.9);border-radius:14px;padding:14px 14px 12px;transition:opacity .25s,transform .25s}
+.side-toc .st-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.side-toc .st-title{font:600 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.side-toc .st-pct{font:600 11px var(--sans);color:var(--accent);font-variant-numeric:tabular-nums}
+.side-toc .st-hide{border:0;background:transparent;color:var(--mute);cursor:pointer;font-size:14px;line-height:1;padding:2px 4px;border-radius:6px}
+.side-toc .st-hide:hover{background:var(--paper2);color:var(--ink)}
+.side-toc .st-list{position:relative}
+.side-toc ol{list-style:none;margin:0;padding:0 0 0 14px}
+.side-toc .st-list::before{content:"";position:absolute;left:4px;top:6px;bottom:6px;width:2px;border-radius:2px;background:var(--line)}
+.side-toc .st-fill{position:absolute;left:4px;top:6px;width:2px;border-radius:2px;background:var(--accent);height:0;transition:height .2s}
+.side-toc li{position:relative;margin:0}
+.side-toc li::before{content:"";position:absolute;left:-13px;top:11px;width:8px;height:8px;border-radius:50%;background:#fff;border:2px solid var(--line);transition:all .2s}
+.side-toc li.done::before{border-color:var(--accent);background:var(--accent)}
+.side-toc li.on::before{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(75,107,132,.18)}
+.side-toc a{display:flex;gap:8px;padding:5px 8px;border-radius:8px;font-size:13px;line-height:1.4;color:var(--ink2);text-decoration:none;transition:background .15s,color .15s}
+.side-toc a .n{min-width:12px;color:var(--mute);font-variant-numeric:tabular-nums}
+.side-toc a:hover{background:rgba(234,239,243,.9);color:var(--ink)}
+.side-toc li.on>a{background:#fff;color:var(--ink);font-weight:600;box-shadow:0 1px 3px rgba(30,42,53,.06)}
+.side-toc li.on>a .n{color:var(--accent)}
+.side-toc.min{width:auto;padding:8px}
+.side-toc.min .st-list,.side-toc.min .st-pct{display:none}
+.side-toc.min .st-head{gap:10px;cursor:pointer}
+.side-toc.min .st-head{margin:0}
+@media (min-width:1240px){.side-toc{display:block}.toc-float{display:none}}
 </style>
 </head>
 <body>
@@ -21,6 +48,20 @@ main.wrap{position:relative;z-index:1}
   <div class="nav-links"><a href="../">Project</a><a class="on" href="./">Blog</a><a href="../playground/">Playground</a><a href="https://github.com/lixuan27/RCI-official">Code</a></div>
 </div></div>
 
+<nav class="side-toc" id="sidetoc" aria-label="Contents">
+  <div class="st-head"><span class="st-title">Contents</span><span class="st-pct" id="stpct">0%</span><button class="st-hide" id="sthide" aria-label="Collapse contents" title="Collapse">&#8249;</button></div>
+  <div class="st-list"><span class="st-fill" id="stfill"></span><ol>
+    <li><a href="#tldr"><span class="n">·</span>In short</a></li>
+    <li><a href="#s1"><span class="n">1</span>Why teams of agents are hard to judge</a></li>
+    <li><a href="#s2"><span class="n">2</span>Grading a group at equal cost</a></li>
+    <li><a href="#s3"><span class="n">3</span>Interaction helps when it moves facts</a></li>
+    <li><a href="#s4"><span class="n">4</span>Identical agents organize themselves</a></li>
+    <li><a href="#s5"><span class="n">5</span>Recursive collective intelligence</a></li>
+    <li><a href="#s6"><span class="n">6</span>What we learned</a></li>
+    <li><a href="#try"><span class="n">·</span>Try it yourself</a></li>
+    <li><a href="#cite"><span class="n">·</span>Citation</a></li>
+  </ol></div>
+</nav>
 <main class="wrap">
 <header class="col" style="padding-top:46px">
   <div class="kicker">Research blog</div>
@@ -53,7 +94,7 @@ main.wrap{position:relative;z-index:1}
 </figure>
 
 <article class="prose">
-  <div class="callout tldr"><div class="lab">In short</div>
+  <div class="callout tldr" id="tldr"><div class="lab">In short</div>
     <ul>
       <li>We grade every group against independent agents that spend the same tokens. Our <b>equal-budget ladder</b> has three levels, and its top level cannot be reached by selecting among independent answers.</li>
       <li>Interaction pays off when it <b>moves information</b>. Forwarding split facts lifts four 27B agents 31 points above pass@n.</li>
@@ -165,6 +206,30 @@ const bar=document.getElementById('progress'), secs=[...document.querySelectorAl
 addEventListener('scroll',()=>{const h=document.documentElement; bar.style.width=(100*h.scrollTop/(h.scrollHeight-h.clientHeight))+'%';
   let cur=secs[0].id; for(const s of secs){ if(s.getBoundingClientRect().top<120) cur=s.id; } links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur));},{passive:true});
 document.addEventListener('click',e=>{const t=document.getElementById('tocf'); if(!t.contains(e.target)) t.classList.remove('open');});
+</script>
+<script>
+(function(){
+  const nav=document.getElementById('sidetoc'); if(!nav) return;
+  const items=[...nav.querySelectorAll('li')], links=items.map(li=>li.querySelector('a'));
+  const targets=links.map(a=>document.getElementById(a.getAttribute('href').slice(1)));
+  const fill=document.getElementById('stfill'), pct=document.getElementById('stpct'), list=nav.querySelector('.st-list');
+  function update(){
+    const h=document.documentElement, p=Math.max(0,Math.min(1,h.scrollTop/(h.scrollHeight-h.clientHeight)));
+    pct.textContent=Math.round(p*100)+'%';
+    let cur=0; targets.forEach((t,i)=>{ if(t && t.getBoundingClientRect().top<140) cur=i; });
+    if(h.scrollTop+h.clientHeight>=h.scrollHeight-4) cur=targets.length-1;
+    items.forEach((li,i)=>{ li.classList.toggle('on',i===cur); li.classList.toggle('done',i<cur); });
+    const li=items[cur], top=li.offsetTop+li.offsetHeight/2-6; fill.style.height=Math.max(0,top)+'px';
+  }
+  addEventListener('scroll',update,{passive:true}); addEventListener('resize',update); update();
+  links.forEach((a,i)=>a.addEventListener('click',e=>{ const t=targets[i]; if(!t) return; e.preventDefault();
+    t.scrollIntoView({behavior:'smooth',block:'start'}); history.replaceState(null,'',a.getAttribute('href')); }));
+  const btn=document.getElementById('sthide');
+  nav.querySelector('.st-head').addEventListener('click',e=>{ if(nav.classList.contains('min') && e.target!==btn) btn.click(); });
+  btn.addEventListener('click',()=>{ const m=nav.classList.toggle('min'); btn.innerHTML=m?'&#8250;':'&#8249;'; btn.title=m?'Show contents':'Collapse'; btn.setAttribute('aria-label',btn.title);
+    try{localStorage.setItem('rci-toc-min',m?'1':'0');}catch(_){} });
+  try{ if(localStorage.getItem('rci-toc-min')==='1') btn.click(); }catch(_){}
+})();
 </script>
 <script src="../assets/bgfx.js"></script>
 </body>

@@ -9,89 +9,109 @@
 <link rel="stylesheet" href="../assets/style.css">
 <style>
   body{background:var(--paper)}
-  .pg-wrap{max-width:1240px;margin:0 auto;padding:0 max(22px,env(safe-area-inset-right,0px)) 50px max(22px,env(safe-area-inset-left,0px))}
-  .pg-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;padding:30px 0 18px}
-  .pg-head h1{font-family:var(--serif);font-weight:600;font-size:clamp(26px,3vw,34px);margin:6px 0 4px;color:var(--ink);text-wrap:balance}
-  .pg-head p{margin:0;color:var(--mute);font-size:14.5px}
-  .seg,.chip,.rc .hd,.pg-head p{-webkit-user-select:none;user-select:none}
-  .seg{display:inline-flex;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:12px;padding:4px;gap:2px}
-  .seg button{font:600 13.5px var(--sans);border:0;background:transparent;color:var(--ink2);padding:8px 14px;border-radius:9px;cursor:pointer;transition:background .15s,color .15s}
+  .pg-wrap{max-width:1360px;margin:0 auto;padding:0 max(28px,env(safe-area-inset-right,0px)) 64px max(28px,env(safe-area-inset-left,0px))}
+  .pg-head{padding:42px 0 22px;display:grid;gap:22px}
+  .pg-head h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,3.4vw,42px);line-height:1.12;margin:8px 0 8px;color:var(--ink);text-wrap:balance}
+  .pg-head p{margin:0;color:var(--ink2);font-size:16.5px;max-width:720px;line-height:1.55}
+  .seg,.chip,.rc .hd,.pg-head p,.step-h{-webkit-user-select:none;user-select:none}
+  .seg{display:inline-flex;flex-wrap:wrap;background:rgba(255,255,255,.9);border:1px solid var(--line);border-radius:14px;padding:5px;gap:4px;justify-self:start;box-shadow:0 1px 2px rgba(30,42,53,.04)}
+  .seg button{font:600 15px var(--sans);border:0;background:transparent;color:var(--ink2);padding:11px 20px;border-radius:10px;cursor:pointer;transition:background .15s,color .15s}
   .seg button:hover{background:var(--paper)}
-  .seg button.on{background:var(--navy);color:#fff}
-  .board{display:grid;grid-template-columns:240px minmax(0,1fr) 290px;gap:16px;align-items:start}
-  @media (max-width:1060px){.board{grid-template-columns:220px minmax(0,1fr)}.results{grid-column:1/-1;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}}
-  @media (max-width:720px){.board{grid-template-columns:1fr}}
-  .pane{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;min-width:0}
-  .grp{margin-bottom:16px}.grp:last-child{margin-bottom:0}
-  .grp h6{margin:0 0 8px;font:600 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
-  .chips{display:flex;flex-wrap:wrap;gap:6px}
-  .chip{display:inline-flex;align-items:center;gap:6px;font:500 13px var(--sans);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 11px;cursor:grab;user-select:none;transition:background .15s,border-color .15s,color .15s}
-  .chip:hover{border-color:#b9c4cf;background:#fff}
-  .chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
-  .chip[disabled]{opacity:.35;cursor:not-allowed}
-  .chip .d{width:7px;height:7px;border-radius:50%;flex:none}
+  .seg button.on{background:var(--navy);color:#fff;box-shadow:0 2px 6px rgba(44,66,87,.25)}
+
+  /* summary strip */
+  .summary{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px 28px;margin-bottom:24px;box-shadow:0 6px 24px rgba(30,42,53,.05)}
+  .sum-grid{display:grid;grid-template-columns:minmax(260px,1.25fr) repeat(4,minmax(120px,1fr));gap:0;align-items:stretch}
+  .sum-grid>div{padding:2px 24px;border-left:1px solid var(--paper2);min-width:0}
+  .sum-grid>div:first-child{padding-left:0;border-left:0}
+  .lvl{display:flex;align-items:center;gap:18px}
+  .lvl .ring{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;font:700 32px var(--serif);color:#fff;flex:none;box-shadow:inset 0 -3px 0 rgba(0,0,0,.08)}
+  .lvl .t{font:600 19px var(--sans);color:var(--ink);line-height:1.3}
+  .lvl .s{font-size:13.5px;color:var(--mute);margin-top:2px}
+  .steps{display:flex;gap:5px;height:30px;margin-top:10px;align-items:flex-end;max-width:180px}
+  .steps div{flex:1;border-radius:4px}
+  .metric .k{font:600 12px var(--sans);color:var(--mute);letter-spacing:.09em;text-transform:uppercase;display:flex;gap:6px;align-items:center}
+  .metric .v{font:600 36px var(--serif);color:var(--ink);line-height:1.15;margin-top:8px;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .metric .v small{font:500 14px var(--sans);color:var(--mute);margin-left:3px}
+  .metric .u{font-size:13px;color:var(--mute);margin-top:4px}
+  .verdict{margin-top:20px;padding-top:16px;border-top:1px solid var(--paper2);font:500 16px var(--sans);color:var(--ink2);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .verdict .dot{width:9px;height:9px;border-radius:50%;flex:none}
+  .verdict b{color:var(--ink)}
+  @media (max-width:1100px){.sum-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 0}.sum-grid>div:first-child{grid-column:1/-1}.sum-grid>div:nth-child(2n){border-left:0;padding-left:0}}
+
+  /* board */
+  .board{display:grid;grid-template-columns:340px minmax(0,1fr);gap:24px;align-items:start}
+  @media (max-width:900px){.board{grid-template-columns:1fr}}
+  .pane{background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;min-width:0;box-shadow:0 6px 24px rgba(30,42,53,.04)}
+  .grp{padding:0 0 20px;margin:0 0 20px;border-bottom:1px solid var(--paper2)}
+  .grp:last-of-type{border-bottom:0;margin-bottom:0;padding-bottom:4px}
+  .step-h{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+  .step-h .no{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--paper2);color:var(--navy);font:700 12px var(--sans);flex:none}
+  .step-h h6{margin:0;font:600 12.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{display:inline-flex;align-items:center;gap:8px;font:500 15px var(--sans);color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:9px 16px;cursor:grab;user-select:none;transition:background .15s,border-color .15s,color .15s,box-shadow .15s}
+  .chip:hover{border-color:#b4c0cc;background:#fff;box-shadow:0 2px 8px rgba(30,42,53,.06)}
+  .chip.on{background:var(--navy);border-color:var(--navy);color:#fff;box-shadow:0 3px 10px rgba(44,66,87,.22)}
+  .chip[disabled]{opacity:.35;cursor:not-allowed;box-shadow:none}
+  .chip .d{width:8px;height:8px;border-radius:50%;flex:none}
   .chip.on .d{box-shadow:0 0 0 2px #fff}
   .chip.dragging{opacity:.4}
-  .hint{font-size:12px;color:var(--mute);margin-top:14px;line-height:1.5;border-top:1px solid var(--paper2);padding-top:10px}
-  .gen{display:flex;align-items:center;gap:10px}
-  .gen input{flex:1;accent-color:var(--navy)}
-  .gen b{font:700 14px var(--sans);color:var(--ink);min-width:24px;text-align:right}
+  .hint{font-size:13.5px;color:var(--mute);margin-top:18px;line-height:1.55;background:var(--paper);border-radius:12px;padding:12px 14px}
+  .gen{display:flex;align-items:center;gap:14px;padding:4px 2px}
+  .gen input{flex:1;accent-color:var(--navy);height:22px}
+  .gen b{font:700 18px var(--serif);color:var(--ink);min-width:32px;text-align:right}
   .stage{position:relative;padding:0;overflow:hidden}
-  .stage-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
-  .tag{font:500 12px var(--sans);padding:4px 10px;border-radius:999px;background:var(--paper2);color:var(--ink2)}
+  .stage-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:16px 22px;border-bottom:1px solid var(--line)}
+  .tag{font:500 13.5px var(--sans);padding:6px 13px;border-radius:999px;background:var(--paper2);color:var(--ink2)}
   .tag b{font-weight:700;color:var(--ink)}
-  .stage svg{display:block;width:100%;height:auto;touch-action:none;user-select:none;background:
-     radial-gradient(circle,#e3e8ed 1px,transparent 1.2px) 0 0/22px 22px,#fff}
+  .stage svg{display:block;width:100%;height:clamp(380px,40vw,540px);touch-action:none;user-select:none;background:
+     radial-gradient(circle,#e3e8ed 1px,transparent 1.2px) 0 0/24px 24px,#fff}
   .stage.drop{box-shadow:inset 0 0 0 2px var(--accent)}
-  .stage.drop::after{content:"Drop to apply";position:absolute;top:58px;right:14px;font:600 12px var(--sans);color:#fff;background:var(--accent);padding:4px 10px;border-radius:999px}
-  .caption{padding:11px 14px 13px;font-size:14px;color:var(--ink2);border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
-  .caption .tip{font-size:12px;color:var(--mute)}
-  .reset{font:600 12px var(--sans);color:var(--ink2);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:3px 10px;cursor:pointer}
+  .stage.drop::after{content:"Drop to apply";position:absolute;top:70px;right:22px;font:600 13px var(--sans);color:#fff;background:var(--accent);padding:6px 12px;border-radius:999px}
+  .caption{padding:15px 22px 17px;font-size:16px;color:var(--ink2);border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+  .caption .tip{font-size:13px;color:var(--mute)}
+  .reset{font:600 13px var(--sans);color:var(--ink2);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:6px 14px;cursor:pointer}
   .reset:hover{background:#fff}
-  .results{display:flex;flex-direction:column;gap:12px;min-width:0}
-  .rc{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 16px 15px;position:relative;min-width:0;transition:border-color .15s,box-shadow .15s}
+
+  /* detail cards */
+  .details-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:34px 0 14px}
+  .details-h h2{margin:0;font:600 22px var(--serif);color:var(--ink)}
+  .details-h span{font-size:13.5px;color:var(--mute)}
+  .details{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+  .rc{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px 22px;position:relative;min-width:0;transition:border-color .15s,box-shadow .15s;box-shadow:0 6px 24px rgba(30,42,53,.04)}
   .rc.dragover{border-color:var(--accent);box-shadow:0 0 0 3px rgba(75,107,132,.14)}
   .rc.lift{opacity:.45}
-  .rc .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
-  .rc .hd span:first-child{font:600 11px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
-  .handle{cursor:grab;color:#b4bec8;font-size:14px;line-height:1;user-select:none;padding:3px 5px;border-radius:6px;letter-spacing:-2px}
+  .rc .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .rc .hd span:first-child{font:600 12px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+  .handle{cursor:grab;color:#b4bec8;font-size:15px;line-height:1;user-select:none;padding:4px 6px;border-radius:6px;letter-spacing:-2px}
   .handle:hover{background:var(--paper);color:var(--ink2)}
-  .lvl{display:flex;align-items:center;gap:14px}
-  .lvl .ring{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font:700 25px var(--serif);color:#fff;flex:none}
-  .lvl .t{font:600 15px var(--sans);color:var(--ink)}
-  .lvl .s{font-size:12.5px;color:var(--mute);margin-top:1px}
-  .steps{display:flex;gap:4px;height:30px;margin-top:8px;align-items:flex-end}
-  .steps div{flex:1;border-radius:4px}
-  .nums{display:grid;grid-template-columns:1fr 1fr;gap:12px 12px}
-  .num .k{font:600 10.5px var(--sans);color:var(--mute);letter-spacing:.08em;text-transform:uppercase;display:flex;gap:5px;align-items:center}
-  .num .v{font:600 23px var(--serif);color:var(--ink);line-height:1.25;font-variant-numeric:tabular-nums}
-  .num .v small{font:500 12px var(--sans);color:var(--mute)}
-  .q{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;border:1px solid #c3ccd5;font:600 9px var(--sans);color:var(--mute);cursor:help;letter-spacing:0}
-  .src{font-size:12px;color:var(--mute);line-height:1.5}
-  .bar{height:10px;border-radius:6px;background:var(--paper2);overflow:hidden;display:flex}
-  .tbl{width:100%;border-collapse:collapse;font-size:12.5px;color:var(--ink2)}
-  .tbl td{padding:4px 0;border-bottom:1px solid var(--paper2)}
+  .q{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:50%;border:1px solid #c3ccd5;font:600 10px var(--sans);color:var(--mute);cursor:help;letter-spacing:0;text-transform:none}
+  .src{font-size:14px;color:var(--ink2);line-height:1.6}
+  .bar{height:14px;border-radius:7px;background:var(--paper2);overflow:hidden;display:flex}
+  .tbl{width:100%;border-collapse:collapse;font-size:14.5px;color:var(--ink2)}
+  .tbl td{padding:7px 0;border-bottom:1px solid var(--paper2)}
   .tbl td:last-child{text-align:right;font-variant-numeric:tabular-nums}
   .tbl tr.sel td{font-weight:700;color:var(--ink)}
-  .foot{font-size:12.5px;color:var(--mute);margin-top:18px;line-height:1.6}
+  .foot{font-size:14px;color:var(--mute);margin-top:30px;line-height:1.65;max-width:900px}
   #bgfx{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
 .pg-wrap{position:relative;z-index:1}
 </style>
 </head>
 <body>
 <canvas id="bgfx" aria-hidden="true" data-strength="0.8" data-quiet="0"></canvas>
-<div class="topbar"><div class="wrap" style="max-width:1240px">
+<div class="topbar"><div class="wrap" style="max-width:1360px">
   <a class="brand" href="../">RCI<span>.</span></a>
   <div class="nav-links"><a href="../">Project</a><a href="../blog/">Blog</a><a class="on" href="./">Playground</a><a href="https://github.com/lixuan27/RCI-official">Code</a></div>
 </div></div>
 
 <div class="pg-wrap">
   <div class="pg-head">
-    <div><div class="kicker">Interactive</div><h1>Build a group of agents</h1><p>Drag a component onto the group, or click it. Drag the agents to rearrange them.</p></div>
+    <div><div class="kicker">Interactive</div><h1>Build a group of agents</h1><p>Choose what the agents see and how they exchange information. Drag a component onto the group or click it, and drag the agents to rearrange them.</p></div>
     <div class="seg" id="tabs">
       <button data-t="build" class="on">Build a group</button><button data-t="org">Self-organization</button><button data-t="prior">Prior methods</button><button data-t="rec">Recursion</button>
     </div>
   </div>
+  <section class="summary" id="summary" aria-live="polite"></section>
   <div class="board">
     <aside class="pane" id="palette"></aside>
     <section class="pane stage" id="stage">
@@ -99,9 +119,10 @@
       <svg id="cv" viewBox="0 0 520 340" aria-label="group of agents"></svg>
       <div class="caption"><span id="cap"></span><span class="tip" id="tip"></span></div>
     </section>
-    <aside class="results" id="results"></aside>
   </div>
-  <div class="foot">Every option is a configuration measured in the paper; greyed-out options were not measured. Ladder levels: 1 beats one agent, 2 beats the majority vote of n<sub>B</sub> independent agents, 3 beats their pass@n<sub>B</sub>.</div>
+  <div class="details-h"><h2>Details</h2><span>Drag a card by its handle to reorder</span></div>
+  <div class="details" id="results"></div>
+  <div class="foot">Every option is a configuration measured in the paper, and greyed-out options were not measured. Ladder levels: 1 beats one agent, 2 beats the majority vote of n<sub>B</sub> independent agents, and 3 beats their pass@n<sub>B</sub>.</div>
 </div>
 
 <script src="../assets/data.js"></script>
@@ -122,10 +143,11 @@ const esc = s=>String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;");
 function chip(label, k, v, on, color, disabled, tip){
   return `<button class="chip${on?' on':''}" ${disabled?'disabled':'draggable="true"'} data-k="${k}" data-v="${esc(v)}" title="${esc(disabled?'not measured in the paper':(tip||label))}">${color?`<span class="d" style="background:${color}"></span>`:''}${label}</button>`;
 }
-function grp(title, inner){ return `<div class="grp"><h6>${title}</h6><div class="chips">${inner}</div></div>`; }
+let GN=0;
+function grp(title, inner){ GN++; return `<div class="grp"><div class="step-h"><span class="no">${GN}</span><h6>${title}</h6></div><div class="chips">${inner}</div></div>`; }
 const ORGLABEL = {none:"No transfer",so:"Self-organized",sop:"+ planning round",rules:"Prompt from rules",evolved:"Evolved prompt",hub:"Designed hub",tree:"Designed tree"};
 function palette(){
-  let h="";
+  let h=""; GN=0;
   if(S.tab==="build"){
     h+=grp("What agents see", [["split","Split facts"],["corpus","Shared corpus"],["same","Same question"]].map(([k,t])=>chip(t,"setting",k,S.setting===k,null,false,D.settings[k].bench)).join(""));
     if(S.setting==="split"){
@@ -156,7 +178,7 @@ function palette(){
     const ch=[["planbench","PlanBench"],["t3k","HiddenBench"],["t3","Collective vs. solo"],["hanabi","Hanabi"],["sb0","SplitBench 9B"],["sb1","SplitBench 27B"],["sb2","SplitBench 9B, standard"],["sb3","SplitBench 4B"]];
     h+=grp("Run", ch.map(([k,t])=>chip(t,"rchain",k,S.rchain===k)).join(""));
     const maxg=MAXG[S.rchain] ?? 2, g=Math.min(S.rgen,maxg);
-    h+=`<div class="grp"><h6>Generation</h6><div class="gen"><input id="rgen" type="range" min="0" max="${maxg}" value="${g}" aria-label="generation"><b id="rgl">G${g}</b></div></div>`;
+    GN++; h+=`<div class="grp"><div class="step-h"><span class="no">${GN}</span><h6>Generation</h6></div><div class="gen"><input id="rgen" type="range" min="0" max="${maxg}" value="${g}" aria-label="generation"><b id="rgl">G${g}</b></div></div>`;
   }
   h+=`<div class="hint">${S.tab==="rec"?"Drag the slider to step through the generations.":"Drag a chip onto the group in the middle, or click it."}</div>`;
   $('#palette').innerHTML=h;
@@ -301,52 +323,79 @@ function recChart(){
   return {cap};
 }
 
-/* ---------------- result cards ---------------- */
+/* ---------------- summary strip and detail cards ---------------- */
 let ORDER = null;
+const LVLTXT=["Below one agent","Beats one agent","Beats the vote","Beats pass@n"];
 function card(id, title, body){ return `<div class="rc" data-id="${id}"><div class="hd"><span>${title}</span><span class="handle" draggable="true" title="Drag to reorder">⋮⋮</span></div>${body}</div>`; }
-function levelBody(level, desc){
-  const col=level===3?FAM.Fact:level===0?"#9a4a57":"#4b6b84", txt=["Below one agent","Beats one agent","Beats the vote","Beats pass@n"][level];
+function badge(level, desc){
+  const col=level===3?FAM.Fact:level===0?"#9a4a57":"#4b6b84";
   const steps=[1,2,3].map(i=>`<div style="height:${6+i*8}px;background:${level>=i?col:'#e4e9ee'}"></div>`).join("");
-  return `<div class="lvl"><div class="ring" style="background:${col}">${level}</div><div style="flex:1;min-width:0"><div class="t">${txt}</div><div class="s">${desc||"equal-budget ladder"}</div><div class="steps">${steps}</div></div></div>`;
+  return `<div class="lvl"><div class="ring" style="background:${col}">${level}</div><div style="flex:1;min-width:0"><div class="t">${LVLTXT[level]}</div><div class="s">${desc||"level on the equal-budget ladder"}</div><div class="steps">${steps}</div></div></div>`;
 }
-function numsBody(p){
-  const T=(p.acc!=null&&p.margin!=null)?p.acc-p.margin:null;
-  const nm=(k,v,tip,col)=>`<div class="num"><div class="k">${k}<span class="q" title="${tip}">?</span></div><div class="v" ${col?`style="color:${col}"`:''}>${v}</div></div>`;
-  return `<div class="nums">${nm("Accuracy",p.acc==null?'<small>not reported</small>':p.acc.toFixed(3),"The group's committed answer")}${nm("Budget",p.nB==null?'<small>not reported</small>':p.nB.toFixed(1)+'<small> agents</small>',"Completion tokens, in units of one independent agent")}${nm("pass@n<sub>B</sub>",T==null?'<small>not reported</small>':T.toFixed(3),"Chance that at least one of n_B independent agents is right")}${nm("Margin",fs(p.margin),"Accuracy minus pass@n_B",p.margin>0?FAM.Fact:'#9a4a57')}</div>`;
+function metric(k, v, unit, tip, col){
+  return `<div class="metric"><div class="k">${k}${tip?`<span class="q" title="${tip}">?</span>`:''}</div><div class="v"${col?` style="color:${col}"`:''}>${v}</div>${unit?`<div class="u">${unit}</div>`:''}</div>`;
+}
+function summary(cur){
+  let grid="", verdict="", dot="#4b6b84";
+  if(cur.kind==="cell"){
+    const p=cur.p, T=(p.acc!=null&&p.margin!=null)?p.acc-p.margin:null, up=p.margin>0;
+    dot=p.level===3?FAM.Fact:p.level===0?"#9a4a57":"#4b6b84";
+    grid=`<div>${badge(p.level, p.descriptive?"descriptive comparison":p.beforeMTC?"before multiple-testing correction":null)}</div>`
+      + metric("Accuracy", p.acc==null?'—':p.acc.toFixed(3), p.acc==null?"not reported":"group's committed answer", "The group's committed answer")
+      + metric("pass@n<sub>B</sub>", T==null?'—':T.toFixed(3), T==null?"not reported":"best of n<sub>B</sub> independent agents", "Chance that at least one of n_B independent agents is right")
+      + metric("Margin", (p.margin==null?'—':`<span style="font-size:20px;vertical-align:4px;margin-right:4px">${up?'▲':'▼'}</span>`+fs(p.margin)), "accuracy − pass@n<sub>B</sub>", "Accuracy minus pass@n_B", p.margin==null?null:(up?FAM.Fact:'#9a4a57'))
+      + metric("Budget", p.nB==null?'—':p.nB.toFixed(1), p.nB==null?"not reported":"independent agents' tokens", "Completion tokens, in units of one independent agent");
+    verdict = p.margin==null ? `<b>${LVLTXT[p.level]}.</b> The paper reports the margin of this cell without its accuracy and budget.`
+      : `<b>${up?"Above":"Below"} pass@n<sub>B</sub> by ${Math.abs(p.margin).toFixed(3)}</b>${p.nB!=null?` at the cost of ${p.nB.toFixed(1)} independent agents`:''}${S.tab==="build"&&S.setting==="split"&&p.acc!=null?`; one agent given every fact reaches ${D.fullInfoAgent.toFixed(3)} at the same budget`:''}.`;
+  }
+  if(cur.kind==="prior"){
+    const [m,b,n,v,se]=cur.r, lo=v-1.96*se, hi=v+1.96*se;
+    const col=hi<0?"#9a4a57":lo>0?FAM.Fact:"#6f6590", txt=hi<0?"Below the vote":lo>0?"Above the vote":"Tied with the vote";
+    dot=col;
+    grid=`<div><div class="lvl"><div class="ring" style="background:${col}">${lo>0?'+':hi<0?'−':'='}</div><div><div class="t">${txt}</div><div class="s">against the equal-budget majority vote</div></div></div></div>`
+      + metric("Gain over vote", fs(v), "accuracy − vote", "Group accuracy minus the majority vote at equal budget", col)
+      + metric("95% interval", `<span style="font-size:24px">${fs(lo)} <small>to</small> ${fs(hi)}</span>`, "paired, by question")
+      + metric("Group size", n==null?"auto":String(n), "agents")
+      + metric("Benchmark", `<span style="font-size:22px">${b}</span>`, "Qwen3.5-9B agents");
+    verdict=`<b>${txt}.</b> ${hi<0?"The interval lies entirely below zero.":lo>0?"The interval lies entirely above zero.":"The interval contains zero."}`;
+  }
+  if(cur.kind==="rec"){
+    const g=S.rgen; let rows=[], name="", note="";
+    if(S.rchain==="planbench"){ const P=D.planbench, gg=Math.min(g,4); name="PlanBench"; rows=[["Group",P.group[gg].toFixed(3),"group accuracy"],["One agent",P.final[gg].toFixed(3),"final plan"],["Gain",P.d[gg]?"+"+P.d[gg][0].toFixed(3):"—","over the predecessor"],["Truncated",P.truncated[gg].toFixed(3),"share of calls at the cap"]]; note=`From 0.613 at G0, the group reaches ${P.group[gg].toFixed(3)} at G${gg}.`; }
+    if(S.rchain==="t3k"){ const Hb=D.hiddenbench, gg=Math.min(g,5), rel=Hb.rounds.filter(r=>r.rel); name="HiddenBench"; rows=[["Group",Hb.t3k[gg].toFixed(3),"group accuracy"],["One agent",Hb.t3kOne[gg].toFixed(3),"inside the group"],["Gain",gg?"+"+rel[gg-1].d.toFixed(3):"—","on fresh confirmation tasks"],["Tokens",Hb.t3kTokensK[gg]+"k","per game"]]; note=gg?`Every trained generation reaches level 3 of the equal-budget ladder.`:`The base group sits at level 2 of the equal-budget ladder.`; }
+    if(S.rchain==="t3"){ const Hb=D.hiddenbench, gg=Math.min(g,3); name="Collective vs. solo"; rows=[["Collective",Hb.t3[gg].toFixed(3),"group accuracy"],["Self-training",Hb.selfFour[gg].toFixed(3),"four solo-trained agents"],["Gap",fs(Hb.t3[gg]-Hb.selfFour[gg]),"collective − self-training"],["Solo agent",Hb.selfOne[gg].toFixed(3),"one self-trained agent"]]; note=`Collective training stays far above single-agent self-training under the same caps.`; }
+    if(S.rchain==="hanabi"){ const Hn=D.hanabi, gg=Math.min(g,6); name="Hanabi"; rows=[["Score",Hn.rec[gg].toFixed(3),"challenge score / 25"],["Gain",Hn.gain[gg]?"+"+Hn.gain[gg][0].toFixed(3):"—","over the predecessor"],["Control",Hn.control[gg]!=null?Hn.control[gg].toFixed(3):"—","non-recursive run"],["Releases",String(gg),"generations so far"]]; note=`The base agents score zero; recursive training lifts the score to 4.5 out of 25.`; }
+    if(S.rchain.startsWith("sb")){ const c=D.splitbench.chains[+S.rchain[2]], gg=Math.min(g,2); name="SplitBench"; rows=[["Margin",fs(c.m[gg]),"over base pass@n"],["Step",gg?fs(c.m[gg]-c.m[gg-1]):"—","over the predecessor"],["Control",c.control!=null?fs(c.control):"—","trained on G0's turns"],["G2 − control",c.g2MinusControl!=null?fs(c.g2MinusControl):"—","recursion contrast"]]; note=c.name+"."; }
+    const gl=Math.min(g,(MAXG[S.rchain]??2));
+    grid=`<div><div class="lvl"><div class="ring" style="background:#4b6b84;font-size:26px">G${gl}</div><div><div class="t">${name}</div><div class="s">label-free generation ${gl}</div></div></div></div>`
+      + rows.map(([k,v,u])=>metric(k,v,u)).join("");
+    verdict=note;
+  }
+  $('#summary').innerHTML=`<div class="sum-grid">${grid}</div><div class="verdict"><span class="dot" style="background:${dot}"></span><span>${verdict}</span></div>`;
 }
 function budgetBody(nB){
   if(nB==null) return `<div class="src">The paper reports no budget for this cell.</div>`;
-  const ag=AGC.map(c=>`<span style="width:12px;height:12px;border-radius:50%;background:${c}"></span>`).join("");
-  let ind=""; for(let i=0;i<Math.ceil(nB);i++){ const f=i<Math.floor(nB)?1:nB-Math.floor(nB); ind+=`<span style="width:${Math.max(12*f,3)}px;height:12px;border-radius:3px;background:#a6b0ba"></span>`; }
-  return `<div style="display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;font-size:12px;color:var(--mute)"><span>group</span><div style="display:flex;gap:3px">${ag}</div><span>same cost</span><div style="display:flex;gap:3px;flex-wrap:wrap">${ind}</div></div><div style="font-size:12.5px;color:var(--ink2);margin-top:8px">${nB.toFixed(1)} independent agents</div>`;
+  const ag=AGC.map(c=>`<span style="width:16px;height:16px;border-radius:50%;background:${c}"></span>`).join("");
+  let ind=""; for(let i=0;i<Math.ceil(nB);i++){ const f=i<Math.floor(nB)?1:nB-Math.floor(nB); ind+=`<span style="width:${Math.max(16*f,4)}px;height:16px;border-radius:4px;background:#a6b0ba"></span>`; }
+  return `<div style="display:grid;grid-template-columns:auto 1fr;gap:12px 16px;align-items:center;font-size:14px;color:var(--mute)"><span>group of four</span><div style="display:flex;gap:4px">${ag}</div><span>same tokens</span><div style="display:flex;gap:4px;flex-wrap:wrap">${ind}</div></div><div style="font-size:14.5px;color:var(--ink2);margin-top:14px">The group's tokens would pay for <b>${nB.toFixed(1)}</b> independent agents.</div>`;
 }
 function results(cur){
+  summary(cur);
   let cards=[];
   if(cur.kind==="cell"){
     const p=cur.p;
-    cards.push(["level","Ladder level",levelBody(p.level, p.descriptive?"descriptive comparison":p.beforeMTC?"before multiple-testing correction":null)]);
-    cards.push(["nums","Numbers",numsBody(p)]);
     cards.push(["budget","Token budget",budgetBody(p.nB)]);
-    if(p.share){ const w=p.share.wait,c=p.share.coord; cards.push(["tokens","Where tokens go",`<div class="bar"><span style="width:${w*100}%;background:#6f6590"></span><span style="width:${(c-w)*100}%;background:#c79aa2"></span><span style="flex:1;background:#9cc3b4"></span></div><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin-top:6px"><span>waiting ${Math.round(w*100)}%</span><span>coordination ${Math.round((c-w)*100)}%</span><span>work ${Math.round((1-c)*100)}%</span></div>`]); }
-    if(S.tab==="org"){ cards.push(["fam","Hubs by model",`<table class="tbl">${D.org.families.map(x=>`<tr class="${x.model===S.famModel?'sel':''}"><td>${x.model}</td><td>${(x.hubs*100).toFixed(1)}%</td></tr>`).join("")}</table><div class="src" style="margin-top:6px">Share of records with a self-built hub, free budget.</div>`]); }
-    cards.push(["src","Source",`<div class="src">${p.src}${p.tasks?` · ${p.tasks} tasks`:''}${S.tab==="build"&&S.setting==="split"?` · full-information agent at equal budget: ${D.fullInfoAgent.toFixed(3)}`:''}</div>`]);
+    if(p.share){ const w=p.share.wait,c=p.share.coord; cards.push(["tokens","Where tokens go",`<div class="bar"><span style="width:${w*100}%;background:#6f6590"></span><span style="width:${(c-w)*100}%;background:#c79aa2"></span><span style="flex:1;background:#9cc3b4"></span></div><div style="display:flex;justify-content:space-between;font-size:14px;color:var(--ink2);margin-top:10px"><span>waiting ${Math.round(w*100)}%</span><span>coordination ${Math.round((c-w)*100)}%</span><span>work ${Math.round((1-c)*100)}%</span></div>`]); }
+    if(S.tab==="org"){ cards.push(["fam","Hubs by model",`<table class="tbl">${D.org.families.map(x=>`<tr class="${x.model===S.famModel?'sel':''}"><td>${x.model}</td><td>${(x.hubs*100).toFixed(1)}%</td></tr>`).join("")}</table><div class="src" style="margin-top:10px;color:var(--mute);font-size:13px">Share of records with a self-built hub, free budget.</div>`]); }
+    cards.push(["src","Source",`<div class="src">${p.src}${p.tasks?` · ${p.tasks} tasks`:''}</div>`]);
   }
   if(cur.kind==="prior"){
     const [m,b,n,v,se]=cur.r, lo=v-1.96*se, hi=v+1.96*se, X=x=>(x+0.55)/0.75*100;
-    const col=hi<0?"#9a4a57":lo>0?FAM.Fact:"#6f6590", txt=hi<0?"Below the vote":lo>0?"Above the vote":"Tied with the vote";
-    cards.push(["level","Against the vote",`<div class="lvl"><div class="ring" style="background:${col};font-size:22px">${lo>0?'+':hi<0?'−':'='}</div><div><div class="t">${txt}</div><div class="s">equal-budget majority vote</div></div></div>`]);
-    cards.push(["nums","Gain over the vote",`<div class="num"><div class="v" style="color:${col}">${fs(v)} <small>± ${(1.96*se).toFixed(3)}</small></div></div><div style="position:relative;height:30px;margin-top:8px"><div style="position:absolute;left:${X(0)}%;top:0;bottom:0;border-left:2px dashed #2c4257"></div><div style="position:absolute;top:13px;height:4px;border-radius:2px;background:${col};left:${X(lo)}%;width:${X(hi)-X(lo)}%"></div><div style="position:absolute;top:8px;width:14px;height:14px;border-radius:50%;background:${col};left:calc(${X(v)}% - 7px)"></div></div><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mute)"><span>−0.55</span><span>vote</span><span>+0.20</span></div>`]);
+    const col=hi<0?"#9a4a57":lo>0?FAM.Fact:"#6f6590";
+    cards.push(["interval","Gain over the vote",`<div style="position:relative;height:40px;margin-top:4px"><div style="position:absolute;left:${X(0)}%;top:0;bottom:0;border-left:2px dashed #2c4257"></div><div style="position:absolute;top:18px;height:5px;border-radius:3px;background:${col};left:${X(lo)}%;width:${X(hi)-X(lo)}%"></div><div style="position:absolute;top:12px;width:17px;height:17px;border-radius:50%;background:${col};left:calc(${X(v)}% - 8.5px)"></div></div><div style="display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin-top:4px"><span>−0.55</span><span>vote</span><span>+0.20</span></div>`]);
     cards.push(["src","Source",`<div class="src">Table 12 · Qwen3.5-9B agents · 95% interval</div>`]);
   }
   if(cur.kind==="rec"){
-    const g=S.rgen; let rows=[];
-    if(S.rchain==="planbench"){ const P=D.planbench, gg=Math.min(g,4); rows=[["Group",P.group[gg].toFixed(3)],["One agent",P.final[gg].toFixed(3)],["Gain",P.d[gg]?"+"+P.d[gg][0].toFixed(3):"—"],["Truncated calls",P.truncated[gg].toFixed(3)]]; }
-    if(S.rchain==="t3k"){ const Hb=D.hiddenbench, gg=Math.min(g,5), rel=Hb.rounds.filter(r=>r.rel); rows=[["Group",Hb.t3k[gg].toFixed(3)],["One agent",Hb.t3kOne[gg].toFixed(3)],["Gain",gg?"+"+rel[gg-1].d.toFixed(3):"—"],["Tokens / game",Hb.t3kTokensK[gg]+"k"]]; }
-    if(S.rchain==="t3"){ const Hb=D.hiddenbench, gg=Math.min(g,3); rows=[["Collective",Hb.t3[gg].toFixed(3)],["Self-training",Hb.selfFour[gg].toFixed(3)],["Gap",fs(Hb.t3[gg]-Hb.selfFour[gg])],["Solo agent",Hb.selfOne[gg].toFixed(3)]]; }
-    if(S.rchain==="hanabi"){ const Hn=D.hanabi, gg=Math.min(g,6); rows=[["Score / 25",Hn.rec[gg].toFixed(3)],["Gain",Hn.gain[gg]?"+"+Hn.gain[gg][0].toFixed(3):"—"],["Control",Hn.control[gg]!=null?Hn.control[gg].toFixed(3):"—"],["Generations",String(gg)]]; }
-    if(S.rchain.startsWith("sb")){ const c=D.splitbench.chains[+S.rchain[2]], gg=Math.min(g,2); rows=[["Margin",fs(c.m[gg])],["Step",gg?fs(c.m[gg]-c.m[gg-1]):"—"],["Control",c.control!=null?fs(c.control):"—"],["G2 − control",c.g2MinusControl!=null?fs(c.g2MinusControl):"—"]]; }
-    const gl=Math.min(g,(MAXG[S.rchain]??2));
-    cards.push(["nums","Generation G"+gl,`<div class="nums">${rows.map(([k,v])=>`<div class="num"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("")}</div>`]);
     const sbName = S.rchain.startsWith("sb") ? D.splitbench.chains[+S.rchain[2]].name+" · " : "";
     cards.push(["src","Source",`<div class="src">${sbName}${({planbench:"Table 6 · 300 problems",t3k:"Figures 10b and 11a · 200 tasks × 2 seeds",t3:"Figure 11a · 200 tasks × 2 seeds",hanabi:"Table 7"})[S.rchain]||"Table 4 · 196 held-out tasks"} · label-free generations</div>`]);
   }

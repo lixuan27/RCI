@@ -363,7 +363,7 @@ ROUNDS = [(1, 0.4913, 0.6946, 0.203, "G1"), (2, 0.7344, 0.7788, 0.044, "G2"), (3
           (5, 0.7900, 0.8550, 0.065, "G4"), (6, 0.8250, 0.8263, 0.001, None), (7, 0.8237, 0.8700, 0.046, "G5"), (8, 0.9038, 0.9183, 0.015, None)]
 def chain_video(t):
     f = F(); a = seg(t, 0.2, 1.0) * (1 - seg(t, 35.2, 36))
-    heading(f, t, 0, 36, "Gated generation chain")
+    heading(f, t, 0, 36, "Gated recursion over generations")
     f.text(70, 108, "HiddenBench: each candidate meets the current generation on fresh confirmation tasks", hand(21, light=True), GREY, a, "la")
     per = 3.6; r = int(clamp((t - 2) / per, 0, 7.999)); u = (t - 2) - r * per
     gen = sum(1 for k in range(8) if ROUNDS[k][4] and (k < r or (k == r and u > 2.4)))

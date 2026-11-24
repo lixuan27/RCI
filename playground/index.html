@@ -151,7 +151,7 @@ function palette(){
   }
   if(S.tab==="rec"){
     const ch=[["planbench","PlanBench"],["t3k","HiddenBench"],["t3","Collective vs. solo"],["hanabi","Hanabi"],["sb0","SplitBench 9B"],["sb1","SplitBench 27B"],["sb2","SplitBench 9B, standard"],["sb3","SplitBench 4B"]];
-    h+=grp("Chain", ch.map(([k,t])=>chip(t,"rchain",k,S.rchain===k)).join(""));
+    h+=grp("Run", ch.map(([k,t])=>chip(t,"rchain",k,S.rchain===k)).join(""));
     const maxg=MAXG[S.rchain] ?? 2, g=Math.min(S.rgen,maxg);
     h+=`<div class="grp"><h6>Generation</h6><div class="gen"><input id="rgen" type="range" min="0" max="${maxg}" value="${g}" aria-label="generation"><b id="rgl">G${g}</b></div></div>`;
   }
@@ -283,7 +283,7 @@ function recChart(){
   if(S.rchain==="planbench"){ series=[["group of four",P.group,"#3f6a8c"],["one agent",P.final,"#a08c63"]]; n=5; cap="A plan simulator checks every plan; the group gains in every generation."; }
   if(S.rchain==="t3k"){ series=[["group of four",Hb.t3k,"#6f6590"],["one agent",Hb.t3kOne,"#a89fbd"]]; n=6; ymin=0.4; cap="Each release beats the current generation on fresh tasks."; }
   if(S.rchain==="t3"){ series=[["collective training",Hb.t3,"#4f7d71"],["single-agent self-training",Hb.selfFour.slice(0,4),"#a6b0ba"]]; n=4; cap="Collective training stays far above single-agent self-training."; }
-  if(S.rchain==="hanabi"){ series=[["recursive chain",Hn.rec,"#9a4a57"],["control chain",[null,...Hn.control.slice(1),null,null,null],"#a6b0ba"]]; n=7; ymax=5; cap="The challenge score rises from 0 to 4.5 out of 25."; }
+  if(S.rchain==="hanabi"){ series=[["recursive training",Hn.rec,"#9a4a57"],["control run",[null,...Hn.control.slice(1),null,null,null],"#a6b0ba"]]; n=7; ymax=5; cap="The challenge score rises from 0 to 4.5 out of 25."; }
   if(S.rchain.startsWith("sb")){ const c=D.splitbench.chains[+S.rchain[2]]; series=[["margin over pass@n",c.m,"#3f6a8c"]]; n=3; ymin=-0.55; ymax=0.35; cap="Margin over pass@n of base-model agents rises with each generation."; }
   const W=520,H=340,L=50,R=22,T=46,B=40, X=i=>L+i*(W-L-R)/(n-1), Y=v=>T+(1-(v-ymin)/(ymax-ymin))*(H-T-B), gg=Math.min(g,n-1);
   let s=`<rect x="${X(gg)-17}" y="${T-8}" width="34" height="${H-T-B+16}" rx="9" fill="#4b6b84" fill-opacity=".07"/>`;

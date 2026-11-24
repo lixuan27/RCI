@@ -96,17 +96,17 @@
   </ul>
   <p>We think the gain belongs to the group itself. In the first step, trained 9B agents working alone stay as accurate as before, while their group's accuracy rises. A related question arises when a task scores only the group's joint deliverable. In that setting, Shapley credit charges each wrong claim to its author, and it is the only credit rule that raises held-out precision above the untrained group.</p>
 
-  <p>To test longer horizons, we run <b>gated chains</b> that start from four Qwen3.5-9B agents. In each round, the current generation plays fresh tasks while an automatic check accepts outputs without answer labels. Candidates then train from the current weights, and the best candidate is released once its paired gain on fresh confirmation tasks exceeds a threshold.</p>
+  <p>To test longer horizons, we apply <b>gated recursion</b> to four Qwen3.5-9B agents. In each round, the current generation plays fresh tasks while an automatic check accepts outputs without answer labels. Candidates then train from the current weights, and the best candidate is released once its paired gain on fresh confirmation tasks exceeds a threshold.</p>
 </article>
 <figure class="w">
-  <div class="video"><video src="../video/chain.mp4" poster="../video/chain_poster.jpg" controls muted loop preload="metadata" playsinline></video></div>
-  <figcaption><b>The gated generation chain.</b> Each candidate meets the current generation on fresh confirmation tasks and replaces it when its paired gain exceeds 0.026. Five of eight rounds release a new generation.</figcaption>
+  <div class="video"><video src="../video/recursion.mp4" poster="../video/recursion_poster.jpg" controls muted loop preload="metadata" playsinline></video></div>
+  <figcaption><b>Gated recursion over generations.</b> Each candidate meets the current generation on fresh confirmation tasks and replaces it when its paired gain exceeds 0.026. Five of eight rounds release a new generation.</figcaption>
 </figure>
 <article class="prose">
   <ul>
     <li><b>PlanBench.</b> All four rounds release a generation, raising the group's accuracy on Blocksworld from 0.613 to 0.950. A single agent's first draft improves along with the group. Since fewer calls reach the token cap in later generations, we report the tokens of every generation beside its accuracy.</li>
-    <li><b>HiddenBench.</b> Over five generations of the longer chain, collective training raises the group from 0.509 to 0.886. In a second chain, single-agent self-training under the same caps also improves, yet it stays far below collective training in every generation.</li>
-    <li><b>Hanabi.</b> The base agents lose all their lives and score zero. Over six generations, each generation outperforms its predecessor on fresh deals, lifting the challenge score to 4.5 out of 25. A control chain that trains on games of a fixed generation levels off near 2.9.</li>
+    <li><b>HiddenBench.</b> Over five generations, collective training raises the group from 0.509 to 0.886 and lifts it from level 2 to level 3 of the equal-budget ladder. In a second run, single-agent self-training under the same caps also improves, yet it stays far below collective training in every generation.</li>
+    <li><b>Hanabi.</b> The base agents lose all their lives and score zero. Over six generations, each generation outperforms its predecessor on fresh deals, lifting the challenge score to 4.5 out of 25. A control run that trains on games of a fixed generation levels off near 2.9.</li>
   </ul>
 </article>
 <figure class="w"><img src="../assets/fig/fig10.png" alt="Recursion on three benchmarks"><figcaption><b>Figure 10.</b> (a) Accuracy across PlanBench generations. (b) All eight HiddenBench rounds, including the flat ones. (c) Hanabi releases compared with the non-recursive control.</figcaption></figure>

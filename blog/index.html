@@ -146,7 +146,12 @@ main.wrap{position:relative;z-index:1}
     <li><b>4B in the standard debate.</b> The margin rises from −0.498 to −0.077 and then to +0.117.</li>
   </ul>
   <p>We think the gain belongs to the group itself. In the first step, trained 9B agents working alone stay as accurate as before, while their group's accuracy rises. When a task scores only the group's joint deliverable, the credit rule decides what the shared policy learns. Shapley credit charges each wrong claim to its author, and it is the only rule we tested that raises held-out precision above the untrained group.</p>
-  <p>Two generations raise a further question, namely whether the improvement continues. A longer sequence brings two risks: a noisy evaluation can release a generation that merely matches its predecessor, and each generation may learn less than the one before. We therefore release generations through a <b>gate</b>, starting from four Qwen3.5-9B agents. In each round, the current generation plays fresh tasks while an automatic check accepts outputs without human-written labels. Candidates then train from the current weights, and the best candidate replaces the current generation once it beats it on fresh confirmation tasks.</p>
+  <p>Two generations raise a further question: does the improvement continue? We think a rising score alone proves little here. A generation can look better simply because it was selected on the noise of an evaluation that earlier rounds have already used, and each generation may also learn less than the one before. We therefore release generations through a <b>gate</b>, starting from four Qwen3.5-9B agents.</p>
+  <p>In each round, the current generation plays fresh tasks while an automatic check accepts its outputs without human-written labels. Candidates then train from the current weights, and the best one must pass two tests before it is released.</p>
+  <ul>
+    <li><b>Fresh confirmation tasks.</b> The candidate meets the current generation on tasks that no earlier round has used, compared task by task. It replaces the current generation only when its paired gain clears a statistical threshold; otherwise the round counts as flat. Reselecting on the same test set therefore cannot push the score up.</li>
+    <li><b>Health gates.</b> Anchored at the base model, these checks reject any candidate whose answer format, token budget or accuracy on control tasks degrades.</li>
+  </ul>
 </article>
 <figure class="w">
   <div class="video"><video src="../video/recursion.mp4" poster="../video/recursion_poster.jpg" controls muted loop preload="metadata" playsinline></video></div>
